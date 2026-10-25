@@ -1,0 +1,65 @@
+project:
+  type: book
+  output-dir: _site
+  pre-render: copy_notebooks.py
+  resources:
+    - downloads/
+
+book:
+  title: "Near-term Quantum Computing — lecture notes"
+  author: "Stefano Polla"
+  date: "2026-10-25"  # release date of the PDF; update on each release
+  chapters:
+    - index.qmd
+    - L1-platforms-and-measurement.qmd
+  appendices:
+    - exercises.qmd
+    - glossary.qmd
+  site-url: https://stefanopolla.github.io/ntqc/
+  repo-url: https://github.com/StefanoPolla/ntqc
+  repo-subdir: notes
+  downloads: [pdf]
+  output-file: ntqc-lecture-notes
+
+author: "Stefano Polla"  # every web page shows it, with the dates of page-dates.lua
+bibliography: references.bib
+metadata-files:
+  - glossary.yml
+filters:
+  - exercises.lua
+  - tutorials.lua
+  - hints.lua
+  - glossary.lua
+  - page-dates.lua  # author, published, last updated on every web page
+crossref:
+  chapters: true
+language:
+  title-block-modified: "Last updated"
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    html-math-method: mathjax
+    default-image-extension: svg
+    number-sections: true
+    toc: true
+    include-after-body: glossary-tooltips.html
+    # Not indexed by search engines for now (Stefano, 2026-10-25: maybe after the course,
+    # with a link from his homepage).
+    include-in-header:
+      - text: '<meta name="robots" content="noindex, nofollow">'
+    css: styles.css
+  pdf:
+    # One reference list at the end of the PDF; each chapter's list is web-only.
+    reference-section-title: References
+    documentclass: scrreprt
+    pdf-engine: lualatex
+    default-image-extension: pdf
+    include-in-header:
+      - macros.tex
+      - preamble.tex
+    fig-pos: 'htb'
+    number-sections: true
+    colorlinks: true

@@ -1,0 +1,14 @@
+---
+page-sources: ["L*.qmd"]  # last updated: see page-dates.lua
+---
+
+# Exercises {#sec-exercises .web-only}
+
+{{< include _macros.qmd >}}
+
+This page collects the exercises of all published chapters. The label of each exercise
+links back to it in its chapter, where the surrounding text explains the notation and
+the references. The exercises of each new chapter are added here when it is published.
+
+::: {#exercise-list}
+:::

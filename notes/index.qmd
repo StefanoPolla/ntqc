@@ -1,0 +1,50 @@
+---
+tutorial-dates: ["Fri 30 Oct", "Fri 6 Nov", "Fri 13 Nov", "Fri 20 Nov", "Fri 27 Nov", "Fri 4 Dec", "Fri 11 Dec"]
+---
+
+# About these notes {#sec-about .unnumbered .web-only}
+
+Lecture notes for *Near-term Quantum Computing* (UvA, 2026-2027), one chapter per
+lecture. Chapters are added as the course goes on.
+
+## How to use these notes {.unnumbered}
+
+- **Chapters.** Each chapter follows one lecture and goes into more detail than the
+  lecture can. [On the website, the exercises of all chapters are also collected on the
+  [Exercises](exercises.qmd) page, with links back to the chapters.]{.content-visible when-format="html"}
+- **Glossary.** Underlined terms are explained in the [Glossary](glossary.qmd). On the
+  website, hover over a term (or tap it on a phone) to see its definition, and click it
+  to open the glossary.
+- **Search.** The search box at the top of the sidebar searches all chapters; on a
+  computer, the shortcut is `/`.
+- **PDF.** The download icon next to the title gives all published chapters as one
+  PDF, with the same numbering, for printing or reading offline. Glossary terms are in
+  italics there, and the glossary is an appendix.
+
+## Prerequisites {.unnumbered}
+
+The notes assume basic quantum mechanics and the circuit model: Dirac notation, Pauli
+matrices, density matrices, expectation values and their statistical error.
+
+The tutorials are Jupyter notebooks in Python, which run in Google Colab. They assume
+basic Python (variables, functions, loops, lists and dictionaries) and a little
+familiarity with Jupyter notebooks, NumPy arrays and Matplotlib plots. If any of these
+is new to you, these short introductions cover what we need:
+
+- Python: the official [Python tutorial](https://docs.python.org/3/tutorial/),
+  sections 3 to 5;
+- Jupyter notebooks in Colab: [Overview of Colab](https://colab.research.google.com/notebooks/basic_features_overview.ipynb);
+- NumPy: [NumPy: the absolute basics for beginners](https://numpy.org/doc/stable/user/absolute_beginners.html);
+- Matplotlib: [Quick start guide](https://matplotlib.org/stable/users/explain/quick_start.html).
+
+## Tutorials {.unnumbered}
+
+Each notebook opens in Google Colab. To keep your work, use **File → Save a copy in
+Drive** before you start. If you prefer to work in your own environment, download the
+notebook instead. New notebooks and solutions appear in this table as they are
+released.
+
+::: {#tutorial-table}
+:::
+
+Version: 2026-10-21.

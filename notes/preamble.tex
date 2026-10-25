@@ -1,0 +1,8 @@
+% PDF-only settings that are not macros (macros go in macros.tex and _macros.qmd).
+% Exercises in a box, so that they stand apart from the text.
+\usepackage[most]{tcolorbox}
+\AtBeginDocument{%
+  \tcolorboxenvironment{exercise}{breakable, enhanced, colback=black!3,
+    colframe=black!35, boxrule=0.5pt, arc=2pt, left=6pt, right=6pt, top=4pt,
+    bottom=4pt, before skip=10pt, after skip=10pt}%
+}

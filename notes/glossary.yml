@@ -1,0 +1,135 @@
+# Glossary entries. Plain text only: the web tooltips cannot render maths.
+# Each definition on one line, in double quotes (tools/release.py reads it line by line).
+glossary:
+  nisq:
+    term: NISQ
+    def: "Noisy intermediate-scale quantum: devices with tens to thousands of qubits whose errors are not corrected, so noise limits the size of the circuits they can run."
+  qec:
+    term: quantum error correction
+    def: "Encoding quantum information redundantly in many physical qubits, so that errors can be detected and corrected without disturbing the encoded information."
+  depth:
+    term: depth
+    def: "The number of layers of gates in a circuit that must run one after another. Gates on different qubits can share a layer."
+  error-mitigation:
+    term: error mitigation
+    def: "Methods that reduce the effect of noise on estimated quantities without correcting the errors, typically by running extra or modified circuits and combining their results. They cost extra shots."
+  physical-qubit:
+    term: physical qubit
+    def: "A qubit as implemented in hardware, for example one transmon or one ion, with all its imperfections."
+  logical-qubit:
+    term: logical qubit
+    def: "A qubit of information encoded in many physical qubits by an error-correcting code. Its error rate can be much lower than that of the physical qubits."
+  threshold:
+    term: threshold
+    def: "The physical error rate per operation below which error correction helps: below it, larger codes give lower logical error rates."
+  digital-qc:
+    term: digital quantum computer
+    def: "A quantum computer that runs circuits: sequences of gates from a fixed universal set, applied to qubits and followed by measurements. Also called gate-based, as opposed to analog devices that imitate the time evolution of a physical system directly."
+  coherence-time:
+    term: coherence time
+    def: "How long a qubit keeps its quantum state, in particular a superposition, before noise from its surroundings destroys it."
+  divincenzo:
+    term: DiVincenzo criteria
+    def: "A checklist for building a quantum computer: scalable, well-characterised qubits; preparation of a known state; long coherence; a universal set of gates; measurement of individual qubits."
+  resonance:
+    term: resonance
+    def: "Radiation drives a transition between two energy levels only when its frequency matches their energy difference divided by Planck's constant. This is how individual qubits are addressed."
+  pulse:
+    term: pulse
+    def: "A short burst of microwave or laser radiation at a chosen frequency, switched on and off smoothly, used to drive a qubit. Its frequency selects which qubit responds; its area and phase set the rotation."
+  josephson-junction:
+    term: Josephson junction
+    def: "A thin insulating barrier between two superconductors. In a circuit it makes the energy levels unevenly spaced, which is what turns the circuit into a usable qubit."
+  transmon:
+    term: transmon
+    def: "The most common superconducting qubit: a small circuit with a Josephson junction, whose two lowest energy levels form the qubit."
+  coupler:
+    term: coupler
+    def: "A circuit element between two superconducting qubits through which they interact. A tunable coupler can switch the interaction on and off."
+  dilution-refrigerator:
+    term: dilution refrigerator
+    def: "A refrigerator that reaches about 10 millikelvin, cold enough that heat no longer excites superconducting qubits."
+  ion:
+    term: ion
+    def: "An atom with one or more electrons removed, so that it carries an electric charge and can be held by electric fields."
+  ion-trap:
+    term: ion trap
+    def: "A device that holds ions in vacuum with electric fields, typically lined up in a chain a few micrometres apart."
+  laser-cooling:
+    term: laser cooling
+    def: "Slowing the motion of atoms or ions with laser light until they are almost at rest."
+  phonon:
+    term: phonon
+    def: "A quantum of vibration. In an ion trap, phonons are the quanta of the vibrations that the whole chain of ions shares; in a solid, such as a qubit chip, they are the quanta of the vibrations of the crystal."
+  phonon-bus:
+    term: phonon bus
+    def: "The shared vibrations of a chain of trapped ions, used as a common channel through which any two ions can interact in a two-qubit gate."
+  qccd:
+    term: QCCD
+    def: "Quantum charge-coupled device: a trapped-ion architecture in which ions are moved between zones of the trap, so that any two ions can be brought together for a gate."
+  optical-tweezers:
+    term: optical tweezers
+    def: "Tightly focused laser beams that hold single neutral atoms in place and can move them."
+  rydberg:
+    term: Rydberg state
+    def: "A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances."
+  spin:
+    term: spin
+    def: "An intrinsic two-level property of an electron (up or down), which can serve as a qubit."
+  quantum-dot:
+    term: quantum dot
+    def: "A tiny region in a semiconductor that can trap single electrons."
+  pauli-string:
+    term: Pauli string
+    def: "A tensor product of single-qubit Pauli matrices (I, X, Y or Z), one for each qubit, such as ZZ or XIY. Hermitian, and squares to the identity."
+  native-gate:
+    term: native gate
+    def: "A gate the hardware implements directly with a calibrated control pulse. Every other gate must be compiled into native gates."
+  cross-resonance:
+    term: cross-resonance
+    def: "A two-qubit gate mechanism for superconducting qubits with fixed couplings: one qubit is driven at the frequency of its neighbour."
+  molmer-sorensen:
+    term: Mølmer-Sørensen gate
+    def: "The standard two-qubit gate of trapped ions. Laser beams couple two ions to the shared vibrations of the chain, producing an entangling rotation of any chosen angle."
+  virtual-z:
+    term: virtual Z gate
+    def: "A Z rotation implemented by shifting the phase of all later drive pulses instead of applying a pulse. It takes no time and adds no error."
+  coupling-graph:
+    term: coupling graph
+    def: "Graph whose vertices are qubits and whose edges are the pairs on which a native two-qubit gate is available."
+  swap:
+    term: SWAP
+    def: "A two-qubit gate that exchanges the states of two qubits. It costs three CNOTs."
+  transpilation:
+    term: transpilation
+    def: "Compilation of a circuit into the native gates and coupling graph of a device, including inserting SWAPs and simplifying."
+  relaxation:
+    term: relaxation
+    def: "Loss of energy by a qubit: the excited state decays to the ground state. Its characteristic time is called T1, and the amplitude-damping channel describes it."
+  dephasing:
+    term: dephasing
+    def: "Loss of the relative phase of a superposition without loss of energy, for example because the qubit frequency is shifted by an unknown amount. The measured times T2* and T2 include both dephasing and relaxation; the time of pure dephasing alone is called Tφ."
+  coherent-error:
+    term: coherent error
+    def: "A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time."
+  leakage:
+    term: leakage
+    def: "An error in which a qubit leaves its two qubit levels, for example when a transmon is pushed into its third level."
+  crosstalk:
+    term: crosstalk
+    def: "An unwanted effect of an operation on one qubit on other qubits, for example through couplings that are never fully switched off."
+  calibration:
+    term: calibration
+    def: "Measuring and adjusting the control pulses of a device so that its gates do what they should. Providers publish calibration data: the error rates of each qubit and gate at the last calibration."
+  fidelity:
+    term: fidelity
+    def: "A number between 0 and 1 measuring how close a state or operation is to the intended one. The state fidelity is the probability that a state passes a test for the target state; the average gate fidelity averages it over all input states. Informally, one minus the probability of an error."
+  dispersive-readout:
+    term: dispersive readout
+    def: "Readout of a superconducting qubit through a resonator whose frequency depends slightly on the qubit state. A weak microwave probe tells the two states apart."
+  shot:
+    term: shot
+    def: "One run of a circuit: prepare the qubits, apply the gates, measure. Returns one bit string."
+  estimator:
+    term: estimator
+    def: "A rule that turns measured data into an estimate of a quantity, for example the sample mean of the outcomes as an estimate of an expectation value."

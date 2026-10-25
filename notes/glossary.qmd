@@ -1,0 +1,8 @@
+---
+page-sources: ["glossary.yml"]  # last updated: see page-dates.lua
+---
+
+# Glossary
+
+::: {#glossary-list}
+:::

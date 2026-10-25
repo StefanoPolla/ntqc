@@ -1,0 +1,30 @@
+/* Exercises in a box, so that they stand apart from the text. */
+.theorem.exercise, .exercise-copy {
+  border: 1px solid rgba(127, 127, 127, 0.45);
+  border-radius: 6px;
+  padding: 0.8em 1em 0.3em;
+  margin: 1.2em 0;
+  background: rgba(127, 127, 127, 0.06);
+}
+/* Hints, hidden behind a button until clicked. */
+details.hint { margin: 0.2em 0 0.8em; }
+details.hint > summary {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 0.85em;
+  padding: 0.05em 0.6em;
+  border: 1px solid rgba(127, 127, 127, 0.6);
+  border-radius: 4px;
+  list-style: none;
+}
+details.hint > summary::-webkit-details-marker { display: none; }
+details.hint[open] > summary { margin-bottom: 0.4em; }
+
+/* Author, published and last updated (page-dates.lua) on one row, except on phones */
+@media (min-width: 576px) {
+  #title-block-header.quarto-title-block.default .quarto-title-meta {
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    column-gap: 3em;
+  }
+}

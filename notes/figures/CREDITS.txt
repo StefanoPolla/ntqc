@@ -1,0 +1,22 @@
+Third-party images in this folder. All other figures are drawn by make_figures.py.
+
+photo-transmons-sung2021.jpg
+  Adapted from Y. Sung et al., "Realization of High-Fidelity CZ and ZZ-Free iSWAP Gates
+  with a Tunable Coupler", Phys. Rev. X 11, 021058 (2021), Fig. 1(c),
+  https://doi.org/10.1103/PhysRevX.11.021058. CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/). Cropped and resized.
+
+photo-junction-vandamme2024.jpg
+  Adapted from J. Van Damme et al., "Advanced CMOS manufacturing of superconducting
+  qubits on 300 mm wafers", Nature 634, 74 (2024), Fig. 1(c,d),
+  https://doi.org/10.1038/s41586-024-07941-9. CC BY 4.0. Cropped.
+
+photo-ion-trap-nist.jpg
+  Y. Colombe/NIST, "Gold Ion Trap", public domain (US government work), via Wikimedia
+  Commons: https://commons.wikimedia.org/wiki/File:Gold_Ion_Trap_(6029437325).jpg
+  Resized.
+
+photo-ion-string-friis2018.png
+  Adapted from N. Friis et al., "Observation of Entangled States of a Fully Controlled
+  20-Qubit System", Phys. Rev. X 8, 021012 (2018), Fig. 1(a),
+  https://doi.org/10.1103/PhysRevX.8.021012. CC BY 4.0. Cropped (axes removed).

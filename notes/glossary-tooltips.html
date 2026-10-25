@@ -1,0 +1,13 @@
+<style>
+  a.gloss { text-decoration: underline dotted; color: inherit; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof tippy === "undefined") return;
+    tippy("a.gloss", {
+      content: (el) => el.getAttribute("data-gloss"),
+      theme: "quarto",
+      maxWidth: 360,
+    });
+  });
+</script>

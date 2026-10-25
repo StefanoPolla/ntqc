@@ -1,0 +1,5 @@
+# Repository-specific values, used in the text as {{< var name >}}.
+# On release to the ntqc repository, tools/release.py rewrites the repo name here and in
+# _quarto.yml; nothing else in the notes should contain it.
+repo: StefanoPolla/ntqc
+colab: https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main
