@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stefano Polla">
+<meta name="dcterms.date" content="2026-10-25">
+
+<title>1&nbsp; Platforms, gates and measurement – Near-term Quantum Computing — lecture notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exercises.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b626d73c4c936ccc3cb08be7d45d1df6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-37a0ccb6f5b9899fcb884e11bb6f7458.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./L1-platforms-and-measurement.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Near-term Quantum Computing — lecture notes</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/StefanoPolla/ntqc/tree/main/notes/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./ntqc-lecture-notes.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About these notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L1-platforms-and-measurement.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-nisq" id="toc-sec-nisq" class="nav-link active" data-scroll-target="#sec-nisq"><span class="header-section-number">1.1</span> Noisy qubits and fault tolerance</a></li>
+  <li><a href="#sec-platforms" id="toc-sec-platforms" class="nav-link" data-scroll-target="#sec-platforms"><span class="header-section-number">1.2</span> Physical qubits</a>
+  <ul class="collapse">
+  <li><a href="#sec-qubit-needs" id="toc-sec-qubit-needs" class="nav-link" data-scroll-target="#sec-qubit-needs"><span class="header-section-number">1.2.1</span> Requirements for a quantum computer</a></li>
+  <li><a href="#sec-pulses" id="toc-sec-pulses" class="nav-link" data-scroll-target="#sec-pulses"><span class="header-section-number">1.2.2</span> Energy levels, frequencies and pulses</a></li>
+  <li><a href="#sec-superconducting" id="toc-sec-superconducting" class="nav-link" data-scroll-target="#sec-superconducting"><span class="header-section-number">1.2.3</span> Superconducting qubits</a></li>
+  <li><a href="#sec-trapped-ions" id="toc-sec-trapped-ions" class="nav-link" data-scroll-target="#sec-trapped-ions"><span class="header-section-number">1.2.4</span> Trapped ions</a></li>
+  <li><a href="#sec-other-platforms" id="toc-sec-other-platforms" class="nav-link" data-scroll-target="#sec-other-platforms"><span class="header-section-number">1.2.5</span> Other platforms</a></li>
+  </ul></li>
+  <li><a href="#sec-native-gates" id="toc-sec-native-gates" class="nav-link" data-scroll-target="#sec-native-gates"><span class="header-section-number">1.3</span> Native gates and connectivity</a>
+  <ul class="collapse">
+  <li><a href="#sec-pauli-rotations" id="toc-sec-pauli-rotations" class="nav-link" data-scroll-target="#sec-pauli-rotations"><span class="header-section-number">1.3.1</span> Pauli rotations</a></li>
+  <li><a href="#sec-driving-gates" id="toc-sec-driving-gates" class="nav-link" data-scroll-target="#sec-driving-gates"><span class="header-section-number">1.3.2</span> Physical implementation of gates</a></li>
+  <li><a href="#sec-native-gate-sets" id="toc-sec-native-gate-sets" class="nav-link" data-scroll-target="#sec-native-gate-sets"><span class="header-section-number">1.3.3</span> Native gate sets</a></li>
+  <li><a href="#sec-compiling" id="toc-sec-compiling" class="nav-link" data-scroll-target="#sec-compiling"><span class="header-section-number">1.3.4</span> Compiling into native gates</a></li>
+  <li><a href="#sec-virtual-z" id="toc-sec-virtual-z" class="nav-link" data-scroll-target="#sec-virtual-z"><span class="header-section-number">1.3.5</span> Virtual Z gates</a></li>
+  <li><a href="#sec-connectivity" id="toc-sec-connectivity" class="nav-link" data-scroll-target="#sec-connectivity"><span class="header-section-number">1.3.6</span> Connectivity</a></li>
+  </ul></li>
+  <li><a href="#sec-measurement" id="toc-sec-measurement" class="nav-link" data-scroll-target="#sec-measurement"><span class="header-section-number">1.4</span> Measurement</a>
+  <ul class="collapse">
+  <li><a href="#sec-readout" id="toc-sec-readout" class="nav-link" data-scroll-target="#sec-readout"><span class="header-section-number">1.4.1</span> Readout</a></li>
+  <li><a href="#sec-shots" id="toc-sec-shots" class="nav-link" data-scroll-target="#sec-shots"><span class="header-section-number">1.4.2</span> Shots and expectation values</a></li>
+  <li><a href="#sec-shot-noise" id="toc-sec-shot-noise" class="nav-link" data-scroll-target="#sec-shot-noise"><span class="header-section-number">1.4.3</span> Shot noise</a></li>
+  </ul></li>
+  <li><a href="#sec-noise-sources" id="toc-sec-noise-sources" class="nav-link" data-scroll-target="#sec-noise-sources"><span class="header-section-number">1.5</span> Sources of noise</a></li>
+  <li><a href="#sec-timescales" id="toc-sec-timescales" class="nav-link" data-scroll-target="#sec-timescales"><span class="header-section-number">1.6</span> Timescales</a></li>
+  <li><a href="#sec-L1-exercises" id="toc-sec-L1-exercises" class="nav-link" data-scroll-target="#sec-L1-exercises"><span class="header-section-number">1.7</span> More exercises</a></li>
+  <li><a href="#sec-L1-reading" id="toc-sec-L1-reading" class="nav-link" data-scroll-target="#sec-L1-reading"><span class="header-section-number">1.8</span> Further reading</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-platforms-gates-measurement" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Stefano Polla </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">25 October 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">25 October 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\gate}[1]{\mathrm{#1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\]</span></p>
+</div>
+<p>On paper, a quantum algorithm is a circuit: gates on ideal qubits, followed by measurements. A real quantum computer is a physical device, whose physics decides which operations it can perform, between which qubits, how fast and how reliably. In this chapter, we look at this physical side and at what it means for the circuits we can run.</p>
+<p>By the end of the chapter, you should be able to explain what a quantum computer needs from its qubits and how superconducting circuits and trapped ions provide it; why devices have different native gates, why <span class="math inline">\(Z\)</span> rotations are usually free, and what limited connectivity costs; and how many shots an expectation value needs and how long they take.</p>
+<section id="sec-nisq" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="sec-nisq"><span class="header-section-number">1.1</span> Noisy qubits and fault tolerance</h2>
+<p>Every physical qubit is imperfect. Each gate has a small chance of going wrong, the stored quantum state degrades even when nothing is done to it, and measurements sometimes return the wrong result. These errors add up. If each gate fails with probability 0.1%, a circuit of a thousand gates runs without any error only about 37% of the time, since <span class="math inline">\(0.999^{1000} \approx e^{-1}\)</span>. Noise therefore limits the size of the circuits that a device can run usefully.</p>
+<p>Preskill called the devices of this era <a href="glossary.html#gloss-nisq" class="gloss" data-gloss="Noisy intermediate-scale quantum: devices with tens to thousands of qubits whose errors are not corrected, so noise limits the size of the circuits they can run.">NISQ</a> devices, for <em>noisy intermediate-scale quantum</em> <span class="citation" data-cites="preskill2018">(<a href="L1-platforms-and-measurement.html#ref-preskill2018" role="doc-biblioref">Preskill 2018</a>)</span>. <em>Intermediate scale</em> means tens to thousands of qubits, enough that many of their circuits are hard to simulate on a classical computer, but far from the millions of qubits that the best-known quantum algorithms need. <em>Noisy</em> means that their errors are not corrected.</p>
+<p>Getting useful results from a NISQ device means working within the limit set by noise. Circuits are kept short, so that errors have little chance to build up. The quantities to keep small are the circuit’s <a href="glossary.html#gloss-depth" class="gloss" data-gloss="The number of layers of gates in a circuit that must run one after another. Gates on different qubits can share a layer.">depth</a>, the number of layers of gates that must run one after another, and its number of two-qubit gates, the least reliable operations on current devices (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). Each run of a circuit returns a single random outcome, so every quantity is estimated from many repetitions, called shots (<a href="#sec-shots" class="quarto-xref"><span>Section 1.4.2</span></a>). And <a href="glossary.html#gloss-error-mitigation" class="gloss" data-gloss="Methods that reduce the effect of noise on estimated quantities without correcting the errors, typically by running extra or modified circuits and combining their results. They cost extra shots.">error mitigation</a> reduces the effect of the remaining noise on these estimates, without correcting the errors themselves, by running extra or modified circuits and combining their results. Error mitigation is not the same as error correction: it only works if the circuit does not accumulate too much error in the first place, and its price is running more shots. We come back to it later in the course.</p>
+<p>Correcting errors is possible in principle. <a href="glossary.html#gloss-qec" class="gloss" data-gloss="Encoding quantum information redundantly in many physical qubits, so that errors can be detected and corrected without disturbing the encoded information.">Quantum error correction</a> stores each qubit of information redundantly in many <a href="glossary.html#gloss-physical-qubit" class="gloss" data-gloss="A qubit as implemented in hardware, for example one transmon or one ion, with all its imperfections.">physical qubits</a>, which together form one <a href="glossary.html#gloss-logical-qubit" class="gloss" data-gloss="A qubit of information encoded in many physical qubits by an error-correcting code. Its error rate can be much lower than that of the physical qubits.">logical qubit</a>. Repeated checks on the physical qubits reveal errors without disturbing the stored information, so that the errors can be undone. This only helps if the physical qubits are good enough. Below a certain error rate per operation, the <a href="glossary.html#gloss-threshold" class="gloss" data-gloss="The physical error rate per operation below which error correction helps: below it, larger codes give lower logical error rates.">threshold</a>, larger codes give lower logical error rates, as low as a computation requires, and the computer is called <em>fault tolerant</em>.</p>
+<p>Fault tolerance is expensive. Useful algorithms are estimated to need of order a thousand physical qubits for every logical qubit, and around a million physical qubits in total <span class="citation" data-cites="fowler2012 gidney2025">(<a href="L1-platforms-and-measurement.html#ref-fowler2012" role="doc-biblioref">Fowler et al. 2012</a>; <a href="L1-platforms-and-measurement.html#ref-gidney2025" role="doc-biblioref">Gidney 2025</a>)</span>. Experiments are now crossing the threshold: in 2024, a superconducting device ran an error-correcting code whose logical error rate halved each time the code was made larger <span class="citation" data-cites="google2025">(<a href="L1-platforms-and-measurement.html#ref-google2025" role="doc-biblioref">Google Quantum AI and Collaborators 2025</a>)</span>. Such experiments use a whole device to protect a single logical qubit, however, and useful computations still run on physical qubits. We come back to the stage in between, <em>early fault tolerance</em>, at the end of the course.</p>
+<p>The cost of error correction is not only an increase in the number of physical qubits. A code protects stored information, but every gate on logical qubits must also be carried out without spreading errors, and only a small set of gates can be done this way at a low cost. Every other gate has to be built from this set, so the operations that are cheap on a NISQ device can be expensive on a fault-tolerant one, and the reverse. In the most studied codes, a CNOT between two logical qubits is relatively cheap. A single-qubit rotation by an arbitrary angle, which a NISQ device performs with a single pulse (<a href="#sec-driving-gates" class="quarto-xref"><span>Section 1.3.2</span></a>), must instead be approximated by a sequence of tens to about a hundred protected gates, some of which need a costly extra procedure of their own <span class="citation" data-cites="ross2016 litinski2019">(<a href="L1-platforms-and-measurement.html#ref-ross2016" role="doc-biblioref">Ross and Selinger 2016</a>; <a href="L1-platforms-and-measurement.html#ref-litinski2019" role="doc-biblioref">Litinski 2019</a>)</span>. The cost of a NISQ circuit is dominated by its depth and its two-qubit gates, while the cost of a fault-tolerant circuit is often dominated by its number of rotations. <a href="#tbl-nisq-ftqc" class="quarto-xref">Table&nbsp;<span>1.1</span></a> summarises the differences.</p>
+<div id="tbl-nisq-ftqc" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-nisq-ftqc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.1: NISQ and fault-tolerant quantum computing compared.
+</figcaption>
+<div aria-describedby="tbl-nisq-ftqc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>NISQ</th>
+<th>Fault tolerant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Qubits</td>
+<td>physical qubits</td>
+<td>logical qubits, each encoded in many physical qubits</td>
+</tr>
+<tr class="even">
+<td>Errors</td>
+<td>uncorrected; they accumulate with every operation</td>
+<td>corrected, if the physical error rates are below the threshold</td>
+</tr>
+<tr class="odd">
+<td>Circuit size</td>
+<td>limited by noise</td>
+<td>limited by the number of qubits and the run time</td>
+</tr>
+<tr class="even">
+<td>Cheap operations</td>
+<td>single-qubit rotations at any angle</td>
+<td>CNOT and a few other gates</td>
+</tr>
+<tr class="odd">
+<td>Expensive operations</td>
+<td>two-qubit gates</td>
+<td>single-qubit rotations at arbitrary angles</td>
+</tr>
+<tr class="even">
+<td>Cost of a circuit</td>
+<td>mainly its depth and number of two-qubit gates</td>
+<td>mainly its number of rotations</td>
+</tr>
+<tr class="odd">
+<td>Dealing with noise</td>
+<td>short circuits, many shots, error mitigation</td>
+<td>error correction</td>
+</tr>
+<tr class="even">
+<td>Status</td>
+<td>available today</td>
+<td>first demonstrations; useful machines still to be built</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>This course focuses on NISQ devices. We will learn how noise affects their results, how error mitigation can reduce its effect, and which algorithms can be run on today’s devices.</p>
+</section>
+<section id="sec-platforms" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-platforms"><span class="header-section-number">1.2</span> Physical qubits</h2>
+<p>This section is a high-level introduction to the most common designs of two kinds of hardware, superconducting circuits and trapped ions. Quantum hardware is a very active field of research, and there are many variations on everything we describe here. The device physics is descriptive, and you are not expected to derive it. What matters later are its consequences for gates, connectivity and speed. Terms we leave unexplained are in the glossary; on the web version, hover over an underlined term to see its definition.</p>
+<section id="sec-qubit-needs" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="sec-qubit-needs"><span class="header-section-number">1.2.1</span> Requirements for a quantum computer</h3>
+<p>A qubit is a quantum system with two states, <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>, that we can control. Quantum systems such as atoms and small electrical circuits can only take certain values of energy, their <em>energy levels</em>, and they usually have many more than two. Most qubits are therefore the two lowest energy levels of a larger system. The other levels are still there, and a qubit can end up in them by accident.</p>
+<p>A universal, <a href="glossary.html#gloss-digital-qc" class="gloss" data-gloss="A quantum computer that runs circuits: sequences of gates from a fixed universal set, applied to qubits and followed by measurements. Also called gate-based, as opposed to analog devices that imitate the time evolution of a physical system directly.">digital</a> quantum computer is built by assembling many physical qubits and controlling them individually. DiVincenzo listed what this requires <span class="citation" data-cites="divincenzo2000">(<a href="L1-platforms-and-measurement.html#ref-divincenzo2000" role="doc-biblioref">DiVincenzo 2000</a>)</span>:</p>
+<ul>
+<li>a scalable system of well-characterised qubits: their levels and interactions are known, and more qubits can be added;</li>
+<li>a way to prepare the qubits in a known state, usually <span class="math inline">\(\ket{0\cdots 0}\)</span>;</li>
+<li>a universal set of gates, usually rotations of single qubits together with an interaction between two qubits;</li>
+<li>a way to measure individual qubits;</li>
+<li><a href="glossary.html#gloss-coherence-time" class="gloss" data-gloss="How long a qubit keeps its quantum state, in particular a superposition, before noise from its surroundings destroys it.">coherence times</a>, the times for which the qubits keep their quantum state, that are long compared with the duration of a gate.</li>
+</ul>
+<p>These are the <a href="glossary.html#gloss-divincenzo" class="gloss" data-gloss="A checklist for building a quantum computer: scalable, well-characterised qubits; preparation of a known state; long coherence; a universal set of gates; measurement of individual qubits.">DiVincenzo criteria</a>. Two further criteria concern sending qubits between distant devices, which we will not need.</p>
+<p>One property of measurement matters well before <a href="#sec-measurement" class="quarto-xref"><span>Section 1.4</span></a>, where readout is described in detail. On the platforms in this chapter, a measurement asks each qubit whether it is in <span class="math inline">\(\ket{0}\)</span> or in <span class="math inline">\(\ket{1}\)</span>: it projects the qubit onto one of these two states and returns one bit. This is a measurement in the <em>computational basis</em>, also called the <span class="math inline">\(Z\)</span> basis, since <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> are the eigenstates of <span class="math inline">\(Z\)</span>. To measure in another basis, we first rotate that basis onto the computational one.</p>
+<p>The requirements pull in opposite directions. A qubit keeps its state longest when it is well isolated from its surroundings, since every interaction with the environment disturbs it. Yet to apply gates and to measure, we have to interact with it, strongly and quickly. Every platform is a compromise between isolation and control, and this compromise explains many of the numbers in this chapter.</p>
+</section>
+<section id="sec-pulses" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="sec-pulses"><span class="header-section-number">1.2.2</span> Energy levels, frequencies and pulses</h3>
+<p>Quantum mechanics links energy and frequency. An energy difference <span class="math inline">\(E\)</span> between two levels corresponds to a frequency <span class="math inline">\(f = E/h\)</span>, where <span class="math inline">\(h\)</span> is Planck’s constant, and radiation at that frequency drives transitions between the two levels, while radiation at other frequencies hardly affects them. This selectivity is called <a href="glossary.html#gloss-resonance" class="gloss" data-gloss="Radiation drives a transition between two energy levels only when its frequency matches their energy difference divided by Planck’s constant. This is how individual qubits are addressed.">resonance</a>, and on most platforms it is how qubits are controlled.</p>
+<p>A <a href="glossary.html#gloss-pulse" class="gloss" data-gloss="A short burst of microwave or laser radiation at a chosen frequency, switched on and off smoothly, used to drive a qubit. Its frequency selects which qubit responds; its area and phase set the rotation.">pulse</a> is a short burst of radiation at a chosen frequency, the carrier frequency, switched on and off smoothly. Its shape over time, the <em>envelope</em>, is often close to a Gaussian (<a href="#fig-pulse" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> a). Superconducting qubits are driven by microwave pulses, trapped ions by laser or microwave pulses. A qubit with transition frequency <span class="math inline">\(f_q\)</span> oscillates at that frequency too, and in a simplified picture, the effect of a pulse on the qubit is the product of the pulse with this oscillation, added up over time. If the two frequencies are equal, the product keeps the same sign, and its effect builds up as long as the pulse lasts (<a href="#fig-pulse" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>, left, b and c). The result is a rotation of the qubit, by an angle proportional to the area under the envelope. If the frequencies differ, the product alternates in sign, its contributions cancel, and the qubit is left almost unchanged. A pulse at the frequency of one qubit therefore acts on that qubit, and hardly on qubits with other frequencies. <a href="#sec-driving-gates" class="quarto-xref"><span>Section 1.3.2</span></a> shows how the shape and timing of a pulse set the rotation.</p>
+<div id="fig-pulse" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pulse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/pulse-resonance.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pulse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: The same Gaussian pulse acting on a qubit at the carrier frequency (left) and on a qubit at a 35% higher frequency (right). (a) The pulse, with the qubit’s own oscillation dashed; (b) the product of the two; (c) its running integral. The effect on the resonant qubit builds up to a value set by the area under the envelope; for the off-resonant qubit, it averages out to almost zero. The frequencies are scaled down to show the oscillations: a superconducting qubit oscillates a hundred times or more during a pulse, so that a much smaller difference in frequency is enough.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-superconducting" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="sec-superconducting"><span class="header-section-number">1.2.3</span> Superconducting qubits</h3>
+<p>A superconducting qubit is a small electrical circuit on a chip. The chip is <em>fabricated</em> like a conventional microchip: in a clean room, thin layers of superconducting metal are deposited on it and etched into shape (<a href="#fig-sc-chip" class="quarto-xref">Figure&nbsp;<span>1.3</span></a>). Once cooled, its metal becomes superconducting. Current then flows without resistance, so no energy is lost as heat, and the circuit behaves as a quantum system with discrete energy levels; we treat this part as a black box. A simple circuit of this kind has evenly spaced levels, like a mass on a spring (<a href="#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>, left). That makes it useless as a qubit, because a pulse at the frequency <span class="math inline">\(f_{01}\)</span> of the <span class="math inline">\(\ket{0} \to \ket{1}\)</span> transition is just as resonant with <span class="math inline">\(\ket{1} \to \ket{2}\)</span>, <span class="math inline">\(\ket{2} \to \ket{3}\)</span> and so on. A circuit element called a <a href="glossary.html#gloss-josephson-junction" class="gloss" data-gloss="A thin insulating barrier between two superconductors. In a circuit it makes the energy levels unevenly spaced, which is what turns the circuit into a usable qubit.">Josephson junction</a> makes the spacing uneven. In the most common design, the <a href="glossary.html#gloss-transmon" class="gloss" data-gloss="The most common superconducting qubit: a small circuit with a Josephson junction, whose two lowest energy levels form the qubit.">transmon</a>, the <span class="math inline">\(\ket{1} \to \ket{2}\)</span> transition is a few percent lower in frequency than the qubit transition (<a href="#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>, right), so a pulse at <span class="math inline">\(f_{01}\)</span> drives only the qubit.</p>
+<div id="fig-energy-levels" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-energy-levels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/energy-levels.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-energy-levels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.2: Energy levels of an oscillator and of a transmon. With even spacing, every transition has the same frequency, so the two lowest levels cannot be driven on their own. The transmon’s uneven spacing makes the qubit transition unique. Not to scale: in a real transmon, <span class="math inline">\(f_{12}\)</span> is only a few percent below <span class="math inline">\(f_{01}\)</span>.
+</figcaption>
+</figure>
+</div>
+<div id="fig-sc-chip" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sc-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-sc-chip" style="flex-basis: 62.0%;justify-content: flex-start;">
+<div id="fig-sc-transmons" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sc-transmons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/photo-transmons-sung2021.jpg" class="img-fluid figure-img" data-ref-parent="fig-sc-chip">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sc-transmons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Two transmons and a coupler.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-sc-chip" style="flex-basis: 38.0%;justify-content: flex-start;">
+<div id="fig-sc-junction" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sc-junction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/photo-junction-vandamme2024.jpg" class="img-fluid figure-img" data-ref-parent="fig-sc-chip">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sc-junction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) A Josephson junction.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sc-chip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.3: Superconducting qubits under the microscope. (a) Two transmon qubits (blue and red, false colour) with a third transmon between them, used as a tunable coupler (grey) <span class="citation" data-cites="sung2021">(<a href="L1-platforms-and-measurement.html#ref-sung2021" role="doc-biblioref"><span class="nocase">Sung et al.</span> 2021</a>)</span>. The cross-shaped pads are the transmons’ capacitors, and their Josephson junctions sit in the small structures at the ends of the arms. Qubit 2 and the coupler have two junctions in a loop, so that their frequencies can be tuned. Green lines carry the drive pulses, pink lines the currents that tune the frequencies, and the brown structures belong to the readout (<a href="#sec-readout" class="quarto-xref"><span>Section 1.4.1</span></a>). (b) A Josephson junction from a different device, seen in an electron microscope: two aluminium wires (Al) cross on a silicon chip (Si), separated by a thin oxide barrier, shown in cross-section in the inset <span class="citation" data-cites="vandamme2024">(<a href="L1-platforms-and-measurement.html#ref-vandamme2024" role="doc-biblioref"><span class="nocase">Van Damme et al.</span> 2024</a>)</span>. Scale bars: 1 µm; inset, 50 nm. Both images adapted (cropped) under the <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> licence.
+</figcaption>
+</figure>
+</div>
+<p>Transmon frequencies are typically 4-6 GHz, in the microwave range. At room temperature, the thermal energy is about a thousand times larger than <span class="math inline">\(hf\)</span>, so heat alone would excite the qubit at random. Superconducting chips therefore sit in a <a href="glossary.html#gloss-dilution-refrigerator" class="gloss" data-gloss="A refrigerator that reaches about 10 millikelvin, cold enough that heat no longer excites superconducting qubits.">dilution refrigerator</a> at about 10 mK, a hundredth of a degree above absolute zero (<a href="#exr-thermal" class="quarto-xref">Exercise&nbsp;<span>1.1</span></a>), and cables bring the microwave pulses down to them from electronics at room temperature.</p>
+<p>The cold also prepares the qubits. At 10 mK, a qubit left alone loses its energy and falls into <span class="math inline">\(\ket{0}\)</span> within a few hundred microseconds. This <a href="glossary.html#gloss-relaxation" class="gloss" data-gloss="Loss of energy by a qubit: the excited state decays to the ground state. Its characteristic time is called T1, and the amplitude-damping channel describes it.">relaxation</a> is a source of noise during a computation (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>), but between runs it initialises the qubits: we simply wait. A faster approach to initialisation is <em>active reset</em>: measure the qubit (<a href="#sec-readout" class="quarto-xref"><span>Section 1.4.1</span></a>) and apply an <span class="math inline">\(X\)</span> gate if the result is 1.</p>
+<p>Superconducting qubits are fast. A transmon is large for a quantum system, a fraction of a millimetre across, and it behaves like a small antenna that couples strongly to microwaves, so a pulse of a few tens of nanoseconds is enough for a single-qubit gate. The same antenna would pick up any stray radiation, so the chip is shielded, inside a metal package and the nested shields of the refrigerator, and its control lines are heavily filtered. Ideally, these lines are the qubit’s only contact with the outside world. The shielding is never perfect, and the quantum state of a qubit typically survives for tens to hundreds of microseconds.</p>
+<p>Each qubit has its own frequency, and this is how the qubits on a chip are addressed separately. Every qubit usually has its own control line, but part of a pulse leaks to the neighbouring qubits, and coupled qubits feel each other’s drive. Neighbouring qubits are therefore given different frequencies, so that a pulse meant for one of them is off resonance for the others (<a href="#fig-pulse" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>). In many designs, the frequency can also be tuned. The Josephson junction is then replaced by a small loop with two junctions, and a magnetic field through the loop, set by the current in a nearby control line, changes the frequency of the qubit. Tuning lets the electronics move qubits towards each other in frequency and away again, which is one way to switch on a two-qubit gate.</p>
+<p>Fabrication is never perfectly precise, so no two qubits come out identical. Each has its own frequency, its own coherence time and its own error rates. Every pulse must therefore be <a href="glossary.html#gloss-calibration" class="gloss" data-gloss="Measuring and adjusting the control pulses of a device so that its gates do what they should. Providers publish calibration data: the error rates of each qubit and gate at the last calibration.">calibrated</a>: its frequency, strength and duration are measured and adjusted, qubit by qubit and pair by pair, in a long sequence of automated experiments. The properties of the qubits also drift, over hours to days, so calibration is repeated regularly, and providers publish the resulting calibration data for each qubit (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>).</p>
+<p>Two qubits can interact only if they are coupled, directly through a capacitor or through a small circuit between them, a <a href="glossary.html#gloss-coupler" class="gloss" data-gloss="A circuit element between two superconducting qubits through which they interact. A tunable coupler can switch the interaction on and off.">coupler</a> (<a href="#fig-sc-chip" class="quarto-xref">Figure&nbsp;<span>1.3</span></a>). The couplings are built into the chip, so which pairs can interact is fixed when the chip is made (<a href="#sec-connectivity" class="quarto-xref"><span>Section 1.3.6</span></a>). A coupling makes an interaction possible, and the electronics decide when it acts. Like a qubit and a pulse, two coupled qubits exchange energy efficiently only when their frequencies match. While their frequencies are kept apart, or the coupler is tuned to cancel the coupling, they hardly interact. A two-qubit gate switches the interaction on for a short time, by tuning the qubits or the coupler, or by driving one of the qubits (<a href="#sec-driving-gates" class="quarto-xref"><span>Section 1.3.2</span></a>). The interaction never switches off completely, and what remains is a source of errors called <a href="glossary.html#gloss-crosstalk" class="gloss" data-gloss="An unwanted effect of an operation on one qubit on other qubits, for example through couplings that are never fully switched off.">crosstalk</a>.</p>
+<div id="exr-thermal" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.1 (Thermal excitation)</strong></span> In thermal equilibrium at temperature <span class="math inline">\(T\)</span>, the excited and ground states of a qubit with frequency <span class="math inline">\(f\)</span> are populated in the ratio <span class="math inline">\(p_1/p_0 = e^{-hf/k_B T}\)</span> (the Boltzmann factor), where <span class="math inline">\(k_B\)</span> is Boltzmann’s constant. Use <span class="math inline">\(h/k_B \approx 0.048\)</span> K/GHz.</p>
+<ol type="a">
+<li><p>Compute <span class="math inline">\(p_1/p_0\)</span> for a 5 GHz qubit at room temperature (300 K), at 1 K and at 10 mK.</p></li>
+<li><p>Below which temperature is <span class="math inline">\(p_1/p_0\)</span> smaller than <span class="math inline">\(10^{-3}\)</span>?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Take the logarithm of both sides.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-trapped-ions" class="level3" data-number="1.2.4">
+<h3 data-number="1.2.4" class="anchored" data-anchor-id="sec-trapped-ions"><span class="header-section-number">1.2.4</span> Trapped ions</h3>
+<p>A trapped-ion qubit is a single <a href="glossary.html#gloss-ion" class="gloss" data-gloss="An atom with one or more electrons removed, so that it carries an electric charge and can be held by electric fields.">ion</a>, an atom with one electron removed, typically of ytterbium, barium or calcium. The electrons of an atom can only be in certain states, each with its own energy. These are the atom’s <em>internal</em> energy levels, as opposed to the motion of the atom as a whole, which will also matter below. Two of these levels form the qubit. All ions of an element are exactly the same, so, unlike fabricated circuits, the qubits of an ion-trap computer are identical by nature. As a consequence, they all have the same frequency, and a pulse cannot select one qubit by its frequency. Instead, most designs aim a laser beam at a single ion (<a href="#fig-ion-chain" class="quarto-xref">Figure&nbsp;<span>1.5</span></a>). In exchange, calibration is simpler, since all qubits share their frequency and most of their properties.</p>
+<p>The ions are held in vacuum by electric fields in an <a href="glossary.html#gloss-ion-trap" class="gloss" data-gloss="A device that holds ions in vacuum with electric fields, typically lined up in a chain a few micrometres apart.">ion trap</a>, lined up in a chain a few micrometres apart, and laser beams slow them down until they are almost at rest (<a href="glossary.html#gloss-laser-cooling" class="gloss" data-gloss="Slowing the motion of atoms or ions with laser light until they are almost at rest.">laser cooling</a>). Another laser pulse then prepares each ion in <span class="math inline">\(\ket{0}\)</span> within microseconds (<em>optical pumping</em>). Laser beams, or in some designs microwaves, also drive the gates. The qubit levels can be chosen so that stray magnetic fields and other disturbances hardly affect them, and trapped-ion qubits keep their quantum state for a second or more, thousands of times longer than superconducting qubits. <a href="#fig-ion-photos" class="quarto-xref">Figure&nbsp;<span>1.4</span></a> shows a trap chip and a chain of ions.</p>
+<div id="fig-ion-photos" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ion-photos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="fig-ion-trap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-ion-trap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/photo-ion-trap-nist.jpg" class="img-fluid figure-img" style="width:70.0%" data-ref-parent="fig-ion-photos">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ion-trap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) An ion-trap chip.
+</figcaption>
+</figure>
+</div>
+<div id="fig-ion-string" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-ion-string-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/photo-ion-string-friis2018.png" class="img-fluid figure-img" style="width:100.0%" data-ref-parent="fig-ion-photos">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-ion-string-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) A chain of twenty ions.
+</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ion-photos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.4: Trapped ions. (a) An ion trap made at NIST: a square gold chip, 7.4 mm on a side, on its circuit board. In experiments, two ions hover above the middle of the chip, and microwaves fed in through the three thick lines at the lower right drive their gates (photo: Y. Colombe/NIST, public domain). (b) Twenty calcium ions in a linear trap at Innsbruck, seen through the light they scatter: each bright spot is one ion, and the chain is about 0.1 mm long <span class="citation" data-cites="friis2018">(<a href="L1-platforms-and-measurement.html#ref-friis2018" role="doc-biblioref"><span class="nocase">Friis et al.</span> 2018</a>)</span>. Adapted (cropped) under the <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> licence.
+</figcaption>
+</figure>
+</div>
+<p>The ions are charged and repel each other, so the chain behaves like a row of balls joined by springs (<a href="#fig-ion-chain" class="quarto-xref">Figure&nbsp;<span>1.5</span></a>). Push one ion, and the whole chain starts to vibrate. Like the internal energy of an atom, the energy of these vibrations comes in discrete units, called <a href="glossary.html#gloss-phonon" class="gloss" data-gloss="A quantum of vibration. In an ion trap, phonons are the quanta of the vibrations that the whole chain of ions shares; in a solid, such as a qubit chip, they are the quanta of the vibrations of the crystal.">phonons</a>. Every ion takes part in the same vibrations, so they act as a shared channel, the <a href="glossary.html#gloss-phonon-bus" class="gloss" data-gloss="The shared vibrations of a chain of trapped ions, used as a common channel through which any two ions can interact in a two-qubit gate.">phonon bus</a>, through which any ion can interact with any other. The two-qubit gates are built by exploiting this phonon bus, so they can be applied to any pair of qubits: the connectivity is all-to-all (<a href="#sec-connectivity" class="quarto-xref"><span>Section 1.3.6</span></a>).</p>
+<div id="fig-ion-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ion-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/ion-chain.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ion-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.5: A trapped-ion chain as balls joined by springs. The ions repel each other, so they move together; shown here is the vibration in which the whole chain moves as one. A laser beam focused on a single ion drives that ion’s qubit.
+</figcaption>
+</figure>
+</div>
+<p>This comes at the cost of speed. Gates that use the phonon bus take from tens of microseconds to about a millisecond, roughly a thousand times longer than superconducting gates, and they become slower and harder to control as the chain grows. To scale up, some devices, such as Quantinuum’s, divide the trap into zones and move ions between them, bringing the two ions of each gate together (<a href="glossary.html#gloss-qccd" class="gloss" data-gloss="Quantum charge-coupled device: a trapped-ion architecture in which ions are moved between zones of the trap, so that any two ions can be brought together for a gate.">QCCD</a>).</p>
+</section>
+<section id="sec-other-platforms" class="level3" data-number="1.2.5">
+<h3 data-number="1.2.5" class="anchored" data-anchor-id="sec-other-platforms"><span class="header-section-number">1.2.5</span> Other platforms</h3>
+<p>Several other platforms are developing quickly, following the same recipe of a two-level system, a way to drive it, an interaction between qubits and a readout. In <em>neutral-atom</em> devices, uncharged atoms are held, and can be moved, by tightly focused laser beams (<a href="glossary.html#gloss-optical-tweezers" class="gloss" data-gloss="Tightly focused laser beams that hold single neutral atoms in place and can move them.">optical tweezers</a>), and they interact when lasers excite them to very large <a href="glossary.html#gloss-rydberg" class="gloss" data-gloss="A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances.">Rydberg states</a>; arrays of hundreds to thousands of atoms have been built <span class="citation" data-cites="henriet2020">(<a href="L1-platforms-and-measurement.html#ref-henriet2020" role="doc-biblioref">Henriet et al. 2020</a>)</span>. <em>Photonic</em> devices carry qubits on particles of light, which hardly interact with their surroundings but, for the same reason, hardly with each other either, so their entangling operations succeed only some of the time <span class="citation" data-cites="slussarenko2019">(<a href="L1-platforms-and-measurement.html#ref-slussarenko2019" role="doc-biblioref">Slussarenko and Pryde 2019</a>)</span>. <em>Spin qubits</em> use the <a href="glossary.html#gloss-spin" class="gloss" data-gloss="An intrinsic two-level property of an electron (up or down), which can serve as a qubit.">spin</a> of single electrons trapped in tiny semiconductor structures (<a href="glossary.html#gloss-quantum-dot" class="gloss" data-gloss="A tiny region in a semiconductor that can trap single electrons.">quantum dots</a>); they can be made with the techniques of the chip industry, but current devices have at most a few tens of qubits <span class="citation" data-cites="burkard2023">(<a href="L1-platforms-and-measurement.html#ref-burkard2023" role="doc-biblioref">Burkard et al. 2023</a>)</span>. <a href="#tbl-platforms" class="quarto-xref">Table&nbsp;<span>1.2</span></a> compares the five platforms.</p>
+<div id="tbl-platforms" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-platforms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.2: Platforms for gate-based quantum computing, compared.
+</figcaption>
+<div aria-describedby="tbl-platforms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Qubit</th>
+<th>Two qubits interact through</th>
+<th>Strengths</th>
+<th>Main limitations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Superconducting</td>
+<td>energy levels of a circuit on a chip</td>
+<td>couplings built into the chip</td>
+<td>fast gates; mature fabrication technology</td>
+<td>short coherence; fixed connectivity; qubits not identical</td>
+</tr>
+<tr class="even">
+<td>Trapped ions</td>
+<td>energy levels of an ion</td>
+<td>shared vibrations of the chain</td>
+<td>identical qubits; long coherence; any pair can interact</td>
+<td>slow gates; long chains are hard to control</td>
+</tr>
+<tr class="odd">
+<td>Neutral atoms</td>
+<td>energy levels of an atom</td>
+<td>excitation to large Rydberg states</td>
+<td>many qubits; atoms can be rearranged</td>
+<td>slow; atoms get lost and must be replaced</td>
+</tr>
+<tr class="even">
+<td>Photonics</td>
+<td>a photon</td>
+<td>interference and detection</td>
+<td>little decoherence; photons travel far</td>
+<td>entangling operations often fail; photons get lost</td>
+</tr>
+<tr class="odd">
+<td>Spin qubits</td>
+<td>spin of an electron</td>
+<td>neighbouring electrons</td>
+<td>very small; chip-industry fabrication</td>
+<td>few qubits so far; qubits not identical</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-native-gates" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="sec-native-gates"><span class="header-section-number">1.3</span> Native gates and connectivity</h2>
+<p>The circuits we write can use any gate that is convenient. A device, however, implements only a small set of <a href="glossary.html#gloss-native-gate" class="gloss" data-gloss="A gate the hardware implements directly with a calibrated control pulse. Every other gate must be compiled into native gates.">native gates</a>, each one a calibrated pulse or a short sequence of pulses, and it applies two-qubit gates only between pairs of qubits that are physically coupled. An additional step, compilation, translates every circuit into these native operations. This section explains which gates are native and why, and what the translation costs.</p>
+<section id="sec-pauli-rotations" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="sec-pauli-rotations"><span class="header-section-number">1.3.1</span> Pauli rotations</h3>
+<p>Recall the Pauli matrices <span class="math display">\[
+X = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}, \qquad
+Y = \begin{pmatrix} 0 &amp; -i \\ i &amp; 0 \end{pmatrix}, \qquad
+Z = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{pmatrix}.
+\]</span> They are Hermitian and square to the identity, <span class="math inline">\(X^2 = Y^2 = Z^2 = I\)</span>. Any two different Pauli matrices anticommute, for example <span class="math inline">\(XZ = -ZX\)</span>, and the product of two of them is the third, up to a factor: <span class="math inline">\(XY = iZ\)</span>, <span class="math inline">\(YZ = iX\)</span> and <span class="math inline">\(ZX = iY\)</span>. On several qubits, we combine them with tensor products.</p>
+<div id="def-pauli-string" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.1 (Pauli string)</strong></span> A <a href="glossary.html#gloss-pauli-string" class="gloss" data-gloss="A tensor product of single-qubit Pauli matrices (I, X, Y or Z), one for each qubit, such as ZZ or XIY. Hermitian, and squares to the identity.">Pauli string</a> on <span class="math inline">\(n\)</span> qubits is a tensor product <span class="math inline">\(P = P_1 \otimes P_2 \otimes \cdots \otimes P_n\)</span> with each <span class="math inline">\(P_j \in \{I, X, Y, Z\}\)</span>. We often drop the tensor product signs and write, for example, <span class="math inline">\(ZZ\)</span> or <span class="math inline">\(XIY\)</span>.</p>
+</div>
+<p>A Pauli string is again Hermitian, and it squares to the identity, because the square of a tensor product is the tensor product of the squares: <span class="math inline">\(P^2 = P_1^2 \otimes \cdots \otimes P_n^2 = I\)</span>. This one property gives a closed formula for the exponential of <span class="math inline">\(P\)</span>. Expand the exponential as a power series. Even powers of <span class="math inline">\(P\)</span> are the identity, <span class="math inline">\(P^{2m} = I\)</span>, and odd powers are <span class="math inline">\(P^{2m+1} = P\)</span>, so the series splits into two: <span class="math display">\[
+e^{-i\theta P/2}
+= \sum_{m=0}^{\infty} \frac{(-1)^m}{(2m)!}\left(\frac{\theta}{2}\right)^{2m} I
+\;-\; i \sum_{m=0}^{\infty} \frac{(-1)^m}{(2m+1)!}\left(\frac{\theta}{2}\right)^{2m+1} P .
+\]</span> These are the power series of the cosine and the sine, so <span id="eq-pauli-rotation"><span class="math display">\[
+e^{-i\theta P/2} = \cos\frac{\theta}{2}\, I - i \sin\frac{\theta}{2}\, P .
+\tag{1.1}\]</span></span> The derivation used only <span class="math inline">\(P^2 = I\)</span>, so <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> holds for any operator with that property. Such operators are called <em>involutory</em>. For Hermitian operators, like all those in this chapter, being involutory is the same as being a <em>reflection</em>: the eigenvalues are <span class="math inline">\(\pm 1\)</span>, so the operator flips the sign of one subspace and leaves the orthogonal subspace unchanged.</p>
+<p>Applied to single Pauli matrices, <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> gives the familiar rotations of a qubit about the axes of the Bloch sphere, for example <span id="eq-rx-rz"><span class="math display">\[
+R_X(\theta) = e^{-i\theta X/2} = \begin{pmatrix} \cos\frac{\theta}{2} &amp; -i\sin\frac{\theta}{2} \\
+-i\sin\frac{\theta}{2} &amp; \cos\frac{\theta}{2} \end{pmatrix}, \qquad
+R_Z(\theta) = e^{-i\theta Z/2} = \begin{pmatrix} e^{-i\theta/2} &amp; 0 \\ 0 &amp; e^{i\theta/2} \end{pmatrix}.
+\tag{1.2}\]</span></span> Rotations about two different axes are enough to build any single-qubit gate. Up to a global phase, every single-qubit unitary can be written as <span class="math inline">\(R_Z(\alpha)\,R_Y(\beta)\,R_Z(\gamma)\)</span> for some angles <span class="citation" data-cites="nielsen2010">(<a href="L1-platforms-and-measurement.html#ref-nielsen2010" role="doc-biblioref">Nielsen and Chuang 2010, sec. 4.2</a>)</span>.</p>
+<p>Applied to the two-qubit Pauli string <span class="math inline">\(Z \otimes Z\)</span>, <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> gives</p>
+<p><span id="eq-rzz"><span class="math display">\[
+R_{ZZ}(\theta) = e^{-i\theta\, Z\otimes Z/2}
+= \begin{pmatrix}
+e^{-i\theta/2} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; e^{i\theta/2} &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; e^{i\theta/2} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; e^{-i\theta/2}
+\end{pmatrix}
+\tag{1.3}\]</span></span></p>
+<p>in the basis <span class="math inline">\(\ket{00}, \ket{01}, \ket{10}, \ket{11}\)</span>. <span class="math inline">\(R_{ZZ}\)</span> applies a phase that depends only on whether the two bits are equal or different, their parity. That is why it can be built from two CNOTs and a single <span class="math inline">\(R_Z\)</span> (<a href="#fig-rzz" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>). The first CNOT writes the parity of the two bits into the second qubit, <span class="math inline">\(R_Z\)</span> applies the phase, and the second CNOT undoes the first. <a href="#sec-compiling" class="quarto-xref"><span>Section 1.3.4</span></a> extends this construction to rotations about any Pauli string, built from native gates.</p>
+<div id="fig-rzz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rzz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/rzz-decomposition.svg" class="img-fluid figure-img" style="width:40.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rzz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.6: <span class="math inline">\(R_{ZZ}(\theta)\)</span> built from two CNOTs and one <span class="math inline">\(R_Z(\theta)\)</span>.
+</figcaption>
+</figure>
+</div>
+<p><a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> will come back several times in this course, in circuits for time evolution, which are built from Pauli rotations, and in the parameter-shift rule, which gives exact gradients of variational circuits.</p>
+</section>
+<section id="sec-driving-gates" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="sec-driving-gates"><span class="header-section-number">1.3.2</span> Physical implementation of gates</h3>
+<p>The native gates of a qubit platform are set by the physical mechanisms that control its qubits. This section describes these mechanisms, for single-qubit and for two-qubit gates, and the gates they produce.</p>
+<p>A single-qubit gate on a superconducting qubit is a microwave pulse at the qubit’s frequency, a few tens of nanoseconds long (<a href="#sec-pulses" class="quarto-xref"><span>Section 1.2.2</span></a>). The area under the envelope of the pulse, set by its strength and duration, sets the rotation angle <span class="math inline">\(\theta\)</span> (<a href="#fig-pulse" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>). The phase of the pulse, that is, the timing of the microwave oscillation relative to a reference clock in the control electronics, sets the axis of rotation, which lies in the <span class="math inline">\(xy\)</span>-plane of the Bloch sphere at an angle <span class="math inline">\(\varphi\)</span> from the <span class="math inline">\(x\)</span>-axis. Delaying the oscillation by a fraction of its period turns the axis by the same fraction of a full turn. Laser or microwave pulses on trapped ions work in the same way. On both platforms, the natural single-qubit gate is therefore a rotation by any angle about any axis in the <span class="math inline">\(xy\)</span>-plane, which IQM calls <span class="math inline">\(\gate{PRX}\)</span>:</p>
+<p><span id="eq-prx"><span class="math display">\[
+\gate{PRX}(\theta,\varphi) = \exp\!\left[-i\frac{\theta}{2}\left(\cos\varphi\, X + \sin\varphi\, Y\right)\right].
+\tag{1.4}\]</span></span> The operator <span class="math inline">\(\cos\varphi\, X + \sin\varphi\, Y\)</span> squares to the identity (<a href="#exr-prx" class="quarto-xref">Exercise&nbsp;<span>1.2</span></a>), so <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> applies to it too. For <span class="math inline">\(\varphi = 0\)</span> and <span class="math inline">\(\varphi = \pi/2\)</span>, PRX reduces to <span class="math inline">\(R_X(\theta)\)</span> and <span class="math inline">\(R_Y(\theta)\)</span>. <a href="#fig-prx" class="quarto-xref">Figure&nbsp;<span>1.7</span></a> shows how <span class="math inline">\(\gate{PRX}\)</span> rotates the Bloch sphere. Rotations about the <span class="math inline">\(z\)</span>-axis are missing from this family, and <a href="#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a> shows that they need no pulse at all.</p>
+<div id="fig-prx" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prx-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<!-- Interactive Bloch sphere for PRX(theta, phi), with the pulse that implements it (schematic:
+     fixed duration, amplitude proportional to theta, as on most hardware); web only (the PDF shows figures/prx-bloch). -->
+<div class="bloch-prx" id="bloch-prx">
+  <svg viewbox="-1.5 -1.42 3 2.84" role="img" aria-label="Bloch sphere rotated by PRX(theta, phi). Drag to turn the view."></svg>
+  <svg class="pulse" viewbox="0 -0.74 3 1.3" role="img" aria-label="The drive pulse: its area sets theta, its phase sets phi."></svg>
+  <div class="bloch-controls">
+    <label><span>θ = <output data-out="theta"></output></span>
+      <input type="range" data-in="theta" min="0" max="2" step="0.01" value="0.5"></label>
+    <label><span>φ = <output data-out="phi"></output></span>
+      <input type="range" data-in="phi" min="0" max="2" step="0.01" value="0.25"></label>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-play="">Rotate from θ = 0</button>
+  </div>
+</div>
+<style>
+  .bloch-prx { max-width: 400px; margin: 0 auto; }
+  .bloch-prx svg { width: 100%; height: auto; touch-action: none; cursor: grab; display: block; }
+  .bloch-prx svg.pulse { cursor: default; touch-action: auto; margin: -0.6rem 0 0.4rem; }
+  .bloch-prx .area { fill: #1f5fa8; opacity: 0.15; stroke: none; }
+  .bloch-prx .area.done { opacity: 0.4; }
+  .bloch-prx .envelope { stroke: #1f5fa8; fill: none; stroke-width: 2px; }
+  .bloch-prx .carrier { stroke: #c2560c; fill: none; stroke-width: 1.5px; }
+  .bloch-prx .clock { stroke: currentColor; opacity: 0.35; fill: none; stroke-dasharray: 3 3; }
+  .bloch-prx .cursor { stroke: currentColor; stroke-width: 2px; }
+  .bloch-prx text.theta-label { fill: #1f5fa8; }
+  .bloch-prx .bloch-controls { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+  .bloch-prx label { display: flex; align-items: center; gap: 0.6rem; margin: 0; }
+  .bloch-prx label span { min-width: 6.5em; }
+  .bloch-prx input[type=range] { flex: 1; }
+  .bloch-prx button { align-self: flex-start; }
+  .bloch-prx .outline, .bloch-prx .axes { stroke: currentColor; opacity: 0.6; fill: none; }
+  .bloch-prx .ref { stroke: currentColor; opacity: 0.35; fill: none; stroke-dasharray: 3 3; }
+  .bloch-prx .grid { stroke: #1f5fa8; fill: none; opacity: 0.45; }
+  .bloch-prx .grid.equator { stroke-width: 2px; opacity: 0.7; }
+  .bloch-prx .path { stroke: #1f5fa8; fill: none; stroke-width: 3px; }
+  .bloch-prx .axis { stroke: #c2560c; fill: none; stroke-width: 3px; }
+  .bloch-prx .back { opacity: 0.25; stroke-dasharray: 4 3; }
+  .bloch-prx .path.back { opacity: 0.45; }
+  .bloch-prx .dot { fill: #1f5fa8; }
+  .bloch-prx text { fill: currentColor; font-size: 0.13px; font-family: inherit; }
+  .bloch-prx text.axis-label { fill: #c2560c; }
+  .bloch-prx * { vector-effect: non-scaling-stroke; }
+  body.quarto-dark .bloch-prx .grid, body.quarto-dark .bloch-prx .path,
+  body.quarto-dark .bloch-prx .envelope { stroke: #7fb2f0; }
+  body.quarto-dark .bloch-prx .dot, body.quarto-dark .bloch-prx .area,
+  body.quarto-dark .bloch-prx text.theta-label { fill: #7fb2f0; }
+  body.quarto-dark .bloch-prx .axis, body.quarto-dark .bloch-prx .carrier { stroke: #f0904a; }
+  body.quarto-dark .bloch-prx text.axis-label { fill: #f0904a; }
+</style>
+<script>
+(function () {
+  const root = document.getElementById("bloch-prx");
+  if (!root) return;
+  const svg = root.querySelector("svg");
+  const pulseSvg = root.querySelector("svg.pulse");
+  const input = (k) => root.querySelector(`[data-in=${k}]`);
+  const output = (k) => root.querySelector(`[data-out=${k}]`);
+  let az = (30 * Math.PI) / 180, el = (20 * Math.PI) / 180;
+
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  // Rotation by angle t about the unit vector n (Rodrigues' formula). PRX(theta, phi)
+  // rotates the Bloch sphere by theta about n = (cos phi, sin phi, 0).
+  const rotate = (v, n, t) => {
+    const c = Math.cos(t), s = Math.sin(t), nv = dot(n, v), nxv = cross(n, v);
+    return [0, 1, 2].map((i) => v[i] * c + nxv[i] * s + n[i] * nv * (1 - c));
+  };
+  function camera() {
+    const d = [Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)];
+    const r = [-Math.sin(az), Math.cos(az), 0];
+    const u = [-Math.sin(el) * Math.cos(az), -Math.sin(el) * Math.sin(az), Math.cos(el)];
+    return (p) => [dot(p, r), -dot(p, u), dot(p, d)]; // screen x, screen y (down), depth
+  }
+  // A 3D polyline, solid in front of the sphere and faint behind it.
+  function line(pts, proj, cls) {
+    let out = "", run = [], front = null;
+    const flush = () => {
+      if (run.length > 1) {
+        const pts2 = run.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ");
+        out += `<polyline class="${cls}${front ? "" : " back"}" points="${pts2}"/>`;
+      }
+    };
+    for (const p of pts) {
+      const q = proj(p), f = q[2] >= -1e-9;
+      if (front === null) front = f;
+      run.push(q);
+      if (f !== front) { flush(); run = [q]; front = f; }
+    }
+    flush();
+    return out;
+  }
+  const circle = (f, n = 120) => Array.from({ length: n + 1 }, (_, k) => f((2 * Math.PI * k) / n));
+  const label = (p, proj, text, cls = "") => {
+    const q = proj(p);
+    return `<text class="${cls}" x="${q[0].toFixed(3)}" y="${q[1].toFixed(3)}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  };
+
+  const states = [
+    { v: [0, 0, 1], name: "|0⟩" },
+    { v: [1, 0, 0], name: "|+⟩" },
+    { v: [0, 1, 0], name: "|+i⟩" },
+  ];
+
+  // The pulse, schematic: fixed duration, amplitude proportional to theta, envelope sin^2.
+  // Fraction of the area under the envelope reached at a fraction s of the pulse:
+  const areaDone = (s) => s - Math.sin(2 * Math.PI * s) / (2 * Math.PI);
+  function drawPulse(theta, phi, progress) {
+    const x0 = 0.08, W = 2.84, cycles = 12, T = 0.9;  // time axis: 0 to 1, the pulse lasts T
+    const A = 0.55 * theta / (2 * Math.PI);           // the amplitude at theta = 2pi is 0.55
+    const env = (t) => (t < T ? A * Math.sin((Math.PI * t) / T) ** 2 : 0);
+    const X = (t) => (x0 + W * t).toFixed(4);
+    const pts = (f, t0, t1, n = 400) =>
+      Array.from({ length: n + 1 }, (_, k) => t0 + ((t1 - t0) * k) / n).map((t) => X(t) + "," + f(t).toFixed(4)).join(" ");
+    let s = `<line class="axes" x1="${x0}" y1="0" x2="${x0 + W}" y2="0"/>`;
+    s += `<text x="${x0 + W}" y="0.48" text-anchor="end">time</text>`;
+    if (T > 0) {
+      const band = (t1) => `${pts((t) => -env(t), 0, t1, 200)} ${pts((t) => env(t), t1, 0, 200)}`;
+      s += `<polygon class="area" points="${band(T)}"/>`;
+      if (progress !== null) s += `<polygon class="area done" points="${band(progress * T)}"/>`;
+      // the reference clock (phase 0, dashed) and the pulse, delayed by phi
+      s += `<polyline class="clock" points="${pts((t) => -env(t) * Math.cos(2 * Math.PI * cycles * t), 0, T)}"/>`;
+      s += `<polyline class="carrier" points="${pts((t) => -env(t) * Math.cos(2 * Math.PI * cycles * t - phi), 0, T)}"/>`;
+      s += `<polyline class="envelope" points="${pts((t) => -env(t), 0, T, 200)}"/>`;
+      if (progress !== null) {
+        const xc = X(progress * T);
+        s += `<line class="cursor" x1="${xc}" y1="-0.56" x2="${xc}" y2="0.5"/>`;
+      }
+    }
+    s += `<text class="theta-label" x="${x0}" y="-0.63" text-anchor="start">area → θ</text>`;
+    s += `<text class="axis-label" x="${x0 + W}" y="-0.63" text-anchor="end">phase → φ</text>`;
+    pulseSvg.innerHTML = s;
+  }
+
+  // progress: null for the full gate, or the fraction of the pulse played so far (animation)
+  let progress = null;
+  function draw() {
+    const thetaFull = Math.PI * parseFloat(input("theta").value);
+    const phi = Math.PI * parseFloat(input("phi").value);
+    output("theta").textContent = (thetaFull / Math.PI).toFixed(2) + "π";
+    output("phi").textContent = (phi / Math.PI).toFixed(2) + "π";
+    drawPulse(thetaFull, phi, progress);
+    const theta = progress === null ? thetaFull : thetaFull * areaDone(progress);
+    const proj = camera();
+    const n = [Math.cos(phi), Math.sin(phi), 0];
+    const R = (v) => rotate(v, n, theta);
+    let s = `<circle class="outline" cx="0" cy="0" r="1"/>`;
+    // fixed reference: equator and axes
+    s += line(circle((a) => [Math.cos(a), Math.sin(a), 0]), proj, "ref");
+    for (const [v, name] of [[[1, 0, 0], "x"], [[0, 1, 0], "y"], [[0, 0, 1], "z"]]) {
+      s += line([[0, 0, 0], v], proj, "axes") + label(v.map((x) => 1.2 * x), proj, name);
+    }
+    // the rotated sphere: latitude circles and meridians, carried along by PRX
+    for (const z of [-0.6, 0, 0.6]) {
+      const r = Math.sqrt(1 - z * z);
+      s += line(circle((a) => R([r * Math.cos(a), r * Math.sin(a), z])), proj, "grid" + (z === 0 ? " equator" : ""));
+    }
+    for (let k = 0; k < 4; k++) {
+      const b = (k * Math.PI) / 4;
+      s += line(circle((a) => R([Math.sin(a) * Math.cos(b), Math.sin(a) * Math.sin(b), Math.cos(a)])), proj, "grid");
+    }
+    // rotation axis in the xy-plane
+    s += line([[-n[0], -n[1], 0], [0, 0, 0], [1.25 * n[0], 1.25 * n[1], 0]], proj, "axis");
+    s += label([1.42 * n[0], 1.42 * n[1], 0], proj, "axis", "axis-label");
+    // paths of three states while the rotation angle grows from 0 to theta
+    for (const st of states) {
+      const path = Array.from({ length: 61 }, (_, k) => rotate(st.v, n, (theta * k) / 60));
+      s += line(path, proj, "path");
+      const q = proj(R(st.v));
+      s += `<circle class="dot" cx="${q[0].toFixed(4)}" cy="${q[1].toFixed(4)}" r="0.04"${q[2] < 0 ? ' opacity="0.4"' : ""}/>`;
+      s += label(R(st.v).map((x) => 1.15 * x), proj, st.name);
+    }
+    svg.innerHTML = s;
+  }
+
+  let anim = null;
+  const stop = () => { if (anim) cancelAnimationFrame(anim); anim = null; progress = null; };
+  for (const k of ["theta", "phi"]) input(k).addEventListener("input", () => { stop(); draw(); });
+  let drag = null;
+  svg.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY]; svg.setPointerCapture(e.pointerId); });
+  svg.addEventListener("pointerup", () => { drag = null; });
+  svg.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    az -= (e.clientX - drag[0]) * 0.01;
+    el = Math.max(-1.4, Math.min(1.4, el + (e.clientY - drag[1]) * 0.01));
+    drag = [e.clientX, e.clientY];
+    draw();
+  });
+  // Play the pulse: a cursor runs through it, and the sphere turns by the area played so far.
+  root.querySelector("[data-play]").addEventListener("click", () => {
+    stop();
+    const start = performance.now();
+    const step = (now) => {
+      progress = Math.min(1, (now - start) / 2500);
+      draw();
+      if (progress < 1) anim = requestAnimationFrame(step);
+      else anim = null;
+    };
+    anim = requestAnimationFrame(step);
+  });
+  draw();
+})();
+</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prx-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.7: The Bloch sphere rotated by <span class="math inline">\(\gate{PRX}(\theta,\varphi)\)</span>, a rotation by <span class="math inline">\(\theta\)</span> about the axis in the <span class="math inline">\(xy\)</span>-plane at an angle <span class="math inline">\(\varphi\)</span> from the <span class="math inline">\(x\)</span>-axis. The blue path shows where <span class="math inline">\(\ket{0}\)</span> goes as the rotation angle grows from <span class="math inline">\(0\)</span> to <span class="math inline">\(\theta\)</span>. In the web version, the figure is interactive: the sliders set <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\varphi\)</span>, the blue grid turns with the sphere, and dragging changes the view. Below the sphere, a schematic of the pulse: its area, set by its amplitude at a fixed duration, gives <span class="math inline">\(\theta\)</span>, and its phase, a delay against the reference clock (dashed), gives <span class="math inline">\(\varphi\)</span>. The button plays the pulse, and the sphere turns as the area builds up.
+</figcaption>
+</figure>
+</div>
+<div id="exr-prx" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.2 (The PRX gate)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\((\cos\varphi\, X + \sin\varphi\, Y)^2 = I\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Expand the square, and use that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> anticommute.</p>
+</details></li>
+<li><p>Write <span class="math inline">\(\gate{PRX}(\theta,\varphi)\)</span> as a <span class="math inline">\(2\times 2\)</span> matrix.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>, which applies because of (a).</p>
+</details></li>
+<li><p>Check that <span class="math inline">\(\gate{PRX}(\theta,0) = R_X(\theta)\)</span> and <span class="math inline">\(\gate{PRX}(\theta,\pi/2) = R_Y(\theta)\)</span>. Which rotation is <span class="math inline">\(\gate{PRX}(\theta,\pi)\)</span>?</p></li>
+</ol>
+</div>
+<p>During a two-qubit gate, the two qubits should interact, and at all other times they should not (<a href="#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>). Superconducting devices switch the interaction on in three main ways, and each gives a different native gate.</p>
+<ul>
+<li><strong>Tuning two qubits into resonance.</strong> When two coupled qubits have the same frequency, an excitation moves back and forth between them: <span class="math inline">\(\ket{01}\)</span> turns into <span class="math inline">\(\ket{10}\)</span> and back again, while <span class="math inline">\(\ket{00}\)</span> and <span class="math inline">\(\ket{11}\)</span> are unchanged. A complete transfer gives the iSWAP gate, which exchanges <span class="math inline">\(\ket{01}\)</span> and <span class="math inline">\(\ket{10}\)</span> and multiplies both by <span class="math inline">\(i\)</span>. Stopping halfway gives its square root, <span class="math inline">\(\sqrt{\gate{iSWAP}}\)</span>.</li>
+<li><strong>Using the third level.</strong> A transmon has a third level, <span class="math inline">\(\ket{2}\)</span>, not far above the qubit levels (<a href="#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>). The frequencies can be tuned so that the two-qubit state <span class="math inline">\(\ket{11}\)</span> has the same energy as <span class="math inline">\(\ket{20}\)</span>, in which the first transmon holds both excitations. These two states then exchange instead. After one complete exchange, there and back, <span class="math inline">\(\ket{11}\)</span> returns with its sign flipped (up to phases on the single qubits, which are easy to correct), while <span class="math inline">\(\ket{00}\)</span>, <span class="math inline">\(\ket{01}\)</span> and <span class="math inline">\(\ket{10}\)</span>, which have no partner at the same energy, are unchanged. This is the controlled-Z gate, CZ, which flips the sign of <span class="math inline">\(\ket{11}\)</span> only. On most current devices, a tunable coupler between the qubits switches the interaction, and CZ is the most common native gate.</li>
+<li><strong>Driving one qubit at its neighbour’s frequency.</strong> IBM’s older Eagle devices, retired in 2026, have qubits with fixed frequencies and couplings that are always on. A pulse on one qubit at the frequency of its neighbour (<a href="glossary.html#gloss-cross-resonance" class="gloss" data-gloss="A two-qubit gate mechanism for superconducting qubits with fixed couplings: one qubit is driven at the frequency of its neighbour.">cross-resonance</a>) makes the neighbour rotate about its <span class="math inline">\(x\)</span>-axis, in a direction that depends on the state of the first qubit: a rotation generated by <span class="math inline">\(Z\otimes X\)</span>. In practice, it is applied as a gate called ECR, for echoed cross-resonance, which equals a CNOT up to single-qubit gates.</li>
+</ul>
+<p>On trapped ions, laser beams on two ions couple their qubit states to the shared vibrations of the chain, the phonon bus of <a href="#sec-trapped-ions" class="quarto-xref"><span>Section 1.2.4</span></a>. The light pushes each ion with a force that depends on its qubit state, so the chain vibrates in a way that depends on both qubits, and through this vibration the two qubits interact. At the end of the gate the vibration returns to its starting state, so that it carries away no information about the qubits. This <a href="glossary.html#gloss-molmer-sorensen" class="gloss" data-gloss="The standard two-qubit gate of trapped ions. Laser beams couple two ions to the shared vibrations of the chain, producing an entangling rotation of any chosen angle.">Mølmer-Sørensen gate</a> is a rotation generated by <span class="math inline">\(X \otimes X\)</span>, of the form of <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>, with an angle set by the duration and strength of the laser pulses. It is available at any angle, from small rotations up to a maximally entangling one, and between any pair of ions in the chain. Combined with single-qubit rotations, it gives <span class="math inline">\(R_{ZZ}(\theta)\)</span> at any angle, the native two-qubit gate of current trapped-ion devices.</p>
+</section>
+<section id="sec-native-gate-sets" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="sec-native-gate-sets"><span class="header-section-number">1.3.3</span> Native gate sets</h3>
+<p><a href="#tbl-native" class="quarto-xref">Table&nbsp;<span>1.3</span></a> lists the native gates of some current devices. Names and details change with each hardware generation, but the pattern stays the same: a continuous family of single-qubit rotations, and one or a few entangling gates. Together they are universal, so any circuit can be compiled into them, at the cost of extra gates.</p>
+<div id="tbl-native" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-native-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.3: Native gates of some current devices, as of 2026. All of them also offer virtual <span class="math inline">\(Z\)</span> rotations (<a href="#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a>).
+</figcaption>
+<div aria-describedby="tbl-native-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Device family</th>
+<th>Single-qubit</th>
+<th>Two-qubit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IQM (superconducting)</td>
+<td><span class="math inline">\(\gate{PRX}(\theta,\varphi)\)</span></td>
+<td>CZ; on star devices, also MOVE to and from the central resonator</td>
+</tr>
+<tr class="even">
+<td>IBM (superconducting)</td>
+<td><span class="math inline">\(\sqrt{X}\)</span>, <span class="math inline">\(X\)</span>; experimental: <span class="math inline">\(R_X(\theta)\)</span></td>
+<td>CZ (Heron, Nighthawk); ECR on the retired Eagle devices; experimental: <span class="math inline">\(R_{ZZ}(\theta)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Google (superconducting)</td>
+<td>PhasedXZ</td>
+<td>CZ (Willow); <span class="math inline">\(\sqrt{\gate{iSWAP}}\)</span> and others on the older Sycamore</td>
+</tr>
+<tr class="even">
+<td>Quantinuum (trapped ions)</td>
+<td><span class="math inline">\(R_{xy}(\theta,\varphi)\)</span></td>
+<td><span class="math inline">\(R_{ZZ}(\theta)\)</span>, any angle</td>
+</tr>
+<tr class="odd">
+<td>IonQ (trapped ions)</td>
+<td>GPi(<span class="math inline">\(\varphi\)</span>), GPi2(<span class="math inline">\(\varphi\)</span>)</td>
+<td>MS (Aria), ZZ(<span class="math inline">\(\theta\)</span>) (Forte), any angle</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The single-qubit gates in the table are rotations about axes in the <span class="math inline">\(xy\)</span>-plane under different names, in one case followed by a <span class="math inline">\(Z\)</span> rotation:</p>
+<ul>
+<li><span class="math inline">\(\sqrt{X}\)</span> and <span class="math inline">\(X\)</span> (IBM) are <span class="math inline">\(R_X(\pi/2)\)</span> and <span class="math inline">\(R_X(\pi)\)</span>, up to a global phase; IBM’s Heron devices also offer <span class="math inline">\(R_X(\theta)\)</span> at any angle, as an experimental option;</li>
+<li>PhasedXZ (Google) is an <span class="math inline">\(xy\)</span>-plane rotation followed by a <span class="math inline">\(Z\)</span> rotation;</li>
+<li><span class="math inline">\(R_{xy}(\theta,\varphi)\)</span> (Quantinuum, also called U1q) is <span class="math inline">\(\gate{PRX}(\theta,\varphi)\)</span> under another name;</li>
+<li>GPi(<span class="math inline">\(\varphi\)</span>) and GPi2(<span class="math inline">\(\varphi\)</span>) (IonQ) are <span class="math inline">\(\gate{PRX}(\pi,\varphi)\)</span> and <span class="math inline">\(\gate{PRX}(\pi/2,\varphi)\)</span>, up to a global phase. IonQ measures angles in <em>turns</em>, so that an angle of 1 is a full turn, <span class="math inline">\(2\pi\)</span>.</li>
+</ul>
+<p>The two-qubit gates are either fixed gates or rotations with an adjustable angle. The fixed ones are CZ, <span class="math inline">\(\sqrt{\gate{iSWAP}}\)</span> and ECR. In the basis <span class="math inline">\(\ket{00}, \ket{01}, \ket{10}, \ket{11}\)</span>, <span class="math display">\[
+\gate{CZ} = \begin{pmatrix} 1&amp;0&amp;0&amp;0\\ 0&amp;1&amp;0&amp;0\\ 0&amp;0&amp;1&amp;0\\ 0&amp;0&amp;0&amp;-1 \end{pmatrix}, \qquad
+\sqrt{\gate{iSWAP}} = \begin{pmatrix} 1&amp;0&amp;0&amp;0\\ 0&amp;\frac{1}{\sqrt2}&amp;\frac{i}{\sqrt2}&amp;0\\ 0&amp;\frac{i}{\sqrt2}&amp;\frac{1}{\sqrt2}&amp;0\\ 0&amp;0&amp;0&amp;1 \end{pmatrix},
+\]</span> and ECR equals a CNOT up to single-qubit gates on both qubits. The adjustable ones are <span class="math inline">\(R_{ZZ}(\theta)\)</span> of <a href="#eq-rzz" class="quarto-xref">Equation&nbsp;<span>1.3</span></a>, IonQ’s ZZ(<span class="math inline">\(\theta\)</span>), which is the same gate with its angle in turns, and the Mølmer-Sørensen gate MS, generated by <span class="math inline">\(X \otimes X\)</span>. With an adjustable angle, an entangling rotation of any strength is a single native gate, which saves gates in circuits built from Pauli rotations.</p>
+</section>
+<section id="sec-compiling" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="sec-compiling"><span class="header-section-number">1.3.4</span> Compiling into native gates</h3>
+<p>Compiling a circuit into native gates relies on an identity that we will use several times: conjugating an exponential conjugates its exponent, <span id="eq-conjugation"><span class="math display">\[
+U e^{A}\, U^\dagger = e^{U A U^\dagger}
+\tag{1.5}\]</span></span> for any unitary <span class="math inline">\(U\)</span> and any square matrix <span class="math inline">\(A\)</span>. To see this, expand both sides as power series: the inner factors <span class="math inline">\(U^\dagger U = I\)</span> cancel in <span class="math inline">\((UAU^\dagger)^k = U A^k U^\dagger\)</span>. For a Pauli rotation, <a href="#eq-conjugation" class="quarto-xref">Equation&nbsp;<span>1.5</span></a> says that <span class="math inline">\(U e^{-i\theta P/2} U^\dagger = e^{-i\theta\, UPU^\dagger/2}\)</span>: conjugated by <span class="math inline">\(U\)</span>, a rotation about <span class="math inline">\(P\)</span> becomes a rotation about <span class="math inline">\(UPU^\dagger\)</span>, by the same angle. To rotate about a long Pauli string, it is therefore enough to find a circuit <span class="math inline">\(U\)</span> of native gates that turns a simple Pauli matrix, such as <span class="math inline">\(X\)</span> on a single qubit, into that string.</p>
+<p>Two kinds of conjugation do the job. First, single-qubit rotations turn one Pauli matrix into another; for example, <span class="math inline">\(R_Y(\pi/2)\)</span> turns <span class="math inline">\(Z\)</span> into <span class="math inline">\(X\)</span>, and <span class="math inline">\(R_X(-\pi/2)\)</span> turns <span class="math inline">\(Z\)</span> into <span class="math inline">\(Y\)</span> (<a href="#exr-pauli-conjugation" class="quarto-xref">Exercise&nbsp;<span>1.3</span></a>). Second, CZ attaches a <span class="math inline">\(Z\)</span> to an <span class="math inline">\(X\)</span> on the other qubit: <span class="math display">\[
+\gate{CZ}\,(I\otimes X)\,\gate{CZ} = Z\otimes X .
+\]</span> To check this, apply both sides to a basis state <span class="math inline">\(\ket{ab}\)</span>. On the left, the first CZ gives a sign <span class="math inline">\((-1)^{ab}\)</span>, <span class="math inline">\(X\)</span> flips <span class="math inline">\(b\)</span>, and the second CZ gives a sign <span class="math inline">\((-1)^{a(1-b)}\)</span>, so the result is <span class="math inline">\((-1)^{a}\ket{a,1-b}\)</span>, which is the action of <span class="math inline">\(Z \otimes X\)</span>. Each further CZ on the same qubit attaches one more <span class="math inline">\(Z\)</span>: writing <span class="math inline">\(\gate{CZ}_{jk}\)</span> for a CZ on qubits <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, and labelling single-qubit Paulis by their qubit, conjugation by <span class="math inline">\(\gate{CZ}_{13}\gate{CZ}_{23}\)</span> turns <span class="math inline">\(X_3\)</span> into <span class="math inline">\(Z_1 Z_2 X_3\)</span>. Single-qubit conjugations then turn each factor into the Pauli matrix we need. <a href="#fig-pauli-rotation" class="quarto-xref">Figure&nbsp;<span>1.8</span></a> shows the result for <span class="math inline">\(P = Z\otimes Y\otimes X\)</span>. Every gate in it is native on a device with PRX and CZ, since <span class="math inline">\(R_X(\alpha) = \gate{PRX}(\alpha, 0)\)</span>.</p>
+<div id="fig-pauli-rotation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pauli-rotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/pauli-rotation-cz.svg" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pauli-rotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.8: <span class="math inline">\(e^{-i\theta\, Z\otimes Y\otimes X/2}\)</span> built from CZ and <span class="math inline">\(R_X\)</span> rotations. The CZs turn the <span class="math inline">\(X\)</span> rotation on <span class="math inline">\(q_3\)</span> into a rotation about <span class="math inline">\(Z\otimes Z\otimes X\)</span>, and the outer <span class="math inline">\(R_X\)</span> rotations on <span class="math inline">\(q_2\)</span> turn its <span class="math inline">\(Z\)</span> into <span class="math inline">\(Y\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>A rotation about a Pauli string on <span class="math inline">\(k\)</span> qubits costs <span class="math inline">\(2(k-1)\)</span> CZs this way, the same number of two-qubit gates as the CNOT construction of <a href="#fig-rzz" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>. In <a href="#fig-pauli-rotation" class="quarto-xref">Figure&nbsp;<span>1.8</span></a>, all CZs act on the qubit that carries the rotation, which suits a device where that qubit is coupled to all the others. On a line of qubits, a chain of CNOTs between neighbours collects the parity step by step instead, and each CNOT is one CZ between two single-qubit rotations (<a href="#exr-swap-native" class="quarto-xref">Exercise&nbsp;<span>1.6</span></a>).</p>
+<div id="exr-pauli-conjugation" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.3 (Turning one Pauli into another)</strong></span> Let <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span> be Pauli strings that anticommute, <span class="math inline">\(PQ = -QP\)</span>.</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\(e^{-i\alpha P/2}\, Q\, e^{i\alpha P/2} = \cos\alpha\, Q - i\sin\alpha\, PQ\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Write both exponentials with <a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>, and use <span class="math inline">\(PQP = -Q\)</span>.</p>
+</details></li>
+<li><p>Show that <span class="math inline">\(R_Y(\pi/2)\)</span> turns <span class="math inline">\(Z\)</span> into <span class="math inline">\(X\)</span>, and that <span class="math inline">\(R_X(-\pi/2)\)</span> turns <span class="math inline">\(Z\)</span> into <span class="math inline">\(Y\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use (a), and the products of Pauli matrices.</p>
+</details></li>
+<li><p>Check that the circuit of <a href="#fig-pauli-rotation" class="quarto-xref">Figure&nbsp;<span>1.8</span></a> implements <span class="math inline">\(e^{-i\theta\, Z\otimes Y\otimes X/2}\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#eq-conjugation" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>, the identity for CZ in the text, and (b).</p>
+</details></li>
+<li><p>Draw a circuit of CZ gates and <span class="math inline">\(R_X\)</span> or <span class="math inline">\(R_Y\)</span> rotations for <span class="math inline">\(R_{ZZ}(\theta)\)</span>, and compare it with <a href="#fig-rzz" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Start from <span class="math inline">\(R_X(\theta)\)</span> on the second qubit, conjugate it by CZ, then turn the remaining <span class="math inline">\(X\)</span> into <span class="math inline">\(Z\)</span>.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-virtual-z" class="level3" data-number="1.3.5">
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="sec-virtual-z"><span class="header-section-number">1.3.5</span> Virtual Z gates</h3>
+<p><span class="math inline">\(\gate{PRX}\)</span> contains no rotations about the <span class="math inline">\(z\)</span>-axis, yet circuits are full of them, for example in the decomposition <span class="math inline">\(R_Z(\alpha)\,R_Y(\beta)\,R_Z(\gamma)\)</span> of a general single-qubit gate (<a href="#sec-pauli-rotations" class="quarto-xref"><span>Section 1.3.1</span></a>) and in many parametrised gates of algorithms. On most devices, superconducting and trapped-ion alike, <span class="math inline">\(Z\)</span> rotations are implemented without any pulse, as <a href="glossary.html#gloss-virtual-z" class="gloss" data-gloss="A Z rotation implemented by shifting the phase of all later drive pulses instead of applying a pulse. It takes no time and adds no error.">virtual Z gates</a>. The trick follows from Pauli algebra.</p>
+<p>Conjugation by a <span class="math inline">\(Z\)</span> rotation rotates <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> within the <span class="math inline">\(xy\)</span>-plane: <span class="math display">\[
+R_Z(\alpha)\, X\, R_Z(\alpha)^\dagger = \cos\alpha\, X + \sin\alpha\, Y, \qquad
+R_Z(\alpha)\, Y\, R_Z(\alpha)^\dagger = \cos\alpha\, Y - \sin\alpha\, X
+\]</span> (<a href="#exr-virtual-z" class="quarto-xref">Exercise&nbsp;<span>1.4</span></a>). By the angle-addition formulas, it therefore maps <span class="math inline">\(\cos\varphi\, X + \sin\varphi\, Y\)</span> to <span class="math inline">\(\cos(\varphi+\alpha)\, X + \sin(\varphi+\alpha)\, Y\)</span>. By <a href="#eq-conjugation" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>, conjugating a <span class="math inline">\(\gate{PRX}\)</span> pulse by a <span class="math inline">\(Z\)</span> rotation therefore shifts its phase: <span id="eq-virtual-z"><span class="math display">\[
+R_Z(\alpha)\, \gate{PRX}(\theta,\varphi)\, R_Z(\alpha)^\dagger = \gate{PRX}(\theta,\varphi+\alpha).
+\tag{1.6}\]</span></span> Replacing <span class="math inline">\(\alpha\)</span> by <span class="math inline">\(-\alpha\)</span> and multiplying by <span class="math inline">\(R_Z(\alpha)\)</span> on the left gives <span id="eq-virtual-z-push"><span class="math display">\[
+\gate{PRX}(\theta,\varphi)\, R_Z(\alpha) = R_Z(\alpha)\, \gate{PRX}(\theta,\varphi-\alpha).
+\tag{1.7}\]</span></span> Operators act from right to left, so on the left-hand side <span class="math inline">\(R_Z(\alpha)\)</span> acts first and the pulse second. On the right-hand side, the pulse acts first, with its phase shifted by <span class="math inline">\(-\alpha\)</span>. A <span class="math inline">\(Z\)</span> rotation can therefore be moved later in a circuit, past a pulse, by changing the pulse’s phase.</p>
+<p>Now take a circuit with a <span class="math inline">\(Z\)</span> rotation on one qubit (<a href="#fig-vz-before" class="quarto-xref">Figure&nbsp;<span>1.9 (a)</span></a>), and move the <span class="math inline">\(Z\)</span> rotation forward in time. Each <span class="math inline">\(\gate{PRX}\)</span> it passes gets its phase shifted by <span class="math inline">\(-\alpha\)</span>. CZ is diagonal, like <span class="math inline">\(R_Z\)</span>, so the two commute and the <span class="math inline">\(Z\)</span> rotation passes through unchanged. At the end, the <span class="math inline">\(Z\)</span> rotation sits just before a measurement in the computational basis. A measurement only asks whether each qubit is in <span class="math inline">\(\ket{0}\)</span> or in <span class="math inline">\(\ket{1}\)</span> (<a href="#sec-qubit-needs" class="quarto-xref"><span>Section 1.2.1</span></a>), and the <span class="math inline">\(Z\)</span> rotation only changes the phases of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>, not the probabilities of measuring them, so it can be dropped. The result (<a href="#fig-vz-after" class="quarto-xref">Figure&nbsp;<span>1.9 (b)</span></a>) contains no <span class="math inline">\(Z\)</span> rotation at all.</p>
+<div id="fig-virtual-z" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-virtual-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-virtual-z" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-vz-before" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-vz-before-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/virtual-z-before.svg" class="img-fluid figure-img" data-ref-parent="fig-virtual-z">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-vz-before-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) With a <span class="math inline">\(Z\)</span> rotation on <span class="math inline">\(q_0\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-virtual-z" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-vz-after" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-vz-after-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/virtual-z-after.svg" class="img-fluid figure-img" data-ref-parent="fig-virtual-z">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-vz-after-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) The <span class="math inline">\(Z\)</span> rotation absorbed into the phases of the later pulses on <span class="math inline">\(q_0\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-virtual-z-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.9: Two circuits that give the same measurement statistics.
+</figcaption>
+</figure>
+</div>
+<p>In hardware, the phase of each pulse, microwave or laser, is measured against a reference clock in the control electronics, and a virtual <span class="math inline">\(Z\)</span> gate shifts that reference for all later pulses on the qubit. It is an instruction to the electronics, carried out instantly and exactly, so <span class="math inline">\(Z\)</span> rotations take no time and add no error. When we estimate the error of a circuit, only the other gates count.</p>
+<p>The same trick makes every single-qubit gate cost a single pulse. Write the gate as <span class="math inline">\(R_Z(\alpha)\,R_Y(\beta)\,R_Z(\gamma)\)</span>, note that <span class="math inline">\(R_Y(\beta) = \gate{PRX}(\beta, \pi/2)\)</span>, and move <span class="math inline">\(R_Z(\gamma)\)</span> past the pulse with <a href="#eq-virtual-z-push" class="quarto-xref">Equation&nbsp;<span>1.7</span></a>: <span class="math display">\[
+R_Z(\alpha)\,R_Y(\beta)\,R_Z(\gamma) = R_Z(\alpha+\gamma)\,\gate{PRX}(\beta, \pi/2-\gamma).
+\]</span> That is one pulse, followed by a <span class="math inline">\(Z\)</span> rotation that is virtual.</p>
+<div id="exr-virtual-z" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.4 (Virtual Z gates)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\(R_Z(\alpha)\, X\, R_Z(\alpha)^\dagger = \cos\alpha\, X + \sin\alpha\, Y\)</span> and <span class="math inline">\(R_Z(\alpha)\, Y\, R_Z(\alpha)^\dagger = \cos\alpha\, Y - \sin\alpha\, X\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#exr-pauli-conjugation" class="quarto-xref">Exercise&nbsp;<span>1.3</span></a> (a) with <span class="math inline">\(P = Z\)</span>.</p>
+</details></li>
+<li><p>Write the Hadamard gate, up to a global phase, as a single <span class="math inline">\(\gate{PRX}\)</span> pulse followed by a <span class="math inline">\(Z\)</span> rotation.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Write the Hadamard gate as <span class="math inline">\(R_Z(\alpha)\,R_Y(\beta)\,R_Z(\gamma)\)</span> first, then use <a href="#eq-virtual-z-push" class="quarto-xref">Equation&nbsp;<span>1.7</span></a>.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-connectivity" class="level3" data-number="1.3.6">
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="sec-connectivity"><span class="header-section-number">1.3.6</span> Connectivity</h3>
+<p>A native two-qubit gate is available only between qubits that are physically coupled. The <a href="glossary.html#gloss-coupling-graph" class="gloss" data-gloss="Graph whose vertices are qubits and whose edges are the pairs on which a native two-qubit gate is available.">coupling graph</a> of a device records which pairs these are. Its vertices are the qubits, and an edge joins two qubits if a native two-qubit gate can act on them (<a href="#fig-coupling-graphs" class="quarto-xref">Figure&nbsp;<span>1.10</span></a>).</p>
+<p>On a superconducting chip, the coupling graph is fixed when the chip is made. In a square lattice, used by Google, IQM and IBM’s newest devices, each qubit has up to four neighbours. IBM’s heavy-hex lattice, used on most of its current devices, gives each qubit only two or three, which reduces unwanted interactions between qubits but lengthens the routes between distant ones. Some IQM devices use a star layout, in which every qubit couples to a central resonator, a circuit element that can take over the state of one qubit and pass it on to another; in <a href="#fig-coupling-graphs" class="quarto-xref">Figure&nbsp;<span>1.10</span></a> it is drawn as an extra vertex.</p>
+<p>In a trapped-ion chain, every ion couples to the same phonon bus, so every pair can interact and the coupling graph is complete. Devices that move ions between zones achieve the same by bringing any two ions together.</p>
+<div id="fig-coupling-graphs" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-coupling-graphs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/coupling-graphs.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-coupling-graphs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.10: Coupling graphs: (a) square lattice; (b) heavy-hex lattice; (c) star, with every qubit coupled to a central resonator (square); (d) all-to-all, as in a trapped-ion chain.
+</figcaption>
+</figure>
+</div>
+<p>What if a circuit needs a two-qubit gate between qubits that are not neighbours? Their states must first be brought together with <a href="glossary.html#gloss-swap" class="gloss" data-gloss="A two-qubit gate that exchanges the states of two qubits. It costs three CNOTs.">SWAP</a> gates, which exchange the states of two neighbouring qubits, and each SWAP costs three CNOTs (<a href="#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a>). A gate between distant qubits can therefore cost many extra two-qubit gates (<a href="#exr-swap" class="quarto-xref">Exercise&nbsp;<span>1.5</span></a>). Two-qubit gates are the main source of error on current devices (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>), so connectivity directly limits which circuits a device can run reliably.</p>
+<div id="fig-swap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-swap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/swap-three-cnots.svg" class="img-fluid figure-img" style="width:40.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-swap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.11: SWAP as three CNOTs with alternating control.
+</figcaption>
+</figure>
+</div>
+<p>In practice, nobody inserts SWAPs by hand. <a href="glossary.html#gloss-transpilation" class="gloss" data-gloss="Compilation of a circuit into the native gates and coupling graph of a device, including inserting SWAPs and simplifying.">Transpilation</a> maps a circuit onto the native gates and coupling graph of a device. It chooses which physical qubit plays the role of each qubit in the circuit, inserts SWAPs where needed, and simplifies the result. We return to its cost in later chapters.</p>
+<div id="exr-swap" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.5 (The cost of distance)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Check <a href="#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a> on the four computational basis states.</p></li>
+<li><p>We want to implement a CNOT between the qubits at opposite ends of a line of <span class="math inline">\(n\)</span> qubits. If the qubits may stay in their new positions after the operation, how many CNOTs are needed? And if they must be returned to their original positions?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Each SWAP moves a state one step along the line.</p>
+</details></li>
+</ol>
+</div>
+<div id="exr-swap-native" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.6 (SWAP from native gates)</strong></span> On a device whose native gates are <span class="math inline">\(\gate{PRX}\)</span> and CZ, a SWAP must be built from these.</p>
+<ol type="a">
+<li><p>Let <span class="math inline">\(A\)</span> be a single-qubit unitary. Show that <span class="math inline">\((I\otimes A)\,\gate{CZ}\,(I\otimes A^\dagger)\)</span> applies <span class="math inline">\(AZA^\dagger\)</span> to the second qubit if the first is in <span class="math inline">\(\ket{1}\)</span>, and does nothing if it is in <span class="math inline">\(\ket{0}\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Write <span class="math inline">\(\gate{CZ} = \ket{0}\bra{0}\otimes I + \ket{1}\bra{1}\otimes Z\)</span>.</p>
+</details></li>
+<li><p>Find a <span class="math inline">\(\gate{PRX}\)</span> rotation <span class="math inline">\(A\)</span> with <span class="math inline">\(AZA^\dagger = X\)</span>, and write a CNOT as one CZ and two <span class="math inline">\(\gate{PRX}\)</span> gates.</p>
+<details class="hint"><summary>Hint</summary>
+<p><a href="#exr-pauli-conjugation" class="quarto-xref">Exercise&nbsp;<span>1.3</span></a> (b) gives a suitable <span class="math inline">\(A\)</span>.</p>
+</details></li>
+<li><p>Using <a href="#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a>, write a SWAP with three CZs and <span class="math inline">\(\gate{PRX}\)</span> gates only. How many <span class="math inline">\(\gate{PRX}\)</span> pulses does it need?</p></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-measurement" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="sec-measurement"><span class="header-section-number">1.4</span> Measurement</h2>
+<section id="sec-readout" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="sec-readout"><span class="header-section-number">1.4.1</span> Readout</h3>
+<p>On superconducting devices, each qubit is coupled to a small resonant circuit, its readout resonator, whose frequency shifts slightly depending on whether the qubit is in <span class="math inline">\(\ket{0}\)</span> or <span class="math inline">\(\ket{1}\)</span>. To measure, the electronics send a weak microwave pulse to the resonator and decide between 0 and 1 from the signal that comes back (<a href="glossary.html#gloss-dispersive-readout" class="gloss" data-gloss="Readout of a superconducting qubit through a resonator whose frequency depends slightly on the qubit state. A weak microwave probe tells the two states apart.">dispersive readout</a>). This takes about a microsecond. On trapped ions, a laser beam is tuned so that an ion in one qubit state scatters light and appears bright, while an ion in the other state stays dark. A camera or photon detectors count the light from each ion, and this fluorescence readout takes from a hundred microseconds to a millisecond.</p>
+<p>On both platforms, a measurement returns one bit per qubit, in the computational basis (<a href="#sec-qubit-needs" class="quarto-xref"><span>Section 1.2.1</span></a>). It projects each qubit onto <span class="math inline">\(\ket{0}\)</span> or <span class="math inline">\(\ket{1}\)</span>, and measuring in another basis means first rotating that basis onto the computational basis.</p>
+</section>
+<section id="sec-shots" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="sec-shots"><span class="header-section-number">1.4.2</span> Shots and expectation values</h3>
+<p>A single run of a circuit, from preparing the qubits to measuring them, is called a <a href="glossary.html#gloss-shot" class="gloss" data-gloss="One run of a circuit: prepare the qubits, apply the gates, measure. Returns one bit string.">shot</a>. It returns one bit string, drawn at random from the distribution given by the Born rule, so to learn anything quantitative we repeat the circuit many times.</p>
+<p>Most quantities in this course are expectation values <span class="math inline">\(\langle P\rangle\)</span> of Pauli strings. To estimate one, we rotate each qubit so that its factor of <span class="math inline">\(P\)</span> becomes <span class="math inline">\(Z\)</span> (nothing for <span class="math inline">\(Z\)</span>, a Hadamard for <span class="math inline">\(X\)</span>, and <span class="math inline">\(R_X(\pi/2)\)</span> for <span class="math inline">\(Y\)</span>), and measure. A <span class="math inline">\(Z\)</span> measurement with outcome bit <span class="math inline">\(b\)</span> corresponds to the eigenvalue <span class="math inline">\((-1)^b\)</span> of <span class="math inline">\(Z\)</span>, so the outcome of <span class="math inline">\(P\)</span> is the product of these signs over the qubits on which <span class="math inline">\(P\)</span> acts: <span class="math display">\[
+s = (-1)^{\sum_{j:\, P_j \neq I} b_j} = \pm 1 .
+\]</span> For <span class="math inline">\(P = ZZ\)</span>, for example, <span class="math inline">\(s = +1\)</span> if the two bits agree and <span class="math inline">\(s = -1\)</span> if they differ. The average of <span class="math inline">\(s\)</span> over <span class="math inline">\(N\)</span> shots, <span id="eq-sample-mean"><span class="math display">\[
+\bar s = \frac{1}{N} \sum_{k=1}^{N} s_k ,
+\tag{1.8}\]</span></span> is our estimate of <span class="math inline">\(\langle P\rangle\)</span>. A rule like this, which turns data into an estimate, is called an <a href="glossary.html#gloss-estimator" class="gloss" data-gloss="A rule that turns measured data into an estimate of a quantity, for example the sample mean of the outcomes as an estimate of an expectation value.">estimator</a>.</p>
+</section>
+<section id="sec-shot-noise" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="sec-shot-noise"><span class="header-section-number">1.4.3</span> Shot noise</h3>
+<p>How many shots does an estimate need? Each shot gives <span class="math inline">\(s = +1\)</span> or <span class="math inline">\(s = -1\)</span> at random, and the expectation value of <span class="math inline">\(s\)</span> is <span class="math inline">\(\langle P\rangle\)</span>. The sample mean <span class="math inline">\(\bar s\)</span> of <a href="#eq-sample-mean" class="quarto-xref">Equation&nbsp;<span>1.8</span></a> is therefore correct on average, or <em>unbiased</em>. Its random error comes from the spread of single shots. Since <span class="math inline">\(s^2 = 1\)</span> for every shot (this is <span class="math inline">\(P^2 = I\)</span> again), the variance of a single shot is <span class="math display">\[
+\mathrm{Var}(s) = \langle s^2\rangle - \langle s\rangle^2 = 1 - \langle P\rangle^2 .
+\]</span> The mean of <span class="math inline">\(N\)</span> independent samples has <span class="math inline">\(1/N\)</span> times the variance of a single sample (for a refresher on this and other basic statistics, see <span class="citation" data-cites="blitzstein2019">Blitzstein and Hwang (<a href="L1-platforms-and-measurement.html#ref-blitzstein2019" role="doc-biblioref">2019</a>)</span>). The typical size of the random error of <span class="math inline">\(\bar s\)</span>, its <em>standard error</em>, is therefore <span id="eq-standard-error"><span class="math display">\[
+\sigma_{\bar s} = \sqrt{\frac{1-\langle P\rangle^2}{N}} .
+\tag{1.9}\]</span></span> In practice <span class="math inline">\(\langle P\rangle\)</span> is unknown, and we evaluate <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> with <span class="math inline">\(\bar s\)</span> in its place.</p>
+<p>The error is largest when <span class="math inline">\(\langle P\rangle = 0\)</span>, where every shot is a coin flip, and vanishes when <span class="math inline">\(\langle P\rangle = \pm 1\)</span>, where every shot gives the same result. It decreases only as <span class="math inline">\(1/\sqrt{N}\)</span>, so each extra digit of precision costs a hundred times more shots. To estimate an expectation value near zero with a standard error of 0.01, for example, we need <span class="math inline">\(N = 1/0.01^2 = 10^4\)</span> shots. <a href="#sec-timescales" class="quarto-xref"><span>Section 1.6</span></a> shows how long they take on each platform.</p>
+<p>Shot noise is one of two kinds of error in an estimated expectation value. Noise in the device (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) also shifts <span class="math inline">\(\langle P\rangle\)</span> itself, usually towards zero, and more shots cannot remove that shift; they only estimate the shifted value more precisely. The next chapter separates these two kinds of error.<!-- L2-LINK: @sec-bias-variance --> Tutorial 1 practises <a href="#eq-sample-mean" class="quarto-xref">Equation&nbsp;<span>1.8</span></a> and <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> in code: <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-01/T1-circuits-and-sampling_qiskit.ipynb">open the T1 notebook in Colab</a>.</p>
+</section>
+</section>
+<section id="sec-noise-sources" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="sec-noise-sources"><span class="header-section-number">1.5</span> Sources of noise</h2>
+<p>Every wire or laser beam used to control a qubit is also a way in for disturbances. This section describes in words what can go wrong; the next chapter<!-- L2-LINK: @sec-noise --> goes deeper into the mathematical description of noise and its effects.</p>
+<p>The most important effect is that an excited qubit loses its energy. Left alone, <span class="math inline">\(\ket{1}\)</span> decays to <span class="math inline">\(\ket{0}\)</span>. This is the relaxation that initialises superconducting qubits between runs (<a href="#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>), but during a computation it corrupts the state. In superconducting qubits, the energy is absorbed by tiny defects in the materials of the chip. The qubit levels of trapped ions hardly decay on their own, but the lasers used for gates occasionally knock an ion out of its qubit state.</p>
+<p>A qubit can also lose its phase without losing energy. A superposition of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> carries a relative phase between its two parts, and the qubit’s frequency sets how fast this phase turns. If the frequency fluctuates, for example because of fluctuating magnetic fields or electric charges near the qubit, the phase wanders, and the superposition gradually becomes a random mixture of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>. This is called <a href="glossary.html#gloss-dephasing" class="gloss" data-gloss="Loss of the relative phase of a superposition without loss of energy, for example because the qubit frequency is shifted by an unknown amount. The measured times T2* and T2 include both dephasing and relaxation; the time of pure dephasing alone is called Tφ.">dephasing</a>. The time over which a qubit relaxes is called <span class="math inline">\(T_1\)</span>, and the time over which it dephases is called <span class="math inline">\(T_2\)</span>. These are the coherence times quoted for every device, and the next chapter defines them precisely.<!-- L2-LINK: @def-t1-t2 --></p>
+<p>A third kind of error is a gate that rotates by the wrong amount, because a pulse is slightly too long, too short or off axis, or because a laser’s intensity fluctuates. Unlike relaxation and dephasing, such <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent errors</a> are systematic: the same gate makes the same mistake every time. <a href="#tbl-noise" class="quarto-xref">Table&nbsp;<span>1.4</span></a> lists these effects together with the remaining ones.</p>
+<!-- L2-LINK, last column of the table: relaxation @sec-t1-t2; dephasing @sec-t1-t2;
+coherent error and leakage @sec-gate-errors; crosstalk and correlated errors
+@sec-multi-qubit-noise; readout error @sec-readout-errors; recalibration @sec-budgets -->
+<div id="tbl-noise" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.4: What can go wrong in a quantum device.
+</figcaption>
+<div aria-describedby="tbl-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>What happens</th>
+<th>Example</th>
+<th>Name in the next chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\ket{1}\)</span> decays to <span class="math inline">\(\ket{0}\)</span></td>
+<td>energy absorbed by defects in the chip</td>
+<td>relaxation (<span class="math inline">\(T_1\)</span>)</td>
+</tr>
+<tr class="even">
+<td>the relative phase of a superposition wanders</td>
+<td>fluctuating magnetic fields</td>
+<td>dephasing (<span class="math inline">\(T_2\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>a gate rotates by the wrong amount</td>
+<td>a pulse slightly too long</td>
+<td>coherent error</td>
+</tr>
+<tr class="even">
+<td>the qubit leaves the qubit levels</td>
+<td>a pulse pushes a transmon into its third level (<a href="#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>)</td>
+<td><a href="glossary.html#gloss-leakage" class="gloss" data-gloss="An error in which a qubit leaves its two qubit levels, for example when a transmon is pushed into its third level.">leakage</a></td>
+</tr>
+<tr class="odd">
+<td>an operation on one qubit disturbs another</td>
+<td>couplings that are never fully off; a laser beam that partly hits the next ion</td>
+<td>crosstalk</td>
+</tr>
+<tr class="even">
+<td>the readout is wrong</td>
+<td>0 reported as 1, or the reverse</td>
+<td>readout error</td>
+</tr>
+<tr class="odd">
+<td>many qubits fail at once</td>
+<td>a cosmic ray deposits energy in the chip and disturbs all qubits nearby</td>
+<td>correlated errors</td>
+</tr>
+<tr class="even">
+<td>the device drifts</td>
+<td>properties that change over hours</td>
+<td>(recalibration)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The last row explains why providers recalibrate their devices regularly and publish calibration data, the error rates of each qubit and gate at the last calibration. These data are a snapshot, and a few hours later the device may behave differently.</p>
+<p>Providers summarise the quality of each operation by a <a href="glossary.html#gloss-fidelity" class="gloss" data-gloss="A number between 0 and 1 measuring how close a state or operation is to the intended one. The state fidelity is the probability that a state passes a test for the target state; the average gate fidelity averages it over all input states. Informally, one minus the probability of an error.">fidelity</a>. For now, read it as one minus the probability that the operation goes wrong; the next chapter gives the precise definition.<!-- L2-LINK: @def-fidelity --> Typical values on current devices are 99.9-99.99% for single-qubit gates, 99-99.9% for two-qubit gates and 96-99.9% for readout, so two-qubit gates and readout are the weakest links.</p>
+</section>
+<section id="sec-timescales" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="sec-timescales"><span class="header-section-number">1.6</span> Timescales</h2>
+<p><a href="#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a> collects typical timescales of current devices. They vary between devices and improve every year, so read them as orders of magnitude.</p>
+<div id="tbl-timescales" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-timescales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1.5: Typical timescales of current devices, as orders of magnitude.
+</figcaption>
+<div aria-describedby="tbl-timescales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Time per</th>
+<th>Superconducting</th>
+<th>Trapped ions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>single-qubit gate</td>
+<td>20-60 ns</td>
+<td>10-150 µs</td>
+</tr>
+<tr class="even">
+<td>two-qubit gate</td>
+<td>20-700 ns</td>
+<td>50 µs-1 ms</td>
+</tr>
+<tr class="odd">
+<td>readout</td>
+<td>0.5-2.5 µs</td>
+<td>0.1-1 ms</td>
+</tr>
+<tr class="even">
+<td>coherence (<span class="math inline">\(T_2\)</span>)</td>
+<td>20-350 µs</td>
+<td>about 1 s or more</td>
+</tr>
+<tr class="odd">
+<td>shot (reset, circuit, readout)</td>
+<td>0.3-4 ms</td>
+<td>10 ms to several seconds</td>
+</tr>
+<tr class="even">
+<td>switching to a new circuit</td>
+<td>much longer than a shot, plus any queue</td>
+<td>the same</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The coherence time divided by the two-qubit gate time is between about a thousand and ten thousand on both platforms, although their speeds differ by a factor of about a thousand. Both platforms thus meet DiVincenzo’s requirement of coherence times that are long compared with gate times (<a href="#sec-qubit-needs" class="quarto-xref"><span>Section 1.2.1</span></a>), by a similar margin and in opposite ways: superconducting qubits with fast gates, trapped ions with long coherence. Coherence alone would allow circuits of thousands of gates in sequence. In practice, gate errors of 0.1-1% per two-qubit gate limit useful circuits much earlier.</p>
+<p>Where the time goes differs between the platforms. On superconducting devices, the gates are fast, and most of a shot is spent measuring the qubits and resetting them to <span class="math inline">\(\ket{0}\)</span>; devices run hundreds to thousands of shots per second. Switching to a different circuit costs much more, since the circuit must be compiled and loaded into the control electronics, and on a shared cloud device it may wait in a queue. Many shots of one circuit are cheap; many different circuits are expensive. On trapped ions, the gates themselves are slow, and each shot also includes cooling the ions and, on some devices, moving them between zones, which takes most of the time. There, the number of shots is the main cost. For the <span class="math inline">\(10^4\)</span> shots of the example in <a href="#sec-shot-noise" class="quarto-xref"><span>Section 1.4.3</span></a>, this means between a few seconds and a minute on a superconducting device, and from a few minutes to several hours on an ion trap.</p>
+<div id="exr-shot-budget" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.7 (A shot budget)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>How many shots give a standard error of 0.01 when <span class="math inline">\(\langle P\rangle \approx 0.9\)</span>? Compare with <span class="math inline">\(\langle P\rangle \approx 0\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Solve <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> for <span class="math inline">\(N\)</span>.</p>
+</details></li>
+<li><p>You need ten expectation values, each from its own circuit, each with a standard error of at most 0.005. Assume the worst case, <span class="math inline">\(\langle P\rangle = 0\)</span>. Estimate the total time on a superconducting device and on an ion trap. Which part of the time dominates on each?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use the times per shot and per circuit of <a href="#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a>.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-L1-exercises" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="sec-L1-exercises"><span class="header-section-number">1.7</span> More exercises</h2>
+<p>These exercises combine material from several sections of the chapter.</p>
+<div id="exr-error-budget" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.8 (An error budget)</strong></span> A device has the native gates <span class="math inline">\(\gate{PRX}\)</span> and CZ, with virtual <span class="math inline">\(Z\)</span> rotations. Its operations fail independently, with probability <span class="math inline">\(10^{-4}\)</span> for a <span class="math inline">\(\gate{PRX}\)</span> pulse, <span class="math inline">\(5\times10^{-3}\)</span> for a CZ and <span class="math inline">\(10^{-2}\)</span> for a measurement. On a line of 10 qubits, we run a brick-wall circuit: each layer applies <span class="math inline">\(R_Z\)</span> and <span class="math inline">\(R_X\)</span> to every qubit, followed by CZs between neighbouring qubits, on the pairs (1,2), (3,4), … in odd layers and (2,3), (4,5), … in even layers. <a href="#fig-brick-wall" class="quarto-xref">Figure&nbsp;<span>1.12</span></a> shows two layers on four qubits. The circuit has 8 layers and ends by measuring all qubits.</p>
+<div id="fig-brick-wall" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="H">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-brick-wall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/brick-wall.svg" class="img-fluid figure-img" style="width:70.0%" data-fig-pos="H">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-brick-wall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.12: Two layers of a brick-wall circuit on four qubits.
+</figcaption>
+</figure>
+</div>
+<ol type="a">
+<li><p>Count the native operations of each kind, and estimate the probability that a run of the circuit has no error at all. Which kind of operation contributes most to the failures?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Which gates in <a href="#fig-brick-wall" class="quarto-xref">Figure&nbsp;<span>1.12</span></a> need a pulse?</p>
+</details></li>
+<li><p>How does the answer to (a) change on a device without virtual <span class="math inline">\(Z\)</span> rotations, where each <span class="math inline">\(R_Z\)</span> needs a pulse with the same error as <span class="math inline">\(\gate{PRX}\)</span>?</p></li>
+<li><p>Roughly how many layers can the circuit have before the probability of a run without error drops below one half?</p>
+<details class="hint"><summary>Hint</summary>
+<p><span class="math inline">\((1-p)^n \approx e^{-np}\)</span> for small <span class="math inline">\(p\)</span>.</p>
+</details></li>
+</ol>
+</div>
+<div id="exr-readout-bias" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.9 (Readout errors bias the estimate)</strong></span> Suppose that the readout of each qubit reports the wrong bit with probability <span class="math inline">\(p\)</span>, independently in every shot and for both outcomes.</p>
+<ol type="a">
+<li><p>Show that the recorded sign <span class="math inline">\(s\)</span> of a single-qubit <span class="math inline">\(Z\)</span> measurement has expectation value <span class="math inline">\((1-2p)\langle Z\rangle\)</span>.</p></li>
+<li><p>For a Pauli string <span class="math inline">\(P\)</span> acting on <span class="math inline">\(k\)</span> qubits, show that the recorded sign has expectation value <span class="math inline">\((1-2p)^k\langle P\rangle\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>The recorded sign is the true sign times one independent factor <span class="math inline">\(\pm 1\)</span> per qubit.</p>
+</details></li>
+<li><p>Take <span class="math inline">\(p = 0.02\)</span>, <span class="math inline">\(k = 4\)</span> and <span class="math inline">\(\langle P\rangle = 0.5\)</span>. Compare the bias of <span class="math inline">\(\bar s\)</span> with its standard error for <span class="math inline">\(N = 10^3\)</span> and for <span class="math inline">\(N = 10^5\)</span> shots. When do more shots stop helping?</p>
+<details class="hint"><summary>Hint</summary>
+<p>The standard error is given by <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>.</p>
+</details></li>
+<li><p>If <span class="math inline">\(p\)</span> is known, how can the estimate be corrected? What does the correction do to the standard error?</p></li>
+</ol>
+</div>
+<div id="exr-measure-basis" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 1.10 (Measuring in other bases)</strong></span> A device has the native gates <span class="math inline">\(\gate{PRX}\)</span> and CZ, and measures in the computational basis.</p>
+<ol type="a">
+<li><p>Which <span class="math inline">\(\gate{PRX}\)</span> pulses must be applied before the measurement to estimate <span class="math inline">\(\langle X\otimes Y\otimes Z\rangle\)</span>?</p>
+<details class="hint"><summary>Hint</summary>
+<p>On each qubit, you need a rotation <span class="math inline">\(U\)</span> with <span class="math inline">\(U P_j U^\dagger = Z\)</span>; see <a href="#exr-pauli-conjugation" class="quarto-xref">Exercise&nbsp;<span>1.3</span></a>.</p>
+</details></li>
+<li><p>Can <span class="math inline">\(\langle X\otimes I\rangle\)</span> and <span class="math inline">\(\langle X\otimes X\rangle\)</span> be estimated from the same shots? And <span class="math inline">\(\langle X\otimes X\rangle\)</span> and <span class="math inline">\(\langle Z\otimes Z\rangle\)</span>, if only single-qubit rotations are allowed before the measurement?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-L1-reading" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="sec-L1-reading"><span class="header-section-number">1.8</span> Further reading</h2>
+<p>For superconducting qubits, <span class="citation" data-cites="krantz2019">Krantz et al. (<a href="L1-platforms-and-measurement.html#ref-krantz2019" role="doc-biblioref">2019</a>)</span> is a thorough guide written for engineers; for trapped ions, see <span class="citation" data-cites="bruzewicz2019">Bruzewicz et al. (<a href="L1-platforms-and-measurement.html#ref-bruzewicz2019" role="doc-biblioref">2019</a>)</span>. <span class="citation" data-cites="henriet2020">Henriet et al. (<a href="L1-platforms-and-measurement.html#ref-henriet2020" role="doc-biblioref">2020</a>)</span>, <span class="citation" data-cites="slussarenko2019">Slussarenko and Pryde (<a href="L1-platforms-and-measurement.html#ref-slussarenko2019" role="doc-biblioref">2019</a>)</span> and <span class="citation" data-cites="burkard2023">Burkard et al. (<a href="L1-platforms-and-measurement.html#ref-burkard2023" role="doc-biblioref">2023</a>)</span> review neutral atoms, photonics and spin qubits. <span class="citation" data-cites="preskill2018">Preskill (<a href="L1-platforms-and-measurement.html#ref-preskill2018" role="doc-biblioref">2018</a>)</span> introduced the NISQ era, and <span class="citation" data-cites="nielsen2010">Nielsen and Chuang (<a href="L1-platforms-and-measurement.html#ref-nielsen2010" role="doc-biblioref">2010, chap. 4</a>)</span> covers the circuit model.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-blitzstein2019" class="csl-entry" role="listitem">
+Blitzstein, Joseph K., and Jessica Hwang. 2019. <em>Introduction to
+Probability</em>. 2nd ed. Chapman; Hall/CRC. <a href="https://probabilitybook.net">https://probabilitybook.net</a>.
+</div>
+<div id="ref-bruzewicz2019" class="csl-entry" role="listitem">
+Bruzewicz, Colin D., John Chiaverini, Robert McConnell, and Jeremy M.
+Sage. 2019. <span>“Trapped-Ion Quantum Computing: Progress and
+Challenges.”</span> <em>Applied Physics Reviews</em> 6 (2): 021314. <a href="https://doi.org/10.1063/1.5088164">https://doi.org/10.1063/1.5088164</a>.
+</div>
+<div id="ref-burkard2023" class="csl-entry" role="listitem">
+Burkard, Guido, Thaddeus D. Ladd, Andrew Pan, John M. Nichol, and Jason
+R. Petta. 2023. <span>“Semiconductor Spin Qubits.”</span> <em>Reviews of
+Modern Physics</em> 95 (2): 025003. <a href="https://doi.org/10.1103/RevModPhys.95.025003">https://doi.org/10.1103/RevModPhys.95.025003</a>.
+</div>
+<div id="ref-divincenzo2000" class="csl-entry" role="listitem">
+DiVincenzo, David P. 2000. <span>“The Physical Implementation of Quantum
+Computation.”</span> <em>Fortschritte Der Physik</em> 48 (9–11): 771–83.
+<a href="https://doi.org/10.1002/1521-3978(200009)48:9/11<771::AID-PROP771>3.0.CO;2-E">https://doi.org/10.1002/1521-3978(200009)48:9/11&lt;771::AID-PROP771&gt;3.0.CO;2-E</a>.
+</div>
+<div id="ref-fowler2012" class="csl-entry" role="listitem">
+Fowler, Austin G., Matteo Mariantoni, John M. Martinis, and Andrew N.
+Cleland. 2012. <span>“Surface Codes: Towards Practical Large-Scale
+Quantum Computation.”</span> <em>Physical Review A</em> 86 (3): 032324.
+<a href="https://doi.org/10.1103/PhysRevA.86.032324">https://doi.org/10.1103/PhysRevA.86.032324</a>.
+</div>
+<div id="ref-friis2018" class="csl-entry" role="listitem">
+<span class="nocase">Friis, Nicolai et al.</span> 2018.
+<span>“Observation of Entangled States of a Fully Controlled 20-Qubit
+System.”</span> <em>Physical Review X</em> 8: 021012. <a href="https://doi.org/10.1103/PhysRevX.8.021012">https://doi.org/10.1103/PhysRevX.8.021012</a>.
+</div>
+<div id="ref-gidney2025" class="csl-entry" role="listitem">
+Gidney, Craig. 2025. <em>How to Factor 2048 Bit <span>RSA</span>
+Integers with Less Than a Million Noisy Qubits</em>. <a href="https://arxiv.org/abs/2505.15917">https://arxiv.org/abs/2505.15917</a>.
+</div>
+<div id="ref-google2025" class="csl-entry" role="listitem">
+Google Quantum AI and Collaborators. 2025. <span>“Quantum Error
+Correction Below the Surface Code Threshold.”</span> <em>Nature</em>
+638: 920–26. <a href="https://doi.org/10.1038/s41586-024-08449-y">https://doi.org/10.1038/s41586-024-08449-y</a>.
+</div>
+<div id="ref-henriet2020" class="csl-entry" role="listitem">
+Henriet, Loïc, Lucas Beguin, Adrien Signoles, et al. 2020.
+<span>“Quantum Computing with Neutral Atoms.”</span> <em>Quantum</em> 4:
+327. <a href="https://doi.org/10.22331/q-2020-09-21-327">https://doi.org/10.22331/q-2020-09-21-327</a>.
+</div>
+<div id="ref-krantz2019" class="csl-entry" role="listitem">
+Krantz, Philip, Morten Kjaergaard, Fei Yan, Terry P. Orlando, Simon
+Gustavsson, and William D. Oliver. 2019. <span>“A Quantum Engineer’s
+Guide to Superconducting Qubits.”</span> <em>Applied Physics
+Reviews</em> 6 (2): 021318. <a href="https://doi.org/10.1063/1.5089550">https://doi.org/10.1063/1.5089550</a>.
+</div>
+<div id="ref-litinski2019" class="csl-entry" role="listitem">
+Litinski, Daniel. 2019. <span>“A Game of Surface Codes: Large-Scale
+Quantum Computing with Lattice Surgery.”</span> <em>Quantum</em> 3: 128.
+<a href="https://doi.org/10.22331/q-2019-03-05-128">https://doi.org/10.22331/q-2019-03-05-128</a>.
+</div>
+<div id="ref-nielsen2010" class="csl-entry" role="listitem">
+Nielsen, Michael A., and Isaac L. Chuang. 2010. <em>Quantum Computation
+and Quantum Information</em>. 10th anniversary. Cambridge University
+Press.
+</div>
+<div id="ref-preskill2018" class="csl-entry" role="listitem">
+Preskill, John. 2018. <span>“Quantum Computing in the <span>NISQ</span>
+Era and Beyond.”</span> <em>Quantum</em> 2: 79. <a href="https://doi.org/10.22331/q-2018-08-06-79">https://doi.org/10.22331/q-2018-08-06-79</a>.
+</div>
+<div id="ref-ross2016" class="csl-entry" role="listitem">
+Ross, Neil J., and Peter Selinger. 2016. <span>“Optimal Ancilla-Free
+<span>Clifford+T</span> Approximation of z-Rotations.”</span>
+<em>Quantum Information and Computation</em> 16 (11–12): 901–53. <a href="https://doi.org/10.26421/QIC16.11-12-1">https://doi.org/10.26421/QIC16.11-12-1</a>.
+</div>
+<div id="ref-slussarenko2019" class="csl-entry" role="listitem">
+Slussarenko, Sergei, and Geoff J. Pryde. 2019. <span>“Photonic Quantum
+Information Processing: A Concise Review.”</span> <em>Applied Physics
+Reviews</em> 6 (4): 041303. <a href="https://doi.org/10.1063/1.5115814">https://doi.org/10.1063/1.5115814</a>.
+</div>
+<div id="ref-sung2021" class="csl-entry" role="listitem">
+<span class="nocase">Sung, Youngkyu et al.</span> 2021.
+<span>“Realization of High-Fidelity <span>CZ</span> and
+<span>ZZ</span>-Free <span class="nocase">iSWAP</span> Gates with a
+Tunable Coupler.”</span> <em>Physical Review X</em> 11: 021058. <a href="https://doi.org/10.1103/PhysRevX.11.021058">https://doi.org/10.1103/PhysRevX.11.021058</a>.
+</div>
+<div id="ref-vandamme2024" class="csl-entry" role="listitem">
+<span class="nocase">Van Damme, J. et al.</span> 2024. <span>“Advanced
+<span>CMOS</span> Manufacturing of Superconducting Qubits on 300 Mm
+Wafers.”</span> <em>Nature</em> 634: 74–79. <a href="https://doi.org/10.1038/s41586-024-07941-9">https://doi.org/10.1038/s41586-024-07941-9</a>.
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+  a.gloss { text-decoration: underline dotted; color: inherit; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof tippy === "undefined") return;
+    tippy("a.gloss", {
+      content: (el) => el.getAttribute("data-gloss"),
+      theme: "quarto",
+      maxWidth: 360,
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/stefanopolla\.github\.io\/ntqc\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="About these notes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">About these notes</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
