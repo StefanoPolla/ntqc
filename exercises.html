@@ -396,7 +396,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">25 October 2026</p>
+      <p class="date-modified">26 October 2026</p>
     </div>
   </div>
     
@@ -482,9 +482,13 @@ window.Quarto = {
 <p><strong><a href="L1-platforms-and-measurement.html#exr-swap" class="quarto-xref">Exercise&nbsp;<span>1.5</span></a></strong> (The cost of distance)</p>
 <ol type="a">
 <li><p>Check <a href="L1-platforms-and-measurement.html#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a> on the four computational basis states.</p></li>
-<li><p>We want to implement a CNOT between the qubits at opposite ends of a line of <span class="math inline">\(n\)</span> qubits. If the qubits may stay in their new positions after the operation, how many CNOTs are needed? And if they must be returned to their original positions?</p>
+<li><p>We want to implement a CNOT between the qubits at opposite ends of a line of <span class="math inline">\(n\)</span> qubits, using SWAPs. If the qubits may stay in their new positions after the operation, how many CNOTs are needed? And if they must be returned to their original positions?</p>
 <details class="hint"><summary>Hint</summary>
 <p>Each SWAP moves a state one step along the line.</p>
+</details></li>
+<li><p>If the qubits must be returned to their original positions, can you implement the same CNOT with fewer CNOTs, without SWAPs?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Start with <span class="math inline">\(n = 3\)</span>, and follow what each CNOT does to the bits of a basis state <span class="math inline">\(\ket{abc}\)</span>.</p>
 </details></li>
 </ol>
 </div>
@@ -510,15 +514,15 @@ window.Quarto = {
 <details class="hint"><summary>Hint</summary>
 <p>Solve <a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> for <span class="math inline">\(N\)</span>.</p>
 </details></li>
-<li><p>You need ten expectation values, each from its own circuit, each with a standard error of at most 0.005. Assume the worst case, <span class="math inline">\(\langle P\rangle = 0\)</span>. Estimate the total time on a superconducting device and on an ion trap. Which part of the time dominates on each?</p>
+<li><p>You need ten expectation values, each from its own circuit, each with a standard error of at most 0.005. Assume the worst case, <span class="math inline">\(\langle P\rangle = 0\)</span>, and assume that loading each circuit takes 10 s, with no queue. Estimate the total time on a superconducting device and on an ion trap. Which part of the time dominates on each?</p>
 <details class="hint"><summary>Hint</summary>
-<p>Use the times per shot and per circuit of <a href="L1-platforms-and-measurement.html#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a>.</p>
+<p>Use the times per shot of <a href="L1-platforms-and-measurement.html#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a>.</p>
 </details></li>
 </ol>
 </div>
 <div class="exercise-copy">
 <p><strong><a href="L1-platforms-and-measurement.html#exr-error-budget" class="quarto-xref">Exercise&nbsp;<span>1.8</span></a></strong> (An error budget)</p>
-<p>A device has the native gates <span class="math inline">\(\gate{PRX}\)</span> and CZ, with virtual <span class="math inline">\(Z\)</span> rotations. Its operations fail independently, with probability <span class="math inline">\(10^{-4}\)</span> for a <span class="math inline">\(\gate{PRX}\)</span> pulse, <span class="math inline">\(5\times10^{-3}\)</span> for a CZ and <span class="math inline">\(10^{-2}\)</span> for a measurement. On a line of 10 qubits, we run a brick-wall circuit: each layer applies <span class="math inline">\(R_Z\)</span> and <span class="math inline">\(R_X\)</span> to every qubit, followed by CZs between neighbouring qubits, on the pairs (1,2), (3,4), … in odd layers and (2,3), (4,5), … in even layers. <a href="L1-platforms-and-measurement.html#fig-brick-wall" class="quarto-xref">Figure&nbsp;<span>1.12</span></a> shows two layers on four qubits. The circuit has 8 layers and ends by measuring all qubits.</p>
+<p>A device has the native gates <span class="math inline">\(\gate{PRX}\)</span> and CZ, with virtual <span class="math inline">\(Z\)</span> rotations. Its operations fail independently, with probability <span class="math inline">\(10^{-4}\)</span> for a <span class="math inline">\(\gate{PRX}\)</span> pulse, <span class="math inline">\(5\times10^{-3}\)</span> for a CZ and <span class="math inline">\(10^{-2}\)</span> for a measurement. On a line of 10 qubits, numbered 0 to 9, we run a brick-wall circuit: each layer applies <span class="math inline">\(R_Z\)</span> and <span class="math inline">\(R_X\)</span> to every qubit, followed by CZs between neighbouring qubits, on the pairs (0,1), (2,3), … in the first layer and every second layer after it, and on the pairs (1,2), (3,4), … in the other layers. <a href="L1-platforms-and-measurement.html#fig-brick-wall" class="quarto-xref">Figure&nbsp;<span>1.12</span></a> shows two layers on four qubits. The circuit has 8 layers and ends by measuring all qubits.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/brick-wall.svg" class="img-fluid figure-img" style="width:70.0%"></p>
