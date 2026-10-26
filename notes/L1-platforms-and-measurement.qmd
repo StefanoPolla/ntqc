@@ -746,11 +746,20 @@ and simplifies the result. We return to its cost in later chapters.
 (a) Check @fig-swap on the four computational basis states.
 
 (b) We want to implement a CNOT between the qubits at opposite ends of a line of $n$
-qubits. If the qubits may stay in their new positions after the operation, how many
-CNOTs are needed? And if they must be returned to their original positions?
+qubits, using SWAPs. If the qubits may stay in their new positions after the
+operation, how many CNOTs are needed? And if they must be returned to their original
+positions?
 
     :::: {.hint}
     Each SWAP moves a state one step along the line.
+    ::::
+
+(c) If the qubits must be returned to their original positions, can you implement the
+same CNOT with fewer CNOTs, without SWAPs?
+
+    :::: {.hint}
+    Start with $n = 3$, and follow what each CNOT does to the bits of a basis state
+    $\ket{abc}$.
     ::::
 :::
 
@@ -953,12 +962,12 @@ Compare with $\langle P\rangle \approx 0$.
     ::::
 
 (b) You need ten expectation values, each from its own circuit, each with a standard
-error of at most 0.005. Assume the worst case, $\langle P\rangle = 0$. Estimate the
-total time on a superconducting device and on an ion trap. Which part of the time
-dominates on each?
+error of at most 0.005. Assume the worst case, $\langle P\rangle = 0$, and assume
+that loading each circuit takes 10 s, with no queue. Estimate the total time on a
+superconducting device and on an ion trap. Which part of the time dominates on each?
 
     :::: {.hint}
-    Use the times per shot and per circuit of @tbl-timescales.
+    Use the times per shot of @tbl-timescales.
     ::::
 :::
 
@@ -970,10 +979,11 @@ These exercises combine material from several sections of the chapter.
 ## An error budget
 A device has the native gates $\gate{PRX}$ and CZ, with virtual $Z$ rotations. Its
 operations fail independently, with probability $10^{-4}$ for a $\gate{PRX}$ pulse,
-$5\times10^{-3}$ for a CZ and $10^{-2}$ for a measurement. On a line of 10 qubits, we run
-a brick-wall circuit: each layer applies $R_Z$ and $R_X$ to every qubit, followed by CZs
-between neighbouring qubits, on the pairs (1,2), (3,4), ... in odd layers and (2,3),
-(4,5), ... in even layers. @fig-brick-wall shows two layers on four qubits. The circuit
+$5\times10^{-3}$ for a CZ and $10^{-2}$ for a measurement. On a line of 10 qubits,
+numbered 0 to 9, we run a brick-wall circuit: each layer applies $R_Z$ and $R_X$ to
+every qubit, followed by CZs between neighbouring qubits, on the pairs (0,1), (2,3), ...
+in the first layer and every second layer after it, and on the pairs (1,2), (3,4), ...
+in the other layers. @fig-brick-wall shows two layers on four qubits. The circuit
 has 8 layers and ends by measuring all qubits.
 
 ![Two layers of a brick-wall circuit on four qubits.](figures/brick-wall){#fig-brick-wall width=70% fig-pos="H"}
