@@ -1,0 +1,967 @@
+# Noise channels and error budgets {#sec-noise}
+
+{{< include _macros.qmd >}}
+
+In the previous chapter, we described in words what can go wrong in a quantum device,
+its noise (@sec-noise-sources). In this chapter, we describe noise
+mathematically. The goal is to model how noise affects the results of a computation,
+and to use these models in our estimates and simulations. One model runs through
+the whole chapter: a noisy operation is the ideal operation followed by a *quantum
+channel*, a map that turns the state of the qubits into a noisier one.
+
+By the end of the chapter, you should be able to write a channel with Kraus operators
+and work out what it does to Pauli expectation values; relate $T_1$, $T_2^*$ and
+$T_2$ to the channels behind them; tell local from global noise, and coherent from incoherent errors;
+model readout errors; estimate how much signal a circuit keeps; and separate the bias
+caused by noise from shot noise.
+
+## Density matrices and channels {#sec-channels}
+
+We first review the two tools that the rest of the chapter uses throughout. If you know
+them well, skim this section for the notation.
+
+### Mixed states {#sec-mixed-states}
+
+Noise makes the state of a device uncertain. If the qubits are in the state
+$\ket{\psi_k}$ with probability $p_k$, the expectation value of an observable $O$ is
+$$
+\sum_k p_k \bra{\psi_k}O\ket{\psi_k} = \Tr[O\rho], \qquad \text{with} \quad
+\rho = \sum_k p_k \ket{\psi_k}\bra{\psi_k} .
+$$
+The probability of each measurement outcome is the expectation value of a projector, so
+all predictions depend on the ensemble only through $\rho$.
+
+::: {#def-density-matrix}
+## Density matrix
+A [density matrix]{.gloss key="density-matrix"} on $n$ qubits is a $2^n\times 2^n$
+matrix $\rho$ that is positive semidefinite (Hermitian, with no negative eigenvalues)
+and has trace one. The expectation value of an observable $O$ is
+$\langle O\rangle = \Tr[O\rho]$. A pure state $\ket{\psi}$ has
+$\rho = \ket{\psi}\bra{\psi}$, and then $\langle O\rangle = \bra{\psi}O\ket{\psi}$.
+Every other state is [mixed]{.gloss key="mixed-state"}.
+:::
+
+A density matrix is pure exactly when $\rho^2 = \rho$, or, equivalently, when
+$\Tr[\rho^2] = 1$. The [purity]{.gloss key="purity"} $\Tr[\rho^2]$ measures how mixed a
+state is. The eigenvalues $\lambda_k$ of $\rho$ are non-negative and sum to one, and the
+purity is $\sum_k\lambda_k^2$. It is 1 when one eigenvalue is 1 and the others are 0,
+which is a pure state. It is smallest, $2^{-n}$, when all $2^n$ eigenvalues are equal,
+which is the *maximally mixed state* $I/2^n$: the qubits are in a uniformly random basis
+state, and we know nothing about them.
+
+For a single qubit, we want to extend the Bloch-sphere picture of pure states
+(@fig-prx) to mixed states. Every Hermitian $2\times 2$ matrix can be written in the
+Pauli basis $I, X, Y, Z$, with real coefficients. The Pauli matrices have trace zero,
+and the product of two different ones is the third, up to a factor
+(@sec-pauli-rotations), so $\Tr[PQ] = 2$ if $P = Q$ and $0$ otherwise. If we write
+$\rho = \frac{1}{2}(c_I I + c_x X + c_y Y + c_z Z)$, the trace of $P\rho$ therefore picks
+out one coefficient at a time: $c_I = \Tr[\rho] = 1$ and $c_x = \Tr[X\rho] = \langle X\rangle$,
+and likewise for $y$ and $z$. A density matrix of one qubit is therefore
+$$
+\rho = \frac{1}{2}\left(I + r_x X + r_y Y + r_z Z\right), \qquad
+r_x = \langle X\rangle,\ r_y = \langle Y\rangle,\ r_z = \langle Z\rangle .
+$$ {#eq-bloch}
+The vector $\vec r = (r_x, r_y, r_z)$ is the [Bloch vector]{.gloss key="bloch-vector"}.
+The matrix $r_x X + r_y Y + r_z Z$ squares to $|\vec r|^2 I$, since the Pauli matrices
+anticommute. The eigenvalues of $\rho$ are therefore $(1\pm|\vec r|)/2$, and $\rho$ is a density
+matrix exactly when $|\vec r| \le 1$. Pure states lie on the surface of the Bloch sphere,
+and mixed states inside it, in the *Bloch ball*. At the centre lies the maximally mixed
+state $I/2$, a uniformly random bit. The purity is $\Tr[\rho^2] = (1+|\vec r|^2)/2$: 1
+on the sphere, and $1/2$ at the centre.
+
+The same decomposition works for any number of qubits, with Pauli strings in place of
+Pauli matrices:
+$$
+\rho = \frac{1}{2^n}\sum_{P} \langle P\rangle\, P ,
+$$ {#eq-pauli-expansion}
+where the sum runs over all $4^n$ Pauli strings on $n$ qubits, and $\langle I\rangle = 1$.
+To see why, note two facts. The product of two Pauli strings is, up to a factor, another Pauli
+string, which is the identity only if the two are equal. And every Pauli string
+other than the identity has trace zero. So $\Tr[PQ] = 2^n$ if $P = Q$ and $0$ otherwise:
+the $4^n$ Pauli strings are orthogonal, and they form a basis of all $2^n\times 2^n$
+matrices. Multiplying the right-hand side of @eq-pauli-expansion by a Pauli string $Q$
+and taking the trace keeps only the term $P = Q$, and gives
+$\Tr[Q\rho] = \langle Q\rangle$, as it should. The expectation values of the Pauli
+strings fix the state, as the Bloch vector does for one qubit, and most of this chapter
+follows what noise does to them. To describe some of the qubits on their own, we
+discard the others with the *partial trace*, defined by
+$\Tr_B[A\otimes B] = \Tr[B]\,A$. In @eq-pauli-expansion, it keeps the terms whose Pauli
+strings act as the identity on the discarded qubits.
+
+### Quantum channels {#sec-kraus}
+
+Noise turns one density matrix into another. The maps that describe this are called
+quantum channels.
+
+::: {#def-channel}
+## Quantum channel
+A [quantum channel]{.gloss key="quantum-channel"} maps a density matrix $\rho$ to
+$$
+\Lambda(\rho) = \sum_k K_k\, \rho\, K_k^\dagger , \qquad \text{with} \quad \sum_k K_k^\dagger K_k = I .
+$$ {#eq-kraus}
+The matrices $K_k$ are its [Kraus operators]{.gloss key="kraus-operators"}.
+:::
+
+Each Kraus operator describes one thing that can happen to the qubit, with probability
+$\Tr[K_k\rho K_k^\dagger]$. The condition on the Kraus operators keeps the trace, since
+$\Tr[\Lambda(\rho)] = \Tr\big[\sum_k K_k^\dagger K_k\,\rho\big] = \Tr[\rho]$, so these
+probabilities sum to one. Each term
+$K_k\rho K_k^\dagger$ is also positive semidefinite, so $\Lambda(\rho)$ is again a density
+matrix. This still holds if the channel acts on only some of the qubits of a larger system,
+a property called [complete positivity]{.gloss key="completely-positive"}. It is
+stronger than positivity: the transpose, for example, is positive but not completely
+positive. Conversely, every linear map that is completely positive and keeps the trace
+(CPTP) has a Kraus form. More details, with proofs, can be found in @nielsen2010
+[sec. 8.2] and in the Quantum Information Theory notes of @walter2025 [Theorem 5.3 and
+Lemma 5.5, where the Kraus operators are called $X_i$].
+
+Where do channels come from? A qubit is never perfectly isolated (@sec-qubit-needs): it
+interacts with its environment, for example with defects in the chip
+(@sec-noise-sources). Qubit and environment together evolve unitarily, but we do not keep
+track of the environment, so we discard it with the partial trace. The result is always a
+channel on the qubit. Conversely, every channel can arise in this way, and the unitary and the
+environment that produce it are called a *Stinespring dilation* of the channel.
+@exr-environment works out an example, and more details can be found in @walter2025
+[sec. 5.2].
+
+A unitary gate $U$ is a channel with the single Kraus operator $U$. Applying $\Lambda_1$
+and then $\Lambda_2$ gives a channel with the Kraus operators $K^{(2)}_j K^{(1)}_k$. And
+if $\Lambda_i$ happens with probability $p_i$, the mixture $\sum_i p_i\Lambda_i(\rho)$ is
+a channel with the Kraus operators $\sqrt{p_i}\,K^{(i)}_k$. Most noise in this chapter is
+of this last kind: with some probability, something goes wrong.
+
+## Noise on one qubit {#sec-single-qubit-noise}
+
+### Pauli channels on the Bloch sphere {#sec-pauli-channels}
+
+The simplest errors are Pauli matrices: $X$ flips the bit, $Z$ flips the sign of the
+relative phase between $\ket{0}$ and $\ket{1}$, and $Y$ does both.
+
+::: {#def-pauli-channel}
+## Pauli channel
+A [Pauli channel]{.gloss key="pauli-channel"} on one qubit applies the error
+$Q \in \{I, X, Y, Z\}$ with probability $q_Q$:
+$$
+\Lambda(\rho) = q_I\,\rho + q_X\, X\rho X + q_Y\, Y\rho Y + q_Z\, Z\rho Z,
+\qquad q_I + q_X + q_Y + q_Z = 1 .
+$$
+Its Kraus operators are $K_Q = \sqrt{q_Q}\,Q$, for $Q \in \{I, X, Y, Z\}$.
+:::
+
+What does a Pauli channel do to the Bloch vector? Conjugating a Pauli matrix by another
+gives back the same matrix, up to a sign: $QPQ = P$ if $Q = I$ or $Q = P$, and
+$QPQ = -P$ otherwise, because different Pauli matrices anticommute. The channel
+therefore maps each Pauli matrix to a multiple of itself, $\Lambda(X) = f_x X$, and
+likewise for $Y$ and $Z$, with
+$$
+\begin{aligned}
+f_x &= q_I + q_X - q_Y - q_Z , \\
+f_y &= q_I - q_X + q_Y - q_Z , \\
+f_z &= q_I - q_X - q_Y + q_Z ,
+\end{aligned}
+$$ {#eq-pauli-factors}
+while $\Lambda(I) = I$. By @eq-bloch, the channel multiplies each component of the
+Bloch vector by its own factor, $r_j \mapsto f_j r_j$, and so each expectation value:
+$\langle X\rangle \mapsto f_x\langle X\rangle$, and so on. We call $f_x$, $f_y$ and
+$f_z$ the *shrinking factors* of the channel. They are the main tool of this chapter: as
+long as the noise is a Pauli channel, its effect on a measured expectation value is a
+multiplication. In the Bloch ball, a Pauli channel squeezes the ball into an ellipsoid
+with semi-axes $|f_x|$, $|f_y|$ and $|f_z|$, centred at the maximally mixed state.
+
+### Depolarising and dephasing noise {#sec-depolarising-dephasing}
+
+Two Pauli channels describe most of the noise on a single qubit in this chapter.
+
+::: {#def-depolarising}
+## Depolarising and dephasing channels
+The [depolarising channel]{.gloss key="depolarising"} on one qubit is the Pauli channel
+with $q_X = q_Y = q_Z = p/4$:
+$$
+\Lambda(\rho) = \Big(1 - \frac{3p}{4}\Big)\rho + \frac{p}{4}\big(X\rho X + Y\rho Y + Z\rho Z\big) .
+$$
+The [dephasing channel]{.gloss key="dephasing-channel"} is the Pauli channel with
+$q_Z = p$:
+$$
+\Lambda(\rho) = (1-p)\,\rho + p\, Z\rho Z .
+$$
+:::
+
+The depolarising channel treats the three axes alike. By @eq-pauli-factors, its factors
+are $f_x = f_y = f_z = 1 - p$. It shrinks the Bloch ball uniformly towards its centre
+(@fig-bloch-pauli a), and every expectation value with it:
+$\langle P\rangle \mapsto (1-p)\langle P\rangle$. By @eq-bloch, the state with the
+Bloch vector $(1-p)\vec r$ is the mixture $(1-p)\rho + p\,I/2$, so
+$$
+\Lambda(\rho) = (1-p)\,\rho + p\,\frac{I}{2} :
+$$ {#eq-depolarising}
+with probability $p$, the depolarising channel replaces the state by the maximally mixed
+state. This form gives other Kraus operators: $\sqrt{1-p}\,I$ and the four matrices
+$\sqrt{p/2}\,\ket{i}\bra{j}$ with $i, j \in \{0, 1\}$. The same channel can therefore have
+different Kraus operators. The depolarising channel also commutes with every single-qubit unitary
+$U$: $U\Lambda(\rho)U^\dagger = (1-p)\,U\rho U^\dagger + p\,I/2 = \Lambda(U\rho U^\dagger)$,
+since $U(I/2)U^\dagger = I/2$.
+
+The dephasing channel has the factors $f_x = f_y = 1 - 2p$ and $f_z = 1$. It leaves
+$\langle Z\rangle$, and with it the probabilities of measuring 0 and 1, unchanged. It
+shrinks the components of the Bloch vector in the $xy$ plane, which carry the relative
+phase between $\ket{0}$ and $\ket{1}$. The ball is squeezed towards the $z$ axis
+(@fig-bloch-pauli b), and for $p = 1/2$ it collapses onto it. It is also called the
+[phase-flip channel]{.gloss key="phase-flip"}, after its Kraus form, a $Z$ error with
+probability $p$. The name suggests a phase that now and then flips suddenly, but
+dephasing usually comes from a gradual loss of information about the phase, as we see
+below.
+
+![The Bloch sphere (grey) and its image (blue) under two Pauli channels. The dots mark where $\ket{0}$ and $\ket{1}$ go. (a) Depolarising noise shrinks the ball uniformly, and (b) dephasing squeezes it towards the $z$ axis.](figures/bloch-pauli-channels){#fig-bloch-pauli width=70%}
+
+::: {.content-visible when-format="html"}
+In the widget below, set the probabilities $q_X$, $q_Y$ and $q_Z$ of a Pauli channel and
+see how it deforms the Bloch ball: for example, $q_X = q_Y = q_Z$ for depolarising
+noise, or only $q_Z$ for dephasing. Drag the picture to turn the view.
+
+{{< include _pauli-widget.qmd >}}
+:::
+
+**The physical origin of dephasing.** The relative phase of a superposition $\alpha\ket{0} + \beta\ket{1}$ turns at a rate set
+by the qubit's frequency (@sec-noise-sources), and the device is calibrated to expect
+this. Suppose that the frequency of the qubit is shifted by a small amount $\delta$ (in radians per
+second), for example by a fluctuating magnetic field. The qubit then picks up an extra phase
+that nobody expected: in a time $t$, its relative phase turns by an extra angle
+$\theta = \delta t$. This is the rotation $R_Z(\theta)$ of @eq-rx-rz. If we knew
+$\delta$, we could undo this rotation. If we do not know it, we do not know $\theta$
+either, and the qubit undergoes a random rotation. Its state becomes the mixture
+$\Lambda(\rho) = \mathbb{E}\big[R_Z(\theta)\,\rho\,R_Z(\theta)^\dagger\big]$, where
+$\mathbb{E}$ is the average over $\theta$. By @exr-virtual-z,
+$R_Z(\theta)XR_Z(\theta)^\dagger = \cos\theta\, X + \sin\theta\, Y$. For an angle that
+is as likely to be positive as negative, the sines average to zero:
+$$
+\Lambda(X) = \mathbb{E}[\cos\theta]\, X, \qquad
+\Lambda(Y) = \mathbb{E}[\cos\theta]\, Y, \qquad
+\Lambda(Z) = Z .
+$$
+These are the factors of a dephasing channel with $1 - 2p = \mathbb{E}[\cos\theta]$: an
+unknown phase acts as dephasing. The longer the qubit waits, the wider the spread of
+$\theta = \delta t$, and the more information about the phase is lost. Once the spread
+is much larger than a radian, $\mathbb{E}[\cos\theta]$ is close to zero and $p$ close to
+$1/2$: the phase is lost. For a Gaussian angle with variance $\sigma^2$,
+$\mathbb{E}[\cos\theta] = e^{-\sigma^2/2}$ (@exr-random-phase).
+
+::: {#exr-random-phase}
+## Random phases
+A qubit undergoes the rotation $R_Z(\theta)$, where $\theta$ is a Gaussian random angle
+with mean zero and variance $\sigma^2$.
+
+(a) Show that $\mathbb{E}[\cos\theta] = e^{-\sigma^2/2}$.
+
+    :::: {.hint}
+    $\cos\theta$ is the real part of $e^{i\theta}$.
+    ::::
+
+(b) Which dephasing probability $p$ does this channel have? What is it for
+$\sigma \ll 1$?
+:::
+
+### Noise gate by gate {#sec-noisy-circuits}
+
+A common approximation of the noise on a device models each noisy gate as the ideal gate
+$U$ followed by a channel $\Lambda$, so that it maps $\rho$ to $\Lambda(U\rho U^\dagger)$.
+A circuit of noisy gates is then a composition of channels. Quantum software development
+kits (SDKs), such as the Qiskit of the tutorials, usually describe noise in this way.
+The approximation assumes that the noise has no memory: the channel
+after each gate does not depend on what happened before. Noise of this kind is called
+[Markovian]{.gloss key="markovian"}. @sec-slow-noise describes the main exception. The
+shrinking factors make compositions easy: two Pauli channels in a row multiply each
+expectation value by the factors of both.
+
+::: {#exr-composition}
+## Composing depolarising channels
+(a) Apply the depolarising channel with parameter $p_1$ and then the one with $p_2$,
+using @eq-depolarising. Show that the result is again a depolarising
+channel, and check that its factor is $(1-p_1)(1-p_2)$.
+
+(b) A qubit is prepared in $\ket{+}$, and $n$ noisy $X$ gates are applied, each followed
+by depolarising noise with parameter $p$. What is $\langle X\rangle$ at the end? For
+$p = 10^{-3}$, after how many gates has $\langle X\rangle$ fallen to half of its
+initial value?
+
+    :::: {.hint}
+    Where in the circuit can the channels be moved?
+    ::::
+
+(c) Two qubits each undergo depolarising noise with parameter $p$, independently, so
+that the channel on both is $\Lambda\otimes\Lambda$. By which factors do
+$\langle Z\otimes I\rangle$ and $\langle Z\otimes Z\rangle$ shrink? Do these factors
+depend on the state of the two qubits?
+
+    :::: {.hint}
+    A product of channels acts factor by factor:
+    $(\Lambda\otimes\Lambda)(A\otimes B) = \Lambda(A)\otimes\Lambda(B)$.
+    ::::
+:::
+
+### Relaxation and non-unital noise {#sec-relaxation}
+
+The channels so far are Pauli channels, and they share a property: they map the
+maximally mixed state to itself, $\Lambda(I/2) = I/2$, so the centre of the Bloch ball
+stays where it is. A channel with this property is called
+[unital]{.gloss key="unital"}. Unital noise can only make a state more mixed: it
+destroys information, but it does not push the qubit towards any particular state.
+
+[Relaxation]{.gloss key="relaxation"}, the decay of $\ket{1}$ to $\ket{0}$
+(@sec-noise-sources), is different. A qubit in $\ket{1}$ gives its energy to the
+environment and ends up in $\ket{0}$. Relaxation therefore pushes every state towards
+$\ket{0}$, the maximally mixed state included: it is not unital. It is described by the
+[amplitude-damping]{.gloss key="amplitude-damping"} channel, with the Kraus operators
+$$
+K_0 = \begin{pmatrix} 1 & 0 \\ 0 & \sqrt{1-\gamma} \end{pmatrix}, \qquad
+K_1 = \begin{pmatrix} 0 & \sqrt{\gamma} \\ 0 & 0 \end{pmatrix} = \sqrt{\gamma}\,\ket{0}\bra{1} .
+$$ {#eq-amplitude-damping}
+$K_1$ is the decay itself: a qubit in $\ket{1}$ jumps to $\ket{0}$, with probability
+$\gamma$. $K_0$ is the case without a decay, which also shrinks the amplitude of
+$\ket{1}$, since a qubit that has not decayed is more likely to have been in $\ket{0}$
+all along. Applied to a density matrix, the channel gives
+$$
+\begin{pmatrix} \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11} \end{pmatrix} \mapsto
+\begin{pmatrix} \rho_{00} + \gamma\rho_{11} & \sqrt{1-\gamma}\,\rho_{01} \\
+\sqrt{1-\gamma}\,\rho_{10} & (1-\gamma)\,\rho_{11} \end{pmatrix} .
+$$
+In terms of the Bloch vector, $r_z \mapsto (1-\gamma)\,r_z + \gamma$ and
+$r_{x,y} \mapsto \sqrt{1-\gamma}\, r_{x,y}$: the ball shrinks, and its centre moves
+towards $\ket{0}$, to $r_z = \gamma$ (@fig-bloch-t1t2 a). Non-unital noise can thus make
+a state purer: for $\gamma = 1$, even the maximally mixed state becomes the pure state
+$\ket{0}$.
+
+### Relaxation ($T_1$) and dephasing ($T_2^*$) times {#sec-t1-t2}
+
+Two experiments measure how fast a qubit relaxes and dephases, and define two of the
+times that providers quote for their devices (@sec-noise-sources).
+
+::: {#def-t1}
+## Relaxation time $T_1$
+Prepare a qubit in $\ket{1}$ and wait for a time $t$: the probability of still finding
+it in $\ket{1}$ decays as $e^{-t/T_1}$. $T_1$ is called the *relaxation time*.
+:::
+
+::: {#def-t2-star}
+## Dephasing time $T_2^*$
+Prepare a qubit in $\ket{+}$ and wait for a time $t$: its
+[coherence]{.gloss key="coherence"}, the size $|\rho_{01}|$ of the off-diagonal entry of
+its density matrix, decays approximately as $e^{-t/T_2^*}$.
+[$T_2^*$]{.gloss key="t2-star"} is called the *dephasing time*. It is measured with a
+[Ramsey experiment]{.gloss key="ramsey"} (@fig-ramsey-echo a): a $\pi/2$ pulse turns
+$\ket{0}$ into $\ket{+}$, and after the wait, a second $\pi/2$ pulse turns the $x$
+component of the Bloch vector into the $z$ component, which the measurement reads out.
+:::
+
+Which channels produce these two laws? For $T_1$, it is amplitude damping: after a time
+$t$, the probability $\rho_{11}$ of finding $\ket{1}$ has decayed by $1-\gamma$, so
+$\gamma = 1 - e^{-t/T_1}$. Amplitude damping also shrinks the coherence, by
+$\sqrt{1-\gamma} = e^{-t/2T_1}$. Even without dephasing, relaxation therefore limits
+the coherence: for a pure state $\alpha\ket{0} + \beta\ket{1}$, the coherence is
+$|\alpha\beta|$, and the amplitude $\beta$ decays at half the rate of the probability
+$|\beta|^2$.
+
+The rest of the decay is dephasing, caused by the unknown phases of
+@sec-depolarising-dephasing. The qubit frequency is shifted by an amount that we do not know, so
+the phase drifts by an angle that we do not know, and after some time the information
+about the phase is lost. We describe this by a dephasing channel whose factor decays as
+$1 - 2p = e^{-t/T_\varphi}$. This is called [pure dephasing]{.gloss key="pure-dephasing"},
+to distinguish it from the loss of coherence caused by relaxation. Its time $T_\varphi$ is
+called the pure-dephasing time. Amplitude damping and dephasing commute (@exr-t1-t2), and the
+coherence decays with both factors, $e^{-t/2T_1}e^{-t/T_\varphi} = e^{-t/T_2^*}$, where
+$$
+\frac{1}{T_2^*} = \frac{1}{2T_1} + \frac{1}{T_\varphi} .
+$$ {#eq-t2}
+@fig-bloch-t1t2 b shows the combined channel.
+
+Since $1/T_\varphi \ge 0$, @eq-t2 gives $T_2^* \le 2T_1$. This bound matters in
+practice. The dephasing channel needs $T_\varphi$, but $T_\varphi$ cannot be measured on
+its own, because relaxation cannot be switched off: every measurement of the coherence
+includes the decay $e^{-t/2T_1}$. Experiments measure $T_1$ and $T_2^*$, and
+$T_\varphi$ follows from @eq-t2. A noise model built from measured values therefore
+needs $T_2^* \le 2T_1$. Otherwise, $1/T_\varphi$ would be negative, and the dephasing
+channel would need $p < 0$, which is not a channel. The simulators of SDKs reject or
+correct such values.
+
+![The Bloch sphere (grey) and its image (blue) under (a) amplitude damping, which shrinks the ball and pulls it towards $\ket{0}$, and (b) an idle qubit, with relaxation and pure dephasing together, after a wait $t = T_1/2$ with $T_2^* = T_1/2$. The dots mark where $\ket{0}$ and $\ket{1}$ go.](figures/bloch-relaxation-dephasing){#fig-bloch-t1t2 width=70%}
+
+An idle qubit undergoes this combined channel while it waits. For a short wait $t$, its
+factors are $1 - t/T_2^*$ on the $x$ and $y$ axes and $1 - t/T_1$ on the $z$ axis, so
+its error is of order $t/T_2^*$ (@sec-budgets makes this precise). A wait of 100 ns
+with $T_2^* = 100$ µs therefore costs as much as a single-qubit gate, or more. @tbl-channels
+collects the single-qubit channels.
+
+| Channel | Pauli errors | $f_x = f_y$ | $f_z$ | Centre of the ball | Describes |
+|--------------------|--------------------------|-----------|---------|---------------|---------------|
+| depolarising | $X$, $Y$ and $Z$, each with probability $p/4$ | $1-p$ | $1-p$ | fixed | gate errors |
+| dephasing | $Z$ with probability $p$ | $1-2p$ | $1$ | fixed | unknown phases ($T_\varphi$) |
+| amplitude damping | not a Pauli channel (@eq-amplitude-damping) | $\sqrt{1-\gamma}$ | $1-\gamma$ | moves to $r_z = \gamma$ | relaxation ($T_1$) |
+
+: Single-qubit channels. The factors multiply the components of the Bloch vector. For an idle qubit, $\gamma = 1 - e^{-t/T_1}$ and $1 - 2p = e^{-t/T_\varphi}$. {#tbl-channels}
+
+::: {.content-visible when-format="html"}
+The widget below shows these channels acting on the Bloch ball. For an idle qubit, set
+the waiting time and $T_2^*$ in units of $T_1$, with $T_2^*$ at most $2T_1$.
+Drag the picture to turn the view.
+
+{{< include _channel-widget.qmd >}}
+:::
+
+::: {#exr-t1-t2}
+## Relaxation and dephasing together
+(a) Show that amplitude damping and dephasing commute. Write the Bloch vector of
+$\ket{+}$ after it has been idle for a time $t$.
+
+    :::: {.hint}
+    Compare what the two channels do to $\rho_{00}$, $\rho_{11}$ and $\rho_{01}$.
+    ::::
+
+(b) Suppose the calibration data of a superconducting device give, for three of its
+qubits, $T_1 = 150$, $80$ and $200$ µs and $T_2^* = 120$, $150$ and $60$ µs.
+Compute $T_\varphi$ for each qubit. Which process limits the coherence of each,
+relaxation or dephasing?
+:::
+
+### Echoes and $T_2$ {#sec-slow-noise}
+
+The dephasing channel describes a phase that we do not know: the frequency shift
+$\delta$ of @sec-depolarising-dephasing, and with it the angle $\theta = \delta t$, differs from
+shot to shot by an amount that we cannot predict. Physically, this is a reasonable
+picture when the frequency fluctuates slowly, so that $\delta$ stays constant during each
+shot. But then the qubit picks up its unknown phase at a steady rate, and there is an
+easy way to undo it. An $X$ pulse halfway through the wait exchanges $\ket{0}$ and
+$\ket{1}$, which reverses the sign of the phase picked up so far. The second half
+of the wait then undoes the first, whatever the value of $\delta$ (@exr-echo). This is called
+an [echo]{.gloss key="echo"}, or Hahn echo, after Erwin Hahn, who found it with nuclear
+spins in 1950. It leaves the qubit flipped, so a second $X$ is added at
+the end of the wait. Repeated echoes during a long wait, called
+[dynamical decoupling]{.gloss key="dynamical-decoupling"}, protect idle qubits from slow
+noise on the device itself, while the error mitigation of later chapters corrects the
+estimates after the run.
+
+If the frequency also changes during the wait, the phases picked up in the two halves
+differ, and the echo cancels only the part they have in common. What is left comes from
+fluctuations on timescales shorter than the wait. The angle is then a sum of many small,
+independent kicks, one for each short interval, so it is Gaussian (by the central limit
+theorem). Its variance is the sum of the variances of the kicks, the fact behind
+@eq-standard-error, and it therefore grows in proportion to $t$. We write it
+as $\sigma^2 = 2t/T_\varphi$, so that the coherence decays as
+$e^{-\sigma^2/2} = e^{-t/T_\varphi}$. Fast noise gives the exponential decay of pure
+dephasing that @sec-t1-t2 assumed.
+
+An echo experiment, a Ramsey experiment with an $X$ pulse halfway and another at the end
+of the wait (@fig-ramsey-echo),
+therefore measures a longer time than $T_2^*$, called $T_2$: the decay due to relaxation
+and fast noise only. It obeys @eq-t2 with $T_2$ in place of $T_2^*$ and a longer
+$T_\varphi$, so $T_2^* \le T_2 \le 2T_1$. The star of $T_2^*$ marks the time that
+includes slow noise. Dynamical decoupling is usually assumed to be available for idle
+qubits, so calibration data often quote $T_2$ rather than $T_2^*$, and the error budgets
+of @sec-budgets use $T_2$ too. In a Ramsey experiment, slow noise makes the coherence decay
+faster, and the decay need not be exponential: for a frequency shift that is constant
+within each shot and Gaussian across shots, it is a Gaussian in $t$ (@exr-echo).
+
+![(a) A Ramsey experiment and an echo. Each $\pi/2$ pulse is a rotation by $\pi/2$ about an axis in the $xy$ plane, and M is the measurement. (b) The coherence left after a wait $t$. With slow noise, the Ramsey signal decays faster than the echo signal, which decays as $e^{-t/T_2}$. The curves are an illustration, with slow noise of one fixed strength.](figures/ramsey-echo){#fig-ramsey-echo width=95%}
+
+Slow noise has memory, so it is the main exception to the Markovian model of
+@sec-noisy-circuits. A common source is a defect in the chip that switches between two
+states and makes the qubit frequency jump
+([random telegraph noise]{.gloss key="telegraph-noise"}). Many such defects give noise in
+which slow fluctuations dominate ([1/f noise]{.gloss key="one-over-f"}, with $f$ the
+frequency of the fluctuations).
+
+::: {#exr-echo}
+## The echo
+(a) Show that $X R_Z(\theta) X = R_Z(-\theta)$, and that
+$R_Z(\theta/2)\, X\, R_Z(\theta/2) = X$ for every angle $\theta$. An echo on an idle
+qubit ends with a second $X$. Why does this second $X$ cost nothing extra when the next
+gate on the qubit is a single-qubit gate?
+
+    :::: {.hint}
+    Use $XZX = -Z$ and @eq-conjugation. For the second $X$, see @sec-virtual-z.
+    ::::
+
+(b) In a Ramsey experiment, the qubit frequency is shifted by an amount $\delta$ that is
+constant within each shot, and Gaussian with standard deviation $\sigma_\delta$
+across shots. Ignoring relaxation and fast noise, show that the coherence after a wait
+$t$ is $e^{-\sigma_\delta^2 t^2/2}$. What is it with an echo?
+
+    :::: {.hint}
+    Use @exr-random-phase with $\theta = \delta t$.
+    ::::
+:::
+
+## Noise on many qubits {#sec-multi-qubit-noise}
+
+On many qubits, the tools of @sec-pauli-channels carry over with one more fact of Pauli
+algebra. Two Pauli strings $P$ and $Q$ either commute, $PQ = QP$, or anticommute, $PQ = -QP$; we
+can summarise this by defining the sign $s_{PQ} = \pm 1$ such that $PQ = s_{PQ}\,QP$. A Pauli channel on $n$ qubits, $\Lambda(\rho) = \sum_Q q_Q\, Q\rho Q$, therefore
+multiplies the expectation value of every Pauli string $P$ by its own factor,
+$$
+\langle P\rangle \mapsto f_P\langle P\rangle, \qquad f_P = \sum_Q s_{PQ}\, q_Q .
+$$ {#eq-pauli-factors-n}
+
+Noise that acts on each qubit separately, with a channel $\Lambda_j$ on qubit $j$, is
+called *local*: the channel on all qubits is $\Lambda_1\otimes\cdots\otimes\Lambda_n$. It
+acts factor by factor on a Pauli string and leaves the identity factors unchanged, so the
+factor of a string is the product of the single-qubit factors at its non-identity
+positions.
+
+As examples, we extend the simplest noise of @sec-depolarising-dephasing, the depolarising
+channel, to many qubits. There are two natural ways to do this.
+
+::: {#def-local-depolarising}
+## Local depolarising noise
+[Local depolarising noise]{.gloss key="local-depolarising"} with parameter $p$ applies
+the depolarising channel of @def-depolarising to each qubit, independently.
+:::
+
+::: {#def-global-depolarising}
+## Global depolarising noise
+The [global depolarising channel]{.gloss key="global-depolarising"} on $n$ qubits replaces
+the state of all qubits by the maximally mixed state with probability $p$:
+$$
+\Lambda(\rho) = (1-p)\,\rho + p\,\frac{I}{2^n} .
+$$
+:::
+
+For $n = 1$, both are the depolarising channel of @eq-depolarising. With local
+depolarising noise, a Pauli string of [weight]{.gloss key="weight"} $w$, its number of
+non-identity positions, shrinks by $(1-p)^w$: strings of high weight lose their signal
+fastest.
+
+Global depolarising behaves differently. Compare the Kraus forms first. With
+local depolarising noise, each qubit independently
+suffers $X$, $Y$ or $Z$ with probability $p/4$ each, so an error on $w$ given qubits has a
+probability of order $(p/4)^w$: errors on many qubits at once are rare. The global channel
+is a Pauli channel too. Averaging $Q\rho Q$ over all $4^n$ Pauli strings $Q$ gives
+$I/2^n$. Indeed, by @eq-pauli-factors-n, the factor of every non-identity string $P$
+vanishes: at a position where $P$ is not the identity, two of the four choices of $Q$
+anticommute with it, so half of all strings do. So
+$$
+(1-p)\,\rho + p\,\frac{I}{2^n} = \Big(1 - p + \frac{p}{4^n}\Big)\rho + \frac{p}{4^n}\sum_{Q\ne I} Q\rho Q .
+$$
+All $4^n - 1$ non-identity errors are equally likely, and an error on all $n$ qubits is
+as likely as an error on one. As a result, global depolarising shrinks every Pauli string
+by the same factor, $1-p$, whatever its weight. No product of local channels does this:
+it would need $f_{ZI} = f_{IZ} = f_{ZZ} = 1-p$, while a product gives
+$f_{ZZ} = f_{ZI}\, f_{IZ}$.
+
+Like its single-qubit version, global depolarising noise commutes with every unitary,
+here on all $n$ qubits. If
+every gate $i$ of a circuit is followed by global depolarising noise with parameter
+$p_i$, all of it can be moved to the end of the circuit. Every expectation value then shrinks by the
+same factor:
+$$
+\langle P\rangle \mapsto f\langle P\rangle, \qquad f = \prod_i (1-p_i) .
+$$ {#eq-global-factor}
+A single number describes the noise of the whole circuit. This makes global depolarising
+noise much easier to model than local noise, and to correct for (@sec-rescaling).
+
+Local noise does not commute with entangling gates. Conjugation by CZ turns an $X$ on the
+second qubit into $Z\otimes X$ (@sec-compiling), so an $X$ error before a CZ is a
+two-qubit error after it. Errors therefore spread through a circuit: each later two-qubit gate
+can carry an error to one more qubit, and the qubits that it can reach form a cone, called
+its *light cone* (@fig-error-spreading). For deep circuits of random gates, global
+depolarising noise is then a good approximation of local noise. These circuits are called
+[scrambling]{.gloss key="scrambling"}: the light cone of every error soon covers all the
+qubits, so that any error, wherever it happens, leaves the output close to random. Global
+depolarising noise is therefore a very useful model for estimates
+(@sec-fidelity and @sec-bias-variance), although real noise is mostly local.
+
+![One error (star) in the brick-wall circuit of @exr-error-budget, on qubit $q_4$ after the pulse of the second layer. The shaded wires are its light cone: the qubits that the later CZ gates can carry it to. By the last layers, it can reach every qubit.](figures/error-spreading){#fig-error-spreading width=60%}
+
+[Correlated errors]{.gloss key="correlated-errors"} affect several qubits together. An
+example is [crosstalk]{.gloss key="crosstalk"} (@sec-superconducting), including the
+coupling between neighbouring superconducting qubits that is never fully off and acts as
+a small, unwanted $R_{ZZ}$ rotation (@eq-rzz). Some correlated errors affect a whole
+chip. When a cosmic ray, or the radioactive decay of a trace impurity, deposits energy in
+a superconducting chip, the energy spreads as vibrations of the crystal
+([phonons]{.gloss key="phonon"}), and for tens of milliseconds all qubits on the chip
+relax much faster than usual. In the experiment of @mcewen2022, this happened about once
+every ten seconds. Such bursts break the independence of errors that the estimates of
+@sec-fidelity assume, and they matter most for error correction.
+
+## Noisy gates {#sec-gate-errors}
+
+In @sec-noisy-circuits, we modelled the noisy gates of a device as ideal gates, each
+followed by a channel. But which channel is the right one? Part of it is the
+relaxation and dephasing during the gate. The rest comes from the
+control: the pulses that implement a gate are never exactly right.
+
+A [coherent error]{.gloss key="coherent-error"} (@sec-noise-sources) is a fixed, wrong
+unitary. A pulse that is slightly too strong, for example, implements
+$R_X(\theta+\eta) = R_X(\eta)R_X(\theta)$ instead of $R_X(\theta)$: the channel after the
+gate is the unitary $R_X(\eta)$. Biased angles in parametrised gates return with
+variational algorithms. <!-- VQE-LINK: link "variational algorithms" to the variational
+chapter. --> An [incoherent error]{.gloss key="incoherent-error"} is random: the error
+unitary differs from shot to shot, and averages to a channel, as the random $R_Z$ did in
+@sec-depolarising-dephasing.
+
+The difference matters when a gate is repeated. Apply an $X$ gate $n$ times to a qubit
+that starts in $\ket{0}$, each time over-rotated about the $x$ axis by a small angle
+$\eta_k$. The result is $X^n$ followed by $R_X(\sum_k\eta_k)$. A total error angle
+$\theta$ gives the wrong outcome with probability $\sin^2(\theta/2)$. We use this *error
+probability* as the measure of error until @sec-fidelity. If the error is the same every
+time, $\eta_k = \eta$, the angles add up like the slow noise of @sec-slow-noise, and the
+error probability is $\sin^2(n\eta/2) \approx n^2\eta^2/4$. If the errors are random and
+independent, with mean zero and variance $\sigma^2$, they add up like the fast noise
+there: the variance of the total angle is $n\sigma^2$, and the average error
+probability is about $n\sigma^2/4$. For the same error per gate, $\eta = \sigma$, the
+coherent error after $n$ gates is $n$ times larger (@fig-coherent-incoherent).
+
+![The error probability after $n$ over-rotated gates, with the same error per gate: a fixed angle $\eta = 0.02$ (orange) and independent random angles with standard deviation $\sigma = 0.02$ (blue). On these logarithmic axes, the coherent error grows with slope 2 and the incoherent one with slope 1.](figures/coherent-incoherent){#fig-coherent-incoherent width=55%}
+
+Three consequences matter later:
+
+1. The error budgets of @sec-fidelity assume incoherent errors, so they underestimate
+   coherent ones.
+2. Circuits that repeat identical layers, such as those for time evolution, are the
+   worst case.
+3. Coherent errors can be made incoherent on purpose: random Pauli gates before and
+   after a gate such as CZ, chosen so that they cancel in the ideal circuit, average its
+   error into a Pauli channel. This is called [twirling]{.gloss key="twirling"}.
+   Each random Pauli gate can be merged with the single-qubit gate next to it, which
+   costs a single pulse anyway (@sec-virtual-z), so twirling needs no extra pulses.
+   @exr-over-rotation (b) shows the simplest case.
+
+[Leakage]{.gloss key="leakage"} falls outside this description: it takes a qubit out of
+its two levels, for example into the third level of a transmon (@fig-energy-levels), so
+that channels on $2\times 2$ density matrices cannot describe it.
+
+::: {#exr-over-rotation}
+## Coherent and incoherent errors
+(a) A gate has a coherent over-rotation of $\eta = 0.01$. After how many repetitions is
+the error probability 1%? Answer the same question for random over- and
+under-rotations, with mean zero and standard deviation $\sigma = 0.01$.
+
+(b) An $R_X(\theta)$ gate has a small coherent error: it applies $R_Z(\eta)$ after the intended rotation.
+For each repetition of the gate, independently and with probability $1/2$, we add a perfect
+$X$ gate just before it and another just after it. Since $X$ commutes with $R_X(\theta)$,
+the ideal gate is unchanged, but the error becomes $X R_Z(\eta) X$. Show that, averaged over these
+random choices, the error of each gate becomes a dephasing channel with $p = \sin^2(\eta/2)$.
+How does it now add up over $n$ repetitions?
+
+    :::: {.hint}
+    Use @exr-echo (a), and compute the factors.
+    ::::
+:::
+
+## Readout errors {#sec-readout-errors}
+
+A measurement can report the wrong bit (@tbl-noise). We describe this with the
+[confusion matrix]{.gloss key="confusion-matrix"} $M$, whose entry
+$M_{ij} = p(\text{read } i \mid \text{state } j)$ is the probability of reading $i$ when
+the qubit is in $\ket{j}$. On one qubit,
+$$
+M = \begin{pmatrix} 1-e_0 & e_1 \\ e_0 & 1-e_1 \end{pmatrix},
+$$
+where $e_0 = p(1\mid 0)$ and $e_1 = p(0\mid 1)$ are the two error rates. If we call
+reading 1 a positive, $e_0$ is the rate of false positives and $e_1$ the rate of false
+negatives. $M$ maps the
+probabilities of the true outcomes to those of the recorded ones, so it is a channel on
+classical probabilities [@walter2025, sec. 4.3].
+
+If the two error rates are equal, $e_0 = e_1 = e$, the readout acts as a perfect
+measurement after a [bit flip]{.gloss key="bit-flip"}: the Pauli channel that applies $X$
+with probability $e$. By @eq-pauli-factors, $\langle Z\rangle$ then shrinks by $1-2e$, as
+in @exr-readout-bias. Usually, $e_1 > e_0$. A readout on a
+superconducting qubit takes about a microsecond (@tbl-timescales), and a qubit in
+$\ket{1}$ can relax during it, with a probability of order 1% for $T_1 = 100$ µs. With
+$p_0 = (1+\langle Z\rangle)/2$ and $p_1 = (1-\langle Z\rangle)/2$, the recorded
+expectation value is then
+$$
+\langle Z\rangle_{\text{read}} = (1 - e_0 - e_1)\,\langle Z\rangle + (e_1 - e_0) ,
+$$ {#eq-readout}
+a shrinking factor and an offset, as for amplitude damping.
+
+Preparation can fail too. A qubit that is thermally excited (@exr-thermal) starts in
+$\ket{1}$ instead of $\ket{0}$, and a measurement right after the preparation cannot tell
+this apart from a readout error (@exr-readout). Errors in state preparation and
+measurement are therefore characterised together, as [SPAM errors]{.gloss key="spam"}.
+
+On $n$ qubits, the confusion matrix is $2^n\times 2^n$: its entry $M_{xy}$ is the
+probability of reading the bit string $x$ when the qubits are in the basis state
+$\ket{y}$. For independent readouts, it is the tensor product of single-qubit
+matrices. If, in addition, each qubit's two error
+rates are equal, every qubit of a Pauli string shrinks its expectation value by its own
+factor $1 - 2e_j$ (@exr-readout-bias). Otherwise, the offsets of @eq-readout also mix in
+the expectation values of shorter strings. Correcting estimates for known readout errors
+is the simplest form of error mitigation, which we meet later in the course.
+
+::: {#exr-readout}
+## Unequal readout errors
+A qubit has the readout error rates $e_0 = 1\%$ and $e_1 = 4\%$.
+
+(a) Which value of $\langle Z\rangle$ is recorded on average for the states $\ket{0}$,
+$\ket{1}$ and $\ket{+}$?
+
+(b) Suppose instead that the readout is perfect, but that preparing $\ket{0}$ gives
+$\ket{1}$ with probability $e_p$, and that $\ket{1}$ is prepared by a perfect $X$ gate
+after that. Which confusion matrix does an experiment that prepares $\ket{0}$ and
+$\ket{1}$ and measures them report? Can it tell this situation apart from a readout
+error?
+
+(c) Why does the difference between the two situations matter for a circuit with gates
+between the preparation and the measurement?
+
+    :::: {.hint}
+    Where in the circuit does each error act, and what do the gates do to it?
+    ::::
+:::
+
+## Fidelity and error budgets {#sec-fidelity}
+
+Providers summarise the quality of each operation by a fidelity (@sec-noise-sources).
+In this section, we define fidelities, and we use the error rates that providers quote
+for a quick estimate of how much signal a circuit keeps. We work out one example, the
+same circuit on two platforms.
+
+### Fidelity of states and gates {#sec-fidelity-def}
+
+::: {#def-fidelity}
+## Fidelity
+The [state fidelity]{.gloss key="state-fidelity"} of a state $\rho$ with a pure target
+state $\ket{\psi}$ is $F = \bra{\psi}\rho\ket{\psi}$. The
+[average gate fidelity]{.gloss key="average-gate-fidelity"} $F_{\text{avg}}$ of a noisy
+gate is the state fidelity of its output with the ideal output $U\ket{\psi}$, averaged
+over all pure input states $\ket{\psi}$. The *error per gate* is
+$r = 1 - F_{\text{avg}}$.
+:::
+
+The state fidelity is the probability that $\rho$ passes a measurement that asks "is the
+state $\ket{\psi}$?". Some texts, including @nielsen2010 and the Quantum Information
+Theory notes [@walter2025, sec. 4.2], call $\sqrt{\bra{\psi}\rho\ket{\psi}}$ the fidelity
+instead. We use the squared version, as Qiskit does.
+
+For example, after depolarising noise with parameter $p$, every pure state has the
+fidelity $1 - p/2$ with the ideal one, so $r = p/2$.
+
+Providers usually quote the error per gate $r$, measured with
+[randomised benchmarking]{.gloss key="randomised-benchmarking"}. An error budget needs
+instead the probability that an operation goes wrong. For a Pauli channel, this is the
+*Pauli error* $\varepsilon = 1 - q_I$, the probability of an error other than the
+identity. It is slightly larger than $r$. On $d$ levels ($d = 2^n$ for $n$ qubits),
+$$
+\varepsilon = \frac{d+1}{d}\, r ,
+$$ {#eq-pauli-error}
+so $\varepsilon = 3r/2$ for a single-qubit gate and $5r/4$ for a two-qubit gate.
+Research papers often quote Pauli errors instead of $r$, so a budget must check which of
+the two it uses. A derivation of @eq-pauli-error can be found in @nielsen2002.
+
+### Circuit fidelity and the signal left {#sec-signal-left}
+
+A circuit has many gates, each with a small error. Before we run it, we would like to
+know how much of the ideal result survives: by how much a measured expectation value
+shrinks, and whether what is left can be seen above the shot noise. Computing this
+exactly means simulating the noisy circuit, with a detailed noise model. Instead, we
+estimate it from the error rates that providers quote, with a few approximations.
+
+Suppose every gate and idle step $i$ of a circuit suffers a Pauli error with probability
+$\varepsilon_i$, independently of the others. The probability that a shot runs without
+any error is then
+$$
+f = \prod_i (1-\varepsilon_i) \approx e^{-\sum_i\varepsilon_i} ,
+$$ {#eq-circuit-fidelity}
+for small $\varepsilon_i$, as in @sec-nisq and @exr-error-budget. Virtual $Z$ gates add
+nothing to the sum (@sec-virtual-z). In a scrambling circuit (@sec-multi-qubit-noise),
+any error leaves the output close to random, so the noise acts as global depolarising
+noise. Every expectation value then shrinks by the same factor $f$, as in
+@eq-global-factor with $p_i \approx \varepsilon_i$. So $f$, the probability of a shot
+without an error, is also the fraction of the signal that is left, and approximately the
+fidelity of the output state with the ideal one.
+
+Readout errors act after the last gate and do not spread. With equal error rates $e$,
+they shrink a Pauli string of weight $w$ by $(1-2e)^w \approx e^{-2ew}$
+(@exr-readout-bias). Each qubit of the string therefore adds $2e$ to the sum in
+@eq-circuit-fidelity, and the other qubits add nothing.
+
+These estimates assume independent, incoherent errors and a circuit that spreads them.
+They are rough, but they are what we use to judge whether a result is plausible. With
+$N$ shots, the standard error is about $1/\sqrt{N}$ (@eq-standard-error). A measured
+value $f\langle P\rangle$ can therefore be told apart from zero only if
+$f|\langle P\rangle|$ is several times larger than $1/\sqrt{N}$.
+
+### Example: error budgets on two platforms {#sec-budgets}
+
+As an example, we estimate how much signal one circuit keeps on a superconducting and on
+a trapped-ion device. Take the brick-wall circuit of @exr-error-budget, on a line
+of 10 qubits with 8 layers, and estimate $\langle Z\otimes Z\rangle$ on two neighbouring
+qubits. Each layer applies an $R_X$ pulse to every qubit, its $R_Z$ being virtual, and
+CZs between neighbours: 80 pulses and 36 CZs. We take values that are typical of
+current devices (@sec-noise-sources and @tbl-timescales):
+
+- superconducting: Pauli errors of 0.03% per pulse (40 ns), 0.5% per CZ (80 ns) and 1%
+  per readout, $T_1 = 150$ µs and $T_2 = 100$ µs;
+- trapped ions: 0.01% per pulse (20 µs), 0.2% per two-qubit gate (300 µs) and 0.3% per
+  readout, $T_2 = 1$ s and a much longer $T_1$, with all gates run one after another.
+
+Idle qubits contribute too. Over a short wait $t$, the error probability of an idle
+qubit is about $t/(2T_2) + t/(4T_1)$, from the factors of @sec-t1-t2. It uses
+$T_2$ in place of $T_2^*$, since dynamical decoupling protects the idle qubits
+(@sec-slow-noise). On the superconducting device, only the two qubits at the ends of the
+line wait, during the CZs of every other layer. On the ion trap, each qubit waits for
+about 10 ms of the 12 ms that the gates take. @tbl-budget collects the contributions.
+
+| Contribution to $\sum_i\varepsilon_i$ | Superconducting | Trapped ions |
+|---|---|---|
+| two-qubit gates | $36 \times 0.5\% = 0.18$ | $36 \times 0.2\% = 0.072$ |
+| single-qubit pulses | $80 \times 0.03\% = 0.024$ | $80 \times 0.01\% = 0.008$ |
+| idling | 8 waits of 80 ns: $0.004$ | about 100 ms in total: $0.05$ |
+| readout of the two qubits | $2 \times 2 \times 1\% = 0.04$ | $2 \times 2 \times 0.3\% = 0.012$ |
+| total | $0.25$ | $0.14$ |
+| signal left, $f$ | $0.78$ | $0.87$ |
+| duration of the gates | about 1 µs | about 12 ms |
+
+: Error budget of the 8-layer brick-wall circuit on 10 qubits, for $\langle Z\otimes Z\rangle$ on two neighbouring qubits, with the values in the text. {#tbl-budget}
+
+On the superconducting device, the two-qubit gates dominate, followed by the readout.
+Idling hardly matters, since all qubits are busy in most layers. On the ion trap,
+every error rate is lower, but the gates take long and run one after another. Each
+qubit therefore waits for most of the shot, and idling costs almost as much as the
+two-qubit gates. In general, readout errors dominate wide, shallow circuits and
+observables of high weight, while gate errors dominate deep circuits.
+
+The same specifications define a [noise model]{.gloss key="noise-model"} for a
+simulator: after each gate, a depolarising channel with the relaxation and dephasing of
+its duration, together matching the quoted error; the same relaxation and dephasing on
+idle qubits; and a confusion matrix per qubit. Such a model is only as good as the last
+calibration (@sec-noise-sources). <!-- T2-LINK: link to Tutorial 2 once it is written. -->
+
+::: {#exr-visible-signal}
+## The largest visible circuit
+Take the brick-wall circuit of @tbl-budget with $L$ layers instead of 8, and suppose
+that the ideal value of $\langle Z\otimes Z\rangle$ is $0.5$. We take $10^4$ shots and
+call the signal visible if the measured value is at least three standard errors away
+from zero.
+
+(a) Write the signal left, $f$, as a function of $L$ for each platform.
+
+    :::: {.hint}
+    Split the contributions of @tbl-budget into a part per layer and a fixed part.
+    ::::
+
+(b) What is the largest $L$ with a visible signal on each platform? How long do the
+gates of the $10^4$ shots take in total on the ion trap?
+
+(c) Which contribution limits $L$ on each platform? Which improvement would help the
+ion trap most?
+:::
+
+## Bias and shot noise {#sec-bias-variance}
+
+### Mean squared error {#sec-mse}
+
+In @sec-shot-noise, the sample mean $\bar s$ of $N$ shots was an unbiased estimator of
+$\langle P\rangle$. With noise, each shot comes from the noisy state, and $\bar s$
+averages to $f\langle P\rangle$ instead. Its error now has two parts. The
+[bias]{.gloss key="bias"} is the difference between its average and the value we want,
+$b = \mathbb{E}[\bar s] - \langle P\rangle = (f-1)\langle P\rangle$. Its variance is
+$(1 - f^2\langle P\rangle^2)/N$, the square of @eq-standard-error with
+$f\langle P\rangle$ in place of $\langle P\rangle$. The two add up in the
+[mean squared error]{.gloss key="mse"}:
+$$
+\mathbb{E}\big[(\bar s - \langle P\rangle)^2\big] = b^2 + \mathrm{Var}(\bar s)
+= (1-f)^2\langle P\rangle^2 + \frac{1 - f^2\langle P\rangle^2}{N} .
+$$ {#eq-mse}
+To see the first equality, write $\bar s - \langle P\rangle = (\bar s - \mathbb{E}[\bar s]) + b$
+and expand the square: the cross term averages to zero. More shots shrink only the
+variance, while the bias stays.
+
+The two terms are equal at
+$$
+N^* = \frac{1 - f^2\langle P\rangle^2}{(1-f)^2\langle P\rangle^2} .
+$$
+Beyond $N^*$ shots, the bias dominates the error, and more shots hardly help: they
+estimate the wrong value more precisely. For the superconducting example of
+@tbl-budget, with $f = 0.78$ and $\langle P\rangle = 0.5$, $N^* \approx 70$ shots. A
+larger circuit has a smaller $f$, and an even smaller $N^*$.
+
+::: {#exr-shots-stop-helping}
+## When more shots stop helping
+(a) Show that $N^* \approx (1 - \langle P\rangle^2)/\big(\langle P\rangle^2 (\sum_i\varepsilon_i)^2\big)$
+when the total error $\sum_i\varepsilon_i$ of the circuit is small.
+
+(b) For the superconducting brick-wall circuit of @tbl-budget with $L$ layers and
+$\langle P\rangle = 0.5$, compute the exact $N^*$ for $L = 1$, 8 and 30. Why are more
+shots worth taking on a better device?
+
+(c) @exr-readout-bias (c) compared $10^3$ and $10^5$ shots. Compute $N^*$ there, and
+explain the result of that comparison.
+:::
+
+### Correcting a known shrinking factor {#sec-rescaling}
+
+If the shrinking factor $f$ is known, the bias can be removed: $\bar s/f$ averages to $\langle P\rangle$. The
+price is in the variance. Dividing by $f$ multiplies the standard error by $1/f$, so the
+same precision as without noise takes $1/f^2 = e^{2\sum_i\varepsilon_i}$ times as many
+shots. The cost grows exponentially with the total error of the circuit. For the
+superconducting example, this is a factor of 1.6. For a circuit ten times larger, with
+$f \approx 0.08$, it is a factor of about 140. This is the simplest method of error
+mitigation, applied to readout errors in @exr-readout-bias (d).
+
+Knowing $f$ is the hard part. For global depolarising noise, every expectation value
+shrinks by the same factor, and the error rates of the device give it
+(@eq-circuit-fidelity). Readout errors, which act only at the end of the circuit, are
+another simple case. For generic circuits and noise models, however, each expectation
+value is changed in its own way, and predicting it means simulating the noisy circuit.
+A cost in shots of the same kind returns with the other mitigation methods later in the
+course.
+
+Two questions follow from here. The observables of real applications, such as the energy
+of a physical system, are sums of many Pauli strings, each estimated with its own shots
+and its own noise. And the bias need not be accepted: error-mitigation methods estimate
+and remove it, at a price in shots.
+<!-- L3-LINK: link the two questions to the chapters on observables and on error
+mitigation, once the order of L3-L5 is decided. -->
+
+## More exercises {#sec-L2-exercises}
+
+These exercises combine material from several sections of the chapter.
+
+::: {#exr-ghz}
+## GHZ states under local and global noise
+The GHZ state $(\ket{0\cdots 0} + \ket{1\cdots 1})/\sqrt{2}$ on $n$ qubits has
+$\langle X\otimes\cdots\otimes X\rangle = 1$, with $X$ on all qubits, and
+$\langle Z\otimes Z\otimes I\otimes\cdots\otimes I\rangle = 1$, with $Z$ on the first
+two qubits only.
+
+(a) Each qubit undergoes depolarising noise with parameter $p$. By which factors do the
+two expectation values shrink?
+
+(b) Which parameter of the global depolarising channel shrinks
+$\langle X\otimes\cdots\otimes X\rangle$ by the same factor? What does it then do to
+$\langle Z\otimes Z\otimes I\otimes\cdots\otimes I\rangle$?
+
+(c) How could measurements of these two expectation values show whether the noise on a
+GHZ state is closer to local or to global depolarising?
+:::
+
+::: {#exr-environment}
+## Dephasing from an environment
+A qubit in the state $\alpha\ket{0} + \beta\ket{1}$ interacts with an environment qubit
+in the state $\cos(\phi/2)\ket{0} + \sin(\phi/2)\ket{1}$ through a CZ gate, after which
+the environment is discarded.
+
+(a) Show that the qubit undergoes a dephasing channel with $p = \sin^2(\phi/2)$.
+
+    :::: {.hint}
+    With the environment second, $\gate{CZ} = I\otimes\ket{0}\bra{0} + Z\otimes\ket{1}\bra{1}$. Take the partial trace over the environment.
+    ::::
+
+(b) The Kraus operators of this channel are $K_e = (I\otimes\bra{e})\,\gate{CZ}\,(I\otimes\ket{E})$
+for $e = 0, 1$, where $\ket{E}$ is the initial state of the environment. Compute them,
+and compare them with those of @def-pauli-channel.
+:::
+
+## Further reading {#sec-L2-reading}
+
+@nielsen2010 [sec. 8.3] treats the channels of this chapter in the same Kraus form, and
+the Quantum Information Theory notes [@walter2025, secs. 4.4 and 5.1-5.2] give the
+general theory. @krantz2019
+describes $T_1$, $T_2$, Ramsey and echo experiments on superconducting qubits.
+
+::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+:::

@@ -133,3 +133,117 @@ glossary:
   estimator:
     term: estimator
     def: "A rule that turns measured data into an estimate of a quantity, for example the sample mean of the outcomes as an estimate of an expectation value."
+  density-matrix:
+    term: density matrix
+    def: "The general description of a quantum state, including states that are uncertain mixtures of pure states: a positive semidefinite matrix with trace one. Expectation values are traces of the observable times the density matrix."
+  mixed-state:
+    term: mixed state
+    def: "A quantum state that is not pure: a probabilistic mixture of pure states, described by a density matrix. On one qubit, its Bloch vector lies inside the Bloch sphere."
+  bloch-vector:
+    term: Bloch vector
+    def: "The three expectation values of X, Y and Z of a qubit, which fix its density matrix. It has length one for pure states and less for mixed states."
+  purity:
+    term: purity
+    def: "The trace of the square of a density matrix: 1 for pure states, smaller for mixed states, and smallest, one over 2 to the n, for the maximally mixed state of n qubits (1/2 for a uniformly random qubit)."
+  quantum-channel:
+    term: quantum channel
+    def: "The general description of how a quantum state changes, including noise: a linear map of density matrices that can be written with Kraus operators. Unitary gates are the channels with a single Kraus operator."
+  kraus-operators:
+    term: Kraus operators
+    def: "A set of matrices that defines a quantum channel: the channel maps a density matrix to the sum of each Kraus operator times the density matrix times its adjoint. The same channel can have different sets of Kraus operators."
+  completely-positive:
+    term: completely positive
+    def: "A map of density matrices is completely positive if it still gives valid density matrices when it acts on part of a larger system. Quantum channels are exactly the completely positive maps that preserve the trace."
+  pauli-channel:
+    term: Pauli channel
+    def: "A channel that applies a random Pauli error, chosen with fixed probabilities. It multiplies the expectation value of each Pauli string by its own factor."
+  bit-flip:
+    term: bit flip
+    def: "The Pauli channel that applies X with some probability p: it flips the bit of a qubit. Readout errors with equal error rates act as a bit flip just before the measurement."
+  phase-flip:
+    term: phase-flip channel
+    def: "Another name for the dephasing channel, the Pauli channel that applies Z with some probability p. The name describes its Kraus form; physically, dephasing is usually a gradual loss of information about the phase."
+  dephasing-channel:
+    term: dephasing channel
+    def: "The Pauli channel that applies Z with some probability p, also called the phase-flip channel. It keeps the probabilities of 0 and 1 and shrinks the coherence. An unknown phase, for example from an unknown shift of the qubit frequency, acts as a dephasing channel."
+  depolarising:
+    term: depolarising channel
+    def: "On one qubit, the Pauli channel that applies X, Y or Z, each with probability p/4. It is the same as replacing the state by the maximally mixed state with probability p, and it shrinks the Bloch ball uniformly. On many qubits, it can be local or global."
+  markovian:
+    term: Markovian noise
+    def: "Noise without memory: the noise after each operation does not depend on what happened before. The model in which every gate is followed by a fixed channel assumes it."
+  coherence:
+    term: coherence
+    def: "The off-diagonal entry of a qubit's density matrix, which carries the relative phase of a superposition. Its size decays over the dephasing time T2*, or over the longer time T2 with an echo."
+  amplitude-damping:
+    term: amplitude damping
+    def: "The channel that describes relaxation: a qubit in the excited state decays to the ground state with probability gamma, which grows with time as one minus exp(-t/T1)."
+  pure-dephasing:
+    term: pure dephasing
+    def: "The part of dephasing that does not come from relaxation, described by a dephasing channel whose strength grows with time, with characteristic time Tφ. It cannot be measured on its own, since relaxation also reduces the coherence."
+  ramsey:
+    term: Ramsey experiment
+    def: "A measurement of dephasing: a pulse puts the qubit in a superposition, the qubit waits, and a second pulse turns the remaining coherence into a measurable population. It measures T2*."
+  echo:
+    term: echo
+    def: "An X pulse halfway through a wait, which reverses the phase accumulated before it, so that phase errors that stay constant during the wait cancel. An echo experiment measures T2."
+  t2-star:
+    term: T2*
+    def: "The dephasing time: the time over which the coherence of a qubit decays in a Ramsey experiment. It is shorter than T2, measured with an echo, because it also includes slow noise that the echo removes."
+  dynamical-decoupling:
+    term: dynamical decoupling
+    def: "Repeated echo pulses during a long wait, which remove noise that is slow compared with the spacing of the pulses. It suppresses noise on the device itself."
+  telegraph-noise:
+    term: random telegraph noise
+    def: "Noise from a defect that switches at random between two states, making the qubit frequency jump back and forth."
+  one-over-f:
+    term: 1/f noise
+    def: "Noise in which slow fluctuations are much stronger than fast ones, in inverse proportion to their frequency. It typically comes from many defects, each switching at its own rate."
+  weight:
+    term: weight
+    def: "The number of qubits on which a Pauli string acts with a Pauli matrix other than the identity. Under local noise, strings of higher weight lose their expectation value faster."
+  unital:
+    term: unital
+    def: "A channel is unital if it maps the maximally mixed state to itself; on one qubit, it keeps the centre of the Bloch ball fixed. Pauli channels are unital; relaxation, described by amplitude damping, is not."
+  local-depolarising:
+    term: local depolarising noise
+    def: "Depolarising noise that acts on each qubit separately and independently. It shrinks the expectation value of a Pauli string by one factor for each qubit on which the string acts, so strings of higher weight shrink faster."
+  global-depolarising:
+    term: global depolarising channel
+    def: "The depolarising channel acting on all qubits at once: with probability p, the state of all qubits is replaced by the maximally mixed state. It shrinks every Pauli expectation value by the same factor, whatever its weight."
+  scrambling:
+    term: scrambling
+    def: "A property of circuits, such as deep circuits of random gates, that spread every error over all the qubits, so that any error leaves the output close to random. For such circuits, global depolarising noise is a good model of local noise."
+  correlated-errors:
+    term: correlated errors
+    def: "Errors that affect several qubits together, or that depend on what happens elsewhere in the circuit, such as crosstalk or bursts caused by cosmic rays."
+  incoherent-error:
+    term: incoherent error
+    def: "A random error that differs from shot to shot and averages to a noisy channel. Random errors accumulate more slowly than coherent ones."
+  twirling:
+    term: twirling
+    def: "Inserting random Pauli gates around a gate, chosen so that they cancel in the ideal circuit. Averaged over the random choices, any error becomes a Pauli channel."
+  confusion-matrix:
+    term: confusion matrix
+    def: "The table of probabilities of reading each outcome given each true state of the qubits. It describes readout errors."
+  spam:
+    term: SPAM errors
+    def: "State preparation and measurement errors, characterised together because a measurement right after a preparation cannot tell them apart."
+  state-fidelity:
+    term: state fidelity
+    def: "For a pure target state, the probability that a state passes a test for the target, that is, the expectation value of the projector onto the target."
+  average-gate-fidelity:
+    term: average gate fidelity
+    def: "The state fidelity between the output of a noisy gate and the ideal output, averaged over all pure input states. One minus it is the error per gate."
+  randomised-benchmarking:
+    term: randomised benchmarking
+    def: "A method to measure the average error per gate: random gate sequences of growing length, which ideally return to the initial state, are run, and the decay of the success probability with the length gives the error per gate."
+  noise-model:
+    term: noise model
+    def: "A description of the noise of a device, gate by gate and qubit by qubit, used to simulate noisy circuits, for example built from the calibration data of the device."
+  bias:
+    term: bias
+    def: "The difference between the average of an estimator and the true value. Noise biases estimates of expectation values; more shots do not reduce the bias."
+  mse:
+    term: mean squared error
+    def: "The average of the squared difference between an estimate and the true value. It equals the bias squared plus the variance."

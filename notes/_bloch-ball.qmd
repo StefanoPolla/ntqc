@@ -1,0 +1,142 @@
+```{=html}
+<!-- Shared drawing code for the Bloch-ball widgets of L2 (_pauli-widget.qmd and
+     _channel-widget.qmd); web only. Each widget includes this file, so it may appear
+     twice on a page: the guard defines the function once. Every channel drawn here is an
+     affine map of the Bloch vector, r -> (f_x r_x, f_y r_y, f_z r_z) + (0, 0, c). -->
+<style>
+  .bloch-channel { max-width: 400px; margin: 0 auto 1rem; }
+  .bloch-channel svg { width: 100%; height: auto; touch-action: none; cursor: grab; display: block; }
+  .bloch-channel .bloch-controls { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+  .bloch-channel label { display: flex; align-items: center; gap: 0.6rem; margin: 0; }
+  .bloch-channel label > span { min-width: 7.5em; }
+  .bloch-channel input[type=range], .bloch-channel select { flex: 1; }
+  .bloch-channel .bloch-readout { font-size: 0.85rem; opacity: 0.85; min-height: 2.6em; }
+  .bloch-channel .outline, .bloch-channel .axes { stroke: currentColor; opacity: 0.55; fill: none; }
+  .bloch-channel .ref { stroke: currentColor; opacity: 0.3; fill: none; stroke-dasharray: 3 3; }
+  .bloch-channel .grid { stroke: #1f5fa8; fill: none; opacity: 0.8; }
+  .bloch-channel .grid.equator { stroke-width: 2px; }
+  .bloch-channel .body { fill: #1f5fa8; opacity: 0.13; stroke: none; }
+  .bloch-channel .back { opacity: 0.3; stroke-dasharray: 4 3; }
+  .bloch-channel .dot { fill: #1f5fa8; }
+  .bloch-channel text { fill: currentColor; font-size: 0.13px; font-family: inherit; }
+  .bloch-channel * { vector-effect: non-scaling-stroke; }
+  body.quarto-dark .bloch-channel .grid { stroke: #7fb2f0; }
+  body.quarto-dark .bloch-channel .body, body.quarto-dark .bloch-channel .dot { fill: #7fb2f0; }
+</style>
+<script>
+// ntqcBlochBall(root, update): draws the Bloch sphere and its image in root's <svg>.
+// update() reads the widget's inputs and returns {f: [f_x, f_y, f_z], c, text}, where c
+// moves the centre along z and text goes into [data-out=factors]. Every input
+// [data-in] redraws; dragging the picture turns the view.
+window.ntqcBlochBall = window.ntqcBlochBall || function (root, update) {
+  const svg = root.querySelector("svg");
+  let az = (30 * Math.PI) / 180, el = (20 * Math.PI) / 180;
+
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  function camera() {
+    const d = [Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)];
+    const r = [-Math.sin(az), Math.cos(az), 0];
+    const u = [-Math.sin(el) * Math.cos(az), -Math.sin(el) * Math.sin(az), Math.cos(el)];
+    const proj = (p) => [dot(p, r), -dot(p, u), dot(p, d)]; // screen x, screen y (down), depth
+    proj.d = d;
+    return proj;
+  }
+  // A polyline, solid where visible[i] is true and faint where it is false.
+  function line(pts, visible, proj, cls) {
+    let out = "", run = [], front = null;
+    const flush = () => {
+      if (run.length > 1) {
+        const s = run.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ");
+        out += `<polyline class="${cls}${front ? "" : " back"}" points="${s}"/>`;
+      }
+    };
+    pts.forEach((p, i) => {
+      const q = proj(p), f = visible[i];
+      if (front === null) front = f;
+      run.push(q);
+      if (f !== front) { flush(); run = [q]; front = f; }
+    });
+    flush();
+    return out;
+  }
+  const circle = (g, n = 120) => Array.from({ length: n + 1 }, (_, k) => g((2 * Math.PI * k) / n));
+  const label = (p, proj, text) => {
+    const q = proj(p);
+    return `<text x="${q[0].toFixed(3)}" y="${q[1].toFixed(3)}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  };
+  function hull(points) { // monotone chain, for the silhouette of the deformed ball
+    const p = points.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const turn = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const half = (seq) => {
+      const out = [];
+      for (const q of seq) {
+        while (out.length >= 2 && turn(out[out.length - 2], out[out.length - 1], q) <= 0) out.pop();
+        out.push(q);
+      }
+      return out.slice(0, -1);
+    };
+    return half(p).concat(half(p.reverse()));
+  }
+
+  function draw() {
+    const m = update();
+    const f = m.f, c = m.c || 0;
+    const map = (v) => [f[0] * v[0], f[1] * v[1], f[2] * v[2] + c];
+    // The image's outward normal is along cof * v, with the sign of the determinant
+    // (negative factors reflect the ball).
+    const cof = [f[1] * f[2], f[0] * f[2], f[0] * f[1]];
+    const sign = f[0] * f[1] * f[2] < 0 ? -1 : 1;
+    const proj = camera();
+    const seen = (v) => sign * (cof[0] * v[0] * proj.d[0] + cof[1] * v[1] * proj.d[1] + cof[2] * v[2] * proj.d[2]) >= -1e-9;
+    const sphereSeen = (v) => dot(v, proj.d) >= -1e-9;
+
+    let s = `<circle class="outline" cx="0" cy="0" r="1"/>`;
+    const eq = circle((a) => [Math.cos(a), Math.sin(a), 0]);
+    s += line(eq, eq.map(sphereSeen), proj, "ref");
+    for (const [v, name] of [[[1, 0, 0], "x"], [[0, 1, 0], "y"], [[0, 0, 1], "z"]]) {
+      s += line([[0, 0, 0], v], [true, true], proj, "axes") + label(v.map((x) => 1.2 * x), proj, name);
+    }
+    // silhouette of the image, then its grid lines
+    const sample = [];
+    for (let i = 0; i <= 24; i++) for (let j = 0; j < 48; j++) {
+      const th = (Math.PI * i) / 24, ph = (2 * Math.PI * j) / 48;
+      const q = proj(map([Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]));
+      sample.push([q[0], q[1]]);
+    }
+    const h = hull(sample);
+    if (h.length >= 3) s += `<polygon class="body" points="${h.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ")}"/>`;
+    for (const z of [-0.6, 0, 0.6]) {
+      const r = Math.sqrt(1 - z * z), v = circle((a) => [r * Math.cos(a), r * Math.sin(a), z]);
+      s += line(v.map(map), v.map(seen), proj, "grid" + (z === 0 ? " equator" : ""));
+    }
+    for (let k = 0; k < 4; k++) {
+      const b = (k * Math.PI) / 4;
+      const v = circle((a) => [Math.sin(a) * Math.cos(b), Math.sin(a) * Math.sin(b), Math.cos(a)]);
+      s += line(v.map(map), v.map(seen), proj, "grid");
+    }
+    // where |0>, |1> and |+> go
+    for (const [v, name, dy] of [[[0, 0, 1], "|0⟩", -0.12], [[0, 0, -1], "|1⟩", 0.12], [[1, 0, 0], "|+⟩", 0.12]]) {
+      const q = proj(map(v));
+      s += `<circle class="dot" cx="${q[0].toFixed(4)}" cy="${q[1].toFixed(4)}" r="0.035"/>`;
+      s += `<text x="${(q[0] + 0.1).toFixed(3)}" y="${(q[1] + dy).toFixed(3)}" dominant-baseline="middle">${name}</text>`;
+    }
+    svg.innerHTML = s;
+    const out = root.querySelector("[data-out=factors]");
+    if (out) out.innerHTML = m.text;
+  }
+
+  for (const k of root.querySelectorAll("[data-in]")) k.addEventListener("input", draw);
+  let drag = null;
+  svg.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY]; svg.setPointerCapture(e.pointerId); });
+  svg.addEventListener("pointerup", () => { drag = null; });
+  svg.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    az -= (e.clientX - drag[0]) * 0.01;
+    el = Math.max(-1.4, Math.min(1.4, el + (e.clientY - drag[1]) * 0.01));
+    drag = [e.clientX, e.clientY];
+    draw();
+  });
+  draw();
+};
+</script>
+```

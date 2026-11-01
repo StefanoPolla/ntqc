@@ -1,0 +1,44 @@
+{{< include _bloch-ball.qmd >}}
+
+```{=html}
+<!-- Interactive Bloch ball under a general single-qubit Pauli channel, with sliders for
+     q_X, q_Y and q_Z; web only (the PDF has the static figure fig-bloch-pauli). -->
+<div class="bloch-channel" id="bloch-pauli">
+  <svg viewBox="-1.5 -1.42 3 2.84" role="img"
+       aria-label="The Bloch sphere and its image under a Pauli channel with the chosen error probabilities. Drag to turn the view."></svg>
+  <div class="bloch-controls">
+    <label><span>q<sub>X</sub> = <output data-out="qx"></output></span>
+      <input type="range" data-in="qx" min="0" max="1" step="0.01" value="0.1"></label>
+    <label><span>q<sub>Y</sub> = <output data-out="qy"></output></span>
+      <input type="range" data-in="qy" min="0" max="1" step="0.01" value="0"></label>
+    <label><span>q<sub>Z</sub> = <output data-out="qz"></output></span>
+      <input type="range" data-in="qz" min="0" max="1" step="0.01" value="0.2"></label>
+    <div class="bloch-readout" data-out="factors"></div>
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.getElementById("bloch-pauli");
+  if (!root) return;
+  const keys = ["qx", "qy", "qz"];
+  const input = (k) => root.querySelector(`[data-in=${k}]`);
+  const value = (k) => parseFloat(input(k).value);
+  // The probabilities sum to at most 1: a slider stops where q_I would become negative.
+  // Registered before ntqcBlochBall adds its listeners, so the clamp acts first.
+  for (const k of keys) {
+    input(k).addEventListener("input", () => {
+      const others = keys.filter((j) => j !== k).reduce((sum, j) => sum + value(j), 0);
+      if (value(k) + others > 1) input(k).value = Math.max(0, 1 - others).toFixed(2);
+    });
+  }
+  window.ntqcBlochBall(root, function () {
+    const [qx, qy, qz] = keys.map(value), qi = Math.max(0, 1 - qx - qy - qz);
+    for (const k of keys) root.querySelector(`[data-out=${k}]`).textContent = value(k).toFixed(2);
+    const f = [qi + qx - qy - qz, qi - qx + qy - qz, qi - qx - qy + qz];
+    const text = `q<sub>I</sub> = ${qi.toFixed(2)}<br>f<sub>x</sub> = ${f[0].toFixed(2)}, ` +
+      `f<sub>y</sub> = ${f[1].toFixed(2)}, f<sub>z</sub> = ${f[2].toFixed(2)}`;
+    return { f, c: 0, text };
+  });
+})();
+</script>
+```

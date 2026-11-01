@@ -1,0 +1,74 @@
+{{< include _bloch-ball.qmd >}}
+
+```{=html}
+<!-- Interactive Bloch ball under the single-qubit channels of tbl-channels; web only (the
+     PDF has the static figures fig-bloch-pauli and fig-bloch-t1t2). -->
+<div class="bloch-channel" id="bloch-channel">
+  <svg viewBox="-1.5 -1.42 3 2.84" role="img"
+       aria-label="The Bloch sphere and its image under the chosen channel. Drag to turn the view."></svg>
+  <div class="bloch-controls">
+    <label><span>channel</span>
+      <select data-in="channel" class="form-select form-select-sm">
+        <option value="depol" selected>depolarising</option>
+        <option value="dephasing">dephasing</option>
+        <option value="ad">amplitude damping</option>
+        <option value="idle">idle qubit (T₁ and T₂*)</option>
+      </select></label>
+    <label data-group="strength"><span><span data-out="pname">p</span> = <output data-out="p"></output></span>
+      <input type="range" data-in="p" min="0" max="1" step="0.01" value="0.3"></label>
+    <label data-group="idle"><span>t / T₁ = <output data-out="t"></output></span>
+      <input type="range" data-in="t" min="0" max="3" step="0.01" value="0.5"></label>
+    <label data-group="idle"><span>T₂* / T₁ = <output data-out="t2"></output></span>
+      <input type="range" data-in="t2" min="0.05" max="2" step="0.01" value="1"></label>
+    <div class="bloch-readout" data-out="factors"></div>
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.getElementById("bloch-channel");
+  if (!root) return;
+  const input = (k) => root.querySelector(`[data-in=${k}]`);
+  const output = (k) => root.querySelector(`[data-out=${k}]`);
+
+  // Parameter name and range of each channel, and its factors and offset.
+  const channels = {
+    depol: { name: "p", max: 1, map: (p) => ({ f: [1 - p, 1 - p, 1 - p], c: 0 }) },
+    dephasing: { name: "p", max: 0.5, map: (p) => ({ f: [1 - 2 * p, 1 - 2 * p, 1], c: 0 }) },
+    ad: { name: "γ", max: 1, map: (g) => ({ f: [Math.sqrt(1 - g), Math.sqrt(1 - g), 1 - g], c: g }) },
+  };
+  function idle() {
+    const t = parseFloat(input("t").value), t2 = parseFloat(input("t2").value); // in units of T1
+    const fxy = Math.exp(-t / t2), fz = Math.exp(-t);
+    return { f: [fxy, fxy, fz], c: 1 - fz };
+  }
+
+  window.ntqcBlochBall(root, function () {
+    const kind = input("channel").value;
+    for (const g of root.querySelectorAll("[data-group]")) {
+      g.style.display = (g.dataset.group === "idle") === (kind === "idle") ? "" : "none";
+    }
+    let m;
+    if (kind === "idle") {
+      m = idle();
+      output("t").textContent = parseFloat(input("t").value).toFixed(2);
+      output("t2").textContent = parseFloat(input("t2").value).toFixed(2);
+    } else {
+      const ch = channels[kind], slider = input("p");
+      slider.max = ch.max;
+      const p = Math.min(parseFloat(slider.value), ch.max);
+      output("pname").textContent = ch.name;
+      output("p").textContent = p.toFixed(2);
+      m = ch.map(p);
+    }
+    const f = m.f, c = m.c;
+    let text = `f<sub>x</sub> = ${f[0].toFixed(2)}, f<sub>y</sub> = ${f[1].toFixed(2)}, f<sub>z</sub> = ${f[2].toFixed(2)}`;
+    if (c > 0.005) text += `; centre moved up by ${c.toFixed(2)}`;
+    if (kind === "idle") {
+      const inv = 1 / parseFloat(input("t2").value) - 0.5; // T1 / Tφ
+      text += `<br>pure dephasing: T<sub>φ</sub> / T₁ = ${inv < 1e-3 ? "∞ (T₂* = 2T₁, relaxation only)" : (1 / inv).toFixed(2)}`;
+    }
+    return { f, c, text };
+  });
+})();
+</script>
+```
