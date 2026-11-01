@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stefano Polla">
+<meta name="dcterms.date" content="2026-11-01">
+
+<title>2&nbsp; Noise channels and error budgets – Near-term Quantum Computing — lecture notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exercises.html" rel="next">
+<link href="./L1-platforms-and-measurement.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b626d73c4c936ccc3cb08be7d45d1df6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-37a0ccb6f5b9899fcb884e11bb6f7458.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./L2-noise.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Near-term Quantum Computing — lecture notes</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/StefanoPolla/ntqc/tree/main/notes/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./ntqc-lecture-notes.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About these notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L1-platforms-and-measurement.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L2-noise.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-channels" id="toc-sec-channels" class="nav-link active" data-scroll-target="#sec-channels"><span class="header-section-number">2.1</span> Density matrices and channels</a>
+  <ul class="collapse">
+  <li><a href="#sec-mixed-states" id="toc-sec-mixed-states" class="nav-link" data-scroll-target="#sec-mixed-states"><span class="header-section-number">2.1.1</span> Mixed states</a></li>
+  <li><a href="#sec-kraus" id="toc-sec-kraus" class="nav-link" data-scroll-target="#sec-kraus"><span class="header-section-number">2.1.2</span> Quantum channels</a></li>
+  </ul></li>
+  <li><a href="#sec-single-qubit-noise" id="toc-sec-single-qubit-noise" class="nav-link" data-scroll-target="#sec-single-qubit-noise"><span class="header-section-number">2.2</span> Noise on one qubit</a>
+  <ul class="collapse">
+  <li><a href="#sec-pauli-channels" id="toc-sec-pauli-channels" class="nav-link" data-scroll-target="#sec-pauli-channels"><span class="header-section-number">2.2.1</span> Pauli channels on the Bloch sphere</a></li>
+  <li><a href="#sec-depolarising-dephasing" id="toc-sec-depolarising-dephasing" class="nav-link" data-scroll-target="#sec-depolarising-dephasing"><span class="header-section-number">2.2.2</span> Depolarising and dephasing noise</a></li>
+  <li><a href="#sec-noisy-circuits" id="toc-sec-noisy-circuits" class="nav-link" data-scroll-target="#sec-noisy-circuits"><span class="header-section-number">2.2.3</span> Noise gate by gate</a></li>
+  <li><a href="#sec-relaxation" id="toc-sec-relaxation" class="nav-link" data-scroll-target="#sec-relaxation"><span class="header-section-number">2.2.4</span> Relaxation and non-unital noise</a></li>
+  <li><a href="#sec-t1-t2" id="toc-sec-t1-t2" class="nav-link" data-scroll-target="#sec-t1-t2"><span class="header-section-number">2.2.5</span> Relaxation (<span class="math inline">\(T_1\)</span>) and dephasing (<span class="math inline">\(T_2^*\)</span>) times</a></li>
+  <li><a href="#sec-slow-noise" id="toc-sec-slow-noise" class="nav-link" data-scroll-target="#sec-slow-noise"><span class="header-section-number">2.2.6</span> Echoes and <span class="math inline">\(T_2\)</span></a></li>
+  </ul></li>
+  <li><a href="#sec-multi-qubit-noise" id="toc-sec-multi-qubit-noise" class="nav-link" data-scroll-target="#sec-multi-qubit-noise"><span class="header-section-number">2.3</span> Noise on many qubits</a></li>
+  <li><a href="#sec-gate-errors" id="toc-sec-gate-errors" class="nav-link" data-scroll-target="#sec-gate-errors"><span class="header-section-number">2.4</span> Noisy gates</a></li>
+  <li><a href="#sec-readout-errors" id="toc-sec-readout-errors" class="nav-link" data-scroll-target="#sec-readout-errors"><span class="header-section-number">2.5</span> Readout errors</a></li>
+  <li><a href="#sec-fidelity" id="toc-sec-fidelity" class="nav-link" data-scroll-target="#sec-fidelity"><span class="header-section-number">2.6</span> Fidelity and error budgets</a>
+  <ul class="collapse">
+  <li><a href="#sec-fidelity-def" id="toc-sec-fidelity-def" class="nav-link" data-scroll-target="#sec-fidelity-def"><span class="header-section-number">2.6.1</span> Fidelity of states and gates</a></li>
+  <li><a href="#sec-signal-left" id="toc-sec-signal-left" class="nav-link" data-scroll-target="#sec-signal-left"><span class="header-section-number">2.6.2</span> Circuit fidelity and the signal left</a></li>
+  <li><a href="#sec-budgets" id="toc-sec-budgets" class="nav-link" data-scroll-target="#sec-budgets"><span class="header-section-number">2.6.3</span> Example: error budgets on two platforms</a></li>
+  </ul></li>
+  <li><a href="#sec-bias-variance" id="toc-sec-bias-variance" class="nav-link" data-scroll-target="#sec-bias-variance"><span class="header-section-number">2.7</span> Bias and shot noise</a>
+  <ul class="collapse">
+  <li><a href="#sec-mse" id="toc-sec-mse" class="nav-link" data-scroll-target="#sec-mse"><span class="header-section-number">2.7.1</span> Mean squared error</a></li>
+  <li><a href="#sec-rescaling" id="toc-sec-rescaling" class="nav-link" data-scroll-target="#sec-rescaling"><span class="header-section-number">2.7.2</span> Correcting a known shrinking factor</a></li>
+  </ul></li>
+  <li><a href="#sec-L2-exercises" id="toc-sec-L2-exercises" class="nav-link" data-scroll-target="#sec-L2-exercises"><span class="header-section-number">2.8</span> More exercises</a></li>
+  <li><a href="#sec-L2-reading" id="toc-sec-L2-reading" class="nav-link" data-scroll-target="#sec-L2-reading"><span class="header-section-number">2.9</span> Further reading</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-noise" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Stefano Polla </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">1 November 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">1 November 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\gate}[1]{\mathrm{#1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\]</span></p>
+</div>
+<p>In the previous chapter, we described in words what can go wrong in a quantum device, its noise (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). In this chapter, we describe noise mathematically. The goal is to model how noise affects the results of a computation, and to use these models in our estimates and simulations. One model runs through the whole chapter: a noisy operation is the ideal operation followed by a <em>quantum channel</em>, a map that turns the state of the qubits into a noisier one.</p>
+<p>By the end of the chapter, you should be able to write a channel with Kraus operators and work out what it does to Pauli expectation values; relate <span class="math inline">\(T_1\)</span>, <span class="math inline">\(T_2^*\)</span> and <span class="math inline">\(T_2\)</span> to the channels behind them; tell local from global noise, and coherent from incoherent errors; model readout errors; estimate how much signal a circuit keeps; and separate the bias caused by noise from shot noise.</p>
+<section id="sec-channels" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-channels"><span class="header-section-number">2.1</span> Density matrices and channels</h2>
+<p>We first review the two tools that the rest of the chapter uses throughout. If you know them well, skim this section for the notation.</p>
+<section id="sec-mixed-states" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="sec-mixed-states"><span class="header-section-number">2.1.1</span> Mixed states</h3>
+<p>Noise makes the state of a device uncertain. If the qubits are in the state <span class="math inline">\(\ket{\psi_k}\)</span> with probability <span class="math inline">\(p_k\)</span>, the expectation value of an observable <span class="math inline">\(O\)</span> is <span class="math display">\[
+\sum_k p_k \bra{\psi_k}O\ket{\psi_k} = \Tr[O\rho], \qquad \text{with} \quad
+\rho = \sum_k p_k \ket{\psi_k}\bra{\psi_k} .
+\]</span> The probability of each measurement outcome is the expectation value of a projector, so all predictions depend on the ensemble only through <span class="math inline">\(\rho\)</span>.</p>
+<div id="def-density-matrix" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.1 (Density matrix)</strong></span> A <a href="glossary.html#gloss-density-matrix" class="gloss" data-gloss="The general description of a quantum state, including states that are uncertain mixtures of pure states: a positive semidefinite matrix with trace one. Expectation values are traces of the observable times the density matrix.">density matrix</a> on <span class="math inline">\(n\)</span> qubits is a <span class="math inline">\(2^n\times 2^n\)</span> matrix <span class="math inline">\(\rho\)</span> that is positive semidefinite (Hermitian, with no negative eigenvalues) and has trace one. The expectation value of an observable <span class="math inline">\(O\)</span> is <span class="math inline">\(\langle O\rangle = \Tr[O\rho]\)</span>. A pure state <span class="math inline">\(\ket{\psi}\)</span> has <span class="math inline">\(\rho = \ket{\psi}\bra{\psi}\)</span>, and then <span class="math inline">\(\langle O\rangle = \bra{\psi}O\ket{\psi}\)</span>. Every other state is <a href="glossary.html#gloss-mixed-state" class="gloss" data-gloss="A quantum state that is not pure: a probabilistic mixture of pure states, described by a density matrix. On one qubit, its Bloch vector lies inside the Bloch sphere.">mixed</a>.</p>
+</div>
+<p>A density matrix is pure exactly when <span class="math inline">\(\rho^2 = \rho\)</span>, or, equivalently, when <span class="math inline">\(\Tr[\rho^2] = 1\)</span>. The <a href="glossary.html#gloss-purity" class="gloss" data-gloss="The trace of the square of a density matrix: 1 for pure states, smaller for mixed states, and smallest, one over 2 to the n, for the maximally mixed state of n qubits (1/2 for a uniformly random qubit).">purity</a> <span class="math inline">\(\Tr[\rho^2]\)</span> measures how mixed a state is. The eigenvalues <span class="math inline">\(\lambda_k\)</span> of <span class="math inline">\(\rho\)</span> are non-negative and sum to one, and the purity is <span class="math inline">\(\sum_k\lambda_k^2\)</span>. It is 1 when one eigenvalue is 1 and the others are 0, which is a pure state. It is smallest, <span class="math inline">\(2^{-n}\)</span>, when all <span class="math inline">\(2^n\)</span> eigenvalues are equal, which is the <em>maximally mixed state</em> <span class="math inline">\(I/2^n\)</span>: the qubits are in a uniformly random basis state, and we know nothing about them.</p>
+<p>For a single qubit, we want to extend the Bloch-sphere picture of pure states (<a href="L1-platforms-and-measurement.html#fig-prx" class="quarto-xref">Figure&nbsp;<span>1.7</span></a>) to mixed states. Every Hermitian <span class="math inline">\(2\times 2\)</span> matrix can be written in the Pauli basis <span class="math inline">\(I, X, Y, Z\)</span>, with real coefficients. The Pauli matrices have trace zero, and the product of two different ones is the third, up to a factor (<a href="L1-platforms-and-measurement.html#sec-pauli-rotations" class="quarto-xref"><span>Section 1.3.1</span></a>), so <span class="math inline">\(\Tr[PQ] = 2\)</span> if <span class="math inline">\(P = Q\)</span> and <span class="math inline">\(0\)</span> otherwise. If we write <span class="math inline">\(\rho = \frac{1}{2}(c_I I + c_x X + c_y Y + c_z Z)\)</span>, the trace of <span class="math inline">\(P\rho\)</span> therefore picks out one coefficient at a time: <span class="math inline">\(c_I = \Tr[\rho] = 1\)</span> and <span class="math inline">\(c_x = \Tr[X\rho] = \langle X\rangle\)</span>, and likewise for <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span>. A density matrix of one qubit is therefore <span id="eq-bloch"><span class="math display">\[
+\rho = \frac{1}{2}\left(I + r_x X + r_y Y + r_z Z\right), \qquad
+r_x = \langle X\rangle,\ r_y = \langle Y\rangle,\ r_z = \langle Z\rangle .
+\tag{2.1}\]</span></span> The vector <span class="math inline">\(\vec r = (r_x, r_y, r_z)\)</span> is the <a href="glossary.html#gloss-bloch-vector" class="gloss" data-gloss="The three expectation values of X, Y and Z of a qubit, which fix its density matrix. It has length one for pure states and less for mixed states.">Bloch vector</a>. The matrix <span class="math inline">\(r_x X + r_y Y + r_z Z\)</span> squares to <span class="math inline">\(|\vec r|^2 I\)</span>, since the Pauli matrices anticommute. The eigenvalues of <span class="math inline">\(\rho\)</span> are therefore <span class="math inline">\((1\pm|\vec r|)/2\)</span>, and <span class="math inline">\(\rho\)</span> is a density matrix exactly when <span class="math inline">\(|\vec r| \le 1\)</span>. Pure states lie on the surface of the Bloch sphere, and mixed states inside it, in the <em>Bloch ball</em>. At the centre lies the maximally mixed state <span class="math inline">\(I/2\)</span>, a uniformly random bit. The purity is <span class="math inline">\(\Tr[\rho^2] = (1+|\vec r|^2)/2\)</span>: 1 on the sphere, and <span class="math inline">\(1/2\)</span> at the centre.</p>
+<p>The same decomposition works for any number of qubits, with Pauli strings in place of Pauli matrices: <span id="eq-pauli-expansion"><span class="math display">\[
+\rho = \frac{1}{2^n}\sum_{P} \langle P\rangle\, P ,
+\tag{2.2}\]</span></span> where the sum runs over all <span class="math inline">\(4^n\)</span> Pauli strings on <span class="math inline">\(n\)</span> qubits, and <span class="math inline">\(\langle I\rangle = 1\)</span>. To see why, note two facts. The product of two Pauli strings is, up to a factor, another Pauli string, which is the identity only if the two are equal. And every Pauli string other than the identity has trace zero. So <span class="math inline">\(\Tr[PQ] = 2^n\)</span> if <span class="math inline">\(P = Q\)</span> and <span class="math inline">\(0\)</span> otherwise: the <span class="math inline">\(4^n\)</span> Pauli strings are orthogonal, and they form a basis of all <span class="math inline">\(2^n\times 2^n\)</span> matrices. Multiplying the right-hand side of <a href="#eq-pauli-expansion" class="quarto-xref">Equation&nbsp;<span>2.2</span></a> by a Pauli string <span class="math inline">\(Q\)</span> and taking the trace keeps only the term <span class="math inline">\(P = Q\)</span>, and gives <span class="math inline">\(\Tr[Q\rho] = \langle Q\rangle\)</span>, as it should. The expectation values of the Pauli strings fix the state, as the Bloch vector does for one qubit, and most of this chapter follows what noise does to them. To describe some of the qubits on their own, we discard the others with the <em>partial trace</em>, defined by <span class="math inline">\(\Tr_B[A\otimes B] = \Tr[B]\,A\)</span>. In <a href="#eq-pauli-expansion" class="quarto-xref">Equation&nbsp;<span>2.2</span></a>, it keeps the terms whose Pauli strings act as the identity on the discarded qubits.</p>
+</section>
+<section id="sec-kraus" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="sec-kraus"><span class="header-section-number">2.1.2</span> Quantum channels</h3>
+<p>Noise turns one density matrix into another. The maps that describe this are called quantum channels.</p>
+<div id="def-channel" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.2 (Quantum channel)</strong></span> A <a href="glossary.html#gloss-quantum-channel" class="gloss" data-gloss="The general description of how a quantum state changes, including noise: a linear map of density matrices that can be written with Kraus operators. Unitary gates are the channels with a single Kraus operator.">quantum channel</a> maps a density matrix <span class="math inline">\(\rho\)</span> to <span id="eq-kraus"><span class="math display">\[
+\Lambda(\rho) = \sum_k K_k\, \rho\, K_k^\dagger , \qquad \text{with} \quad \sum_k K_k^\dagger K_k = I .
+\tag{2.3}\]</span></span> The matrices <span class="math inline">\(K_k\)</span> are its <a href="glossary.html#gloss-kraus-operators" class="gloss" data-gloss="A set of matrices that defines a quantum channel: the channel maps a density matrix to the sum of each Kraus operator times the density matrix times its adjoint. The same channel can have different sets of Kraus operators.">Kraus operators</a>.</p>
+</div>
+<p>Each Kraus operator describes one thing that can happen to the qubit, with probability <span class="math inline">\(\Tr[K_k\rho K_k^\dagger]\)</span>. The condition on the Kraus operators keeps the trace, since <span class="math inline">\(\Tr[\Lambda(\rho)] = \Tr\big[\sum_k K_k^\dagger K_k\,\rho\big] = \Tr[\rho]\)</span>, so these probabilities sum to one. Each term <span class="math inline">\(K_k\rho K_k^\dagger\)</span> is also positive semidefinite, so <span class="math inline">\(\Lambda(\rho)\)</span> is again a density matrix. This still holds if the channel acts on only some of the qubits of a larger system, a property called <a href="glossary.html#gloss-completely-positive" class="gloss" data-gloss="A map of density matrices is completely positive if it still gives valid density matrices when it acts on part of a larger system. Quantum channels are exactly the completely positive maps that preserve the trace.">complete positivity</a>. It is stronger than positivity: the transpose, for example, is positive but not completely positive. Conversely, every linear map that is completely positive and keeps the trace (CPTP) has a Kraus form. More details, with proofs, can be found in <span class="citation" data-cites="nielsen2010">Nielsen and Chuang (<a href="L1-platforms-and-measurement.html#ref-nielsen2010" role="doc-biblioref">2010, sec. 8.2</a>)</span> and in the Quantum Information Theory notes of <span class="citation" data-cites="walter2025">Walter and Ozols (<a href="L1-platforms-and-measurement.html#ref-walter2025" role="doc-biblioref">2025</a>, Theorem 5.3 and Lemma 5.5, where the Kraus operators are called <span class="math inline">\(X_i\)</span>)</span>.</p>
+<p>Where do channels come from? A qubit is never perfectly isolated (<a href="L1-platforms-and-measurement.html#sec-qubit-needs" class="quarto-xref"><span>Section 1.2.1</span></a>): it interacts with its environment, for example with defects in the chip (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). Qubit and environment together evolve unitarily, but we do not keep track of the environment, so we discard it with the partial trace. The result is always a channel on the qubit. Conversely, every channel can arise in this way, and the unitary and the environment that produce it are called a <em>Stinespring dilation</em> of the channel. <a href="#exr-environment" class="quarto-xref">Exercise&nbsp;<span>2.10</span></a> works out an example, and more details can be found in <span class="citation" data-cites="walter2025">Walter and Ozols (<a href="L1-platforms-and-measurement.html#ref-walter2025" role="doc-biblioref">2025, sec. 5.2</a>)</span>.</p>
+<p>A unitary gate <span class="math inline">\(U\)</span> is a channel with the single Kraus operator <span class="math inline">\(U\)</span>. Applying <span class="math inline">\(\Lambda_1\)</span> and then <span class="math inline">\(\Lambda_2\)</span> gives a channel with the Kraus operators <span class="math inline">\(K^{(2)}_j K^{(1)}_k\)</span>. And if <span class="math inline">\(\Lambda_i\)</span> happens with probability <span class="math inline">\(p_i\)</span>, the mixture <span class="math inline">\(\sum_i p_i\Lambda_i(\rho)\)</span> is a channel with the Kraus operators <span class="math inline">\(\sqrt{p_i}\,K^{(i)}_k\)</span>. Most noise in this chapter is of this last kind: with some probability, something goes wrong.</p>
+</section>
+</section>
+<section id="sec-single-qubit-noise" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-single-qubit-noise"><span class="header-section-number">2.2</span> Noise on one qubit</h2>
+<section id="sec-pauli-channels" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-pauli-channels"><span class="header-section-number">2.2.1</span> Pauli channels on the Bloch sphere</h3>
+<p>The simplest errors are Pauli matrices: <span class="math inline">\(X\)</span> flips the bit, <span class="math inline">\(Z\)</span> flips the sign of the relative phase between <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>, and <span class="math inline">\(Y\)</span> does both.</p>
+<div id="def-pauli-channel" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.3 (Pauli channel)</strong></span> A <a href="glossary.html#gloss-pauli-channel" class="gloss" data-gloss="A channel that applies a random Pauli error, chosen with fixed probabilities. It multiplies the expectation value of each Pauli string by its own factor.">Pauli channel</a> on one qubit applies the error <span class="math inline">\(Q \in \{I, X, Y, Z\}\)</span> with probability <span class="math inline">\(q_Q\)</span>: <span class="math display">\[
+\Lambda(\rho) = q_I\,\rho + q_X\, X\rho X + q_Y\, Y\rho Y + q_Z\, Z\rho Z,
+\qquad q_I + q_X + q_Y + q_Z = 1 .
+\]</span> Its Kraus operators are <span class="math inline">\(K_Q = \sqrt{q_Q}\,Q\)</span>, for <span class="math inline">\(Q \in \{I, X, Y, Z\}\)</span>.</p>
+</div>
+<p>What does a Pauli channel do to the Bloch vector? Conjugating a Pauli matrix by another gives back the same matrix, up to a sign: <span class="math inline">\(QPQ = P\)</span> if <span class="math inline">\(Q = I\)</span> or <span class="math inline">\(Q = P\)</span>, and <span class="math inline">\(QPQ = -P\)</span> otherwise, because different Pauli matrices anticommute. The channel therefore maps each Pauli matrix to a multiple of itself, <span class="math inline">\(\Lambda(X) = f_x X\)</span>, and likewise for <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>, with <span id="eq-pauli-factors"><span class="math display">\[
+\begin{aligned}
+f_x &amp;= q_I + q_X - q_Y - q_Z , \\
+f_y &amp;= q_I - q_X + q_Y - q_Z , \\
+f_z &amp;= q_I - q_X - q_Y + q_Z ,
+\end{aligned}
+\tag{2.4}\]</span></span> while <span class="math inline">\(\Lambda(I) = I\)</span>. By <a href="#eq-bloch" class="quarto-xref">Equation&nbsp;<span>2.1</span></a>, the channel multiplies each component of the Bloch vector by its own factor, <span class="math inline">\(r_j \mapsto f_j r_j\)</span>, and so each expectation value: <span class="math inline">\(\langle X\rangle \mapsto f_x\langle X\rangle\)</span>, and so on. We call <span class="math inline">\(f_x\)</span>, <span class="math inline">\(f_y\)</span> and <span class="math inline">\(f_z\)</span> the <em>shrinking factors</em> of the channel. They are the main tool of this chapter: as long as the noise is a Pauli channel, its effect on a measured expectation value is a multiplication. In the Bloch ball, a Pauli channel squeezes the ball into an ellipsoid with semi-axes <span class="math inline">\(|f_x|\)</span>, <span class="math inline">\(|f_y|\)</span> and <span class="math inline">\(|f_z|\)</span>, centred at the maximally mixed state.</p>
+</section>
+<section id="sec-depolarising-dephasing" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-depolarising-dephasing"><span class="header-section-number">2.2.2</span> Depolarising and dephasing noise</h3>
+<p>Two Pauli channels describe most of the noise on a single qubit in this chapter.</p>
+<div id="def-depolarising" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.4 (Depolarising and dephasing channels)</strong></span> The <a href="glossary.html#gloss-depolarising" class="gloss" data-gloss="On one qubit, the Pauli channel that applies X, Y or Z, each with probability p/4. It is the same as replacing the state by the maximally mixed state with probability p, and it shrinks the Bloch ball uniformly. On many qubits, it can be local or global.">depolarising channel</a> on one qubit is the Pauli channel with <span class="math inline">\(q_X = q_Y = q_Z = p/4\)</span>: <span class="math display">\[
+\Lambda(\rho) = \Big(1 - \frac{3p}{4}\Big)\rho + \frac{p}{4}\big(X\rho X + Y\rho Y + Z\rho Z\big) .
+\]</span> The <a href="glossary.html#gloss-dephasing-channel" class="gloss" data-gloss="The Pauli channel that applies Z with some probability p, also called the phase-flip channel. It keeps the probabilities of 0 and 1 and shrinks the coherence. An unknown phase, for example from an unknown shift of the qubit frequency, acts as a dephasing channel.">dephasing channel</a> is the Pauli channel with <span class="math inline">\(q_Z = p\)</span>: <span class="math display">\[
+\Lambda(\rho) = (1-p)\,\rho + p\, Z\rho Z .
+\]</span></p>
+</div>
+<p>The depolarising channel treats the three axes alike. By <a href="#eq-pauli-factors" class="quarto-xref">Equation&nbsp;<span>2.4</span></a>, its factors are <span class="math inline">\(f_x = f_y = f_z = 1 - p\)</span>. It shrinks the Bloch ball uniformly towards its centre (<a href="#fig-bloch-pauli" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> a), and every expectation value with it: <span class="math inline">\(\langle P\rangle \mapsto (1-p)\langle P\rangle\)</span>. By <a href="#eq-bloch" class="quarto-xref">Equation&nbsp;<span>2.1</span></a>, the state with the Bloch vector <span class="math inline">\((1-p)\vec r\)</span> is the mixture <span class="math inline">\((1-p)\rho + p\,I/2\)</span>, so <span id="eq-depolarising"><span class="math display">\[
+\Lambda(\rho) = (1-p)\,\rho + p\,\frac{I}{2} :
+\tag{2.5}\]</span></span> with probability <span class="math inline">\(p\)</span>, the depolarising channel replaces the state by the maximally mixed state. This form gives other Kraus operators: <span class="math inline">\(\sqrt{1-p}\,I\)</span> and the four matrices <span class="math inline">\(\sqrt{p/2}\,\ket{i}\bra{j}\)</span> with <span class="math inline">\(i, j \in \{0, 1\}\)</span>. The same channel can therefore have different Kraus operators. The depolarising channel also commutes with every single-qubit unitary <span class="math inline">\(U\)</span>: <span class="math inline">\(U\Lambda(\rho)U^\dagger = (1-p)\,U\rho U^\dagger + p\,I/2 = \Lambda(U\rho U^\dagger)\)</span>, since <span class="math inline">\(U(I/2)U^\dagger = I/2\)</span>.</p>
+<p>The dephasing channel has the factors <span class="math inline">\(f_x = f_y = 1 - 2p\)</span> and <span class="math inline">\(f_z = 1\)</span>. It leaves <span class="math inline">\(\langle Z\rangle\)</span>, and with it the probabilities of measuring 0 and 1, unchanged. It shrinks the components of the Bloch vector in the <span class="math inline">\(xy\)</span> plane, which carry the relative phase between <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>. The ball is squeezed towards the <span class="math inline">\(z\)</span> axis (<a href="#fig-bloch-pauli" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> b), and for <span class="math inline">\(p = 1/2\)</span> it collapses onto it. It is also called the <a href="glossary.html#gloss-phase-flip" class="gloss" data-gloss="Another name for the dephasing channel, the Pauli channel that applies Z with some probability p.&nbsp;The name describes its Kraus form; physically, dephasing is usually a gradual loss of information about the phase.">phase-flip channel</a>, after its Kraus form, a <span class="math inline">\(Z\)</span> error with probability <span class="math inline">\(p\)</span>. The name suggests a phase that now and then flips suddenly, but dephasing usually comes from a gradual loss of information about the phase, as we see below.</p>
+<div id="fig-bloch-pauli" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bloch-pauli-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/bloch-pauli-channels.svg" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bloch-pauli-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: The Bloch sphere (grey) and its image (blue) under two Pauli channels. The dots mark where <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> go. (a) Depolarising noise shrinks the ball uniformly, and (b) dephasing squeezes it towards the <span class="math inline">\(z\)</span> axis.
+</figcaption>
+</figure>
+</div>
+<p>In the widget below, set the probabilities <span class="math inline">\(q_X\)</span>, <span class="math inline">\(q_Y\)</span> and <span class="math inline">\(q_Z\)</span> of a Pauli channel and see how it deforms the Bloch ball: for example, <span class="math inline">\(q_X = q_Y = q_Z\)</span> for depolarising noise, or only <span class="math inline">\(q_Z\)</span> for dephasing. Drag the picture to turn the view.</p>
+<!-- Shared drawing code for the Bloch-ball widgets of L2 (_pauli-widget.qmd and
+     _channel-widget.qmd); web only. Each widget includes this file, so it may appear
+     twice on a page: the guard defines the function once. Every channel drawn here is an
+     affine map of the Bloch vector, r -> (f_x r_x, f_y r_y, f_z r_z) + (0, 0, c). -->
+<style>
+  .bloch-channel { max-width: 400px; margin: 0 auto 1rem; }
+  .bloch-channel svg { width: 100%; height: auto; touch-action: none; cursor: grab; display: block; }
+  .bloch-channel .bloch-controls { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+  .bloch-channel label { display: flex; align-items: center; gap: 0.6rem; margin: 0; }
+  .bloch-channel label > span { min-width: 7.5em; }
+  .bloch-channel input[type=range], .bloch-channel select { flex: 1; }
+  .bloch-channel .bloch-readout { font-size: 0.85rem; opacity: 0.85; min-height: 2.6em; }
+  .bloch-channel .outline, .bloch-channel .axes { stroke: currentColor; opacity: 0.55; fill: none; }
+  .bloch-channel .ref { stroke: currentColor; opacity: 0.3; fill: none; stroke-dasharray: 3 3; }
+  .bloch-channel .grid { stroke: #1f5fa8; fill: none; opacity: 0.8; }
+  .bloch-channel .grid.equator { stroke-width: 2px; }
+  .bloch-channel .body { fill: #1f5fa8; opacity: 0.13; stroke: none; }
+  .bloch-channel .back { opacity: 0.3; stroke-dasharray: 4 3; }
+  .bloch-channel .dot { fill: #1f5fa8; }
+  .bloch-channel text { fill: currentColor; font-size: 0.13px; font-family: inherit; }
+  .bloch-channel * { vector-effect: non-scaling-stroke; }
+  body.quarto-dark .bloch-channel .grid { stroke: #7fb2f0; }
+  body.quarto-dark .bloch-channel .body, body.quarto-dark .bloch-channel .dot { fill: #7fb2f0; }
+</style>
+<script>
+// ntqcBlochBall(root, update): draws the Bloch sphere and its image in root's <svg>.
+// update() reads the widget's inputs and returns {f: [f_x, f_y, f_z], c, text}, where c
+// moves the centre along z and text goes into [data-out=factors]. Every input
+// [data-in] redraws; dragging the picture turns the view.
+window.ntqcBlochBall = window.ntqcBlochBall || function (root, update) {
+  const svg = root.querySelector("svg");
+  let az = (30 * Math.PI) / 180, el = (20 * Math.PI) / 180;
+
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  function camera() {
+    const d = [Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)];
+    const r = [-Math.sin(az), Math.cos(az), 0];
+    const u = [-Math.sin(el) * Math.cos(az), -Math.sin(el) * Math.sin(az), Math.cos(el)];
+    const proj = (p) => [dot(p, r), -dot(p, u), dot(p, d)]; // screen x, screen y (down), depth
+    proj.d = d;
+    return proj;
+  }
+  // A polyline, solid where visible[i] is true and faint where it is false.
+  function line(pts, visible, proj, cls) {
+    let out = "", run = [], front = null;
+    const flush = () => {
+      if (run.length > 1) {
+        const s = run.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ");
+        out += `<polyline class="${cls}${front ? "" : " back"}" points="${s}"/>`;
+      }
+    };
+    pts.forEach((p, i) => {
+      const q = proj(p), f = visible[i];
+      if (front === null) front = f;
+      run.push(q);
+      if (f !== front) { flush(); run = [q]; front = f; }
+    });
+    flush();
+    return out;
+  }
+  const circle = (g, n = 120) => Array.from({ length: n + 1 }, (_, k) => g((2 * Math.PI * k) / n));
+  const label = (p, proj, text) => {
+    const q = proj(p);
+    return `<text x="${q[0].toFixed(3)}" y="${q[1].toFixed(3)}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  };
+  function hull(points) { // monotone chain, for the silhouette of the deformed ball
+    const p = points.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const turn = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const half = (seq) => {
+      const out = [];
+      for (const q of seq) {
+        while (out.length >= 2 && turn(out[out.length - 2], out[out.length - 1], q) <= 0) out.pop();
+        out.push(q);
+      }
+      return out.slice(0, -1);
+    };
+    return half(p).concat(half(p.reverse()));
+  }
+
+  function draw() {
+    const m = update();
+    const f = m.f, c = m.c || 0;
+    const map = (v) => [f[0] * v[0], f[1] * v[1], f[2] * v[2] + c];
+    // The image's outward normal is along cof * v, with the sign of the determinant
+    // (negative factors reflect the ball).
+    const cof = [f[1] * f[2], f[0] * f[2], f[0] * f[1]];
+    const sign = f[0] * f[1] * f[2] < 0 ? -1 : 1;
+    const proj = camera();
+    const seen = (v) => sign * (cof[0] * v[0] * proj.d[0] + cof[1] * v[1] * proj.d[1] + cof[2] * v[2] * proj.d[2]) >= -1e-9;
+    const sphereSeen = (v) => dot(v, proj.d) >= -1e-9;
+
+    let s = `<circle class="outline" cx="0" cy="0" r="1"/>`;
+    const eq = circle((a) => [Math.cos(a), Math.sin(a), 0]);
+    s += line(eq, eq.map(sphereSeen), proj, "ref");
+    for (const [v, name] of [[[1, 0, 0], "x"], [[0, 1, 0], "y"], [[0, 0, 1], "z"]]) {
+      s += line([[0, 0, 0], v], [true, true], proj, "axes") + label(v.map((x) => 1.2 * x), proj, name);
+    }
+    // silhouette of the image, then its grid lines
+    const sample = [];
+    for (let i = 0; i <= 24; i++) for (let j = 0; j < 48; j++) {
+      const th = (Math.PI * i) / 24, ph = (2 * Math.PI * j) / 48;
+      const q = proj(map([Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]));
+      sample.push([q[0], q[1]]);
+    }
+    const h = hull(sample);
+    if (h.length >= 3) s += `<polygon class="body" points="${h.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ")}"/>`;
+    for (const z of [-0.6, 0, 0.6]) {
+      const r = Math.sqrt(1 - z * z), v = circle((a) => [r * Math.cos(a), r * Math.sin(a), z]);
+      s += line(v.map(map), v.map(seen), proj, "grid" + (z === 0 ? " equator" : ""));
+    }
+    for (let k = 0; k < 4; k++) {
+      const b = (k * Math.PI) / 4;
+      const v = circle((a) => [Math.sin(a) * Math.cos(b), Math.sin(a) * Math.sin(b), Math.cos(a)]);
+      s += line(v.map(map), v.map(seen), proj, "grid");
+    }
+    // where |0>, |1> and |+> go
+    for (const [v, name, dy] of [[[0, 0, 1], "|0⟩", -0.12], [[0, 0, -1], "|1⟩", 0.12], [[1, 0, 0], "|+⟩", 0.12]]) {
+      const q = proj(map(v));
+      s += `<circle class="dot" cx="${q[0].toFixed(4)}" cy="${q[1].toFixed(4)}" r="0.035"/>`;
+      s += `<text x="${(q[0] + 0.1).toFixed(3)}" y="${(q[1] + dy).toFixed(3)}" dominant-baseline="middle">${name}</text>`;
+    }
+    svg.innerHTML = s;
+    const out = root.querySelector("[data-out=factors]");
+    if (out) out.innerHTML = m.text;
+  }
+
+  for (const k of root.querySelectorAll("[data-in]")) k.addEventListener("input", draw);
+  let drag = null;
+  svg.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY]; svg.setPointerCapture(e.pointerId); });
+  svg.addEventListener("pointerup", () => { drag = null; });
+  svg.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    az -= (e.clientX - drag[0]) * 0.01;
+    el = Math.max(-1.4, Math.min(1.4, el + (e.clientY - drag[1]) * 0.01));
+    drag = [e.clientX, e.clientY];
+    draw();
+  });
+  draw();
+};
+</script>
+<!-- Interactive Bloch ball under a general single-qubit Pauli channel, with sliders for
+     q_X, q_Y and q_Z; web only (the PDF has the static figure fig-bloch-pauli). -->
+<div class="bloch-channel" id="bloch-pauli">
+  <svg viewbox="-1.5 -1.42 3 2.84" role="img" aria-label="The Bloch sphere and its image under a Pauli channel with the chosen error probabilities. Drag to turn the view."></svg>
+  <div class="bloch-controls">
+    <label><span>q<sub>X</sub> = <output data-out="qx"></output></span>
+      <input type="range" data-in="qx" min="0" max="1" step="0.01" value="0.1"></label>
+    <label><span>q<sub>Y</sub> = <output data-out="qy"></output></span>
+      <input type="range" data-in="qy" min="0" max="1" step="0.01" value="0"></label>
+    <label><span>q<sub>Z</sub> = <output data-out="qz"></output></span>
+      <input type="range" data-in="qz" min="0" max="1" step="0.01" value="0.2"></label>
+    <div class="bloch-readout" data-out="factors"></div>
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.getElementById("bloch-pauli");
+  if (!root) return;
+  const keys = ["qx", "qy", "qz"];
+  const input = (k) => root.querySelector(`[data-in=${k}]`);
+  const value = (k) => parseFloat(input(k).value);
+  // The probabilities sum to at most 1: a slider stops where q_I would become negative.
+  // Registered before ntqcBlochBall adds its listeners, so the clamp acts first.
+  for (const k of keys) {
+    input(k).addEventListener("input", () => {
+      const others = keys.filter((j) => j !== k).reduce((sum, j) => sum + value(j), 0);
+      if (value(k) + others > 1) input(k).value = Math.max(0, 1 - others).toFixed(2);
+    });
+  }
+  window.ntqcBlochBall(root, function () {
+    const [qx, qy, qz] = keys.map(value), qi = Math.max(0, 1 - qx - qy - qz);
+    for (const k of keys) root.querySelector(`[data-out=${k}]`).textContent = value(k).toFixed(2);
+    const f = [qi + qx - qy - qz, qi - qx + qy - qz, qi - qx - qy + qz];
+    const text = `q<sub>I</sub> = ${qi.toFixed(2)}<br>f<sub>x</sub> = ${f[0].toFixed(2)}, ` +
+      `f<sub>y</sub> = ${f[1].toFixed(2)}, f<sub>z</sub> = ${f[2].toFixed(2)}`;
+    return { f, c: 0, text };
+  });
+})();
+</script>
+<p><strong>The physical origin of dephasing.</strong> The relative phase of a superposition <span class="math inline">\(\alpha\ket{0} + \beta\ket{1}\)</span> turns at a rate set by the qubit’s frequency (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>), and the device is calibrated to expect this. Suppose that the frequency of the qubit is shifted by a small amount <span class="math inline">\(\delta\)</span> (in radians per second), for example by a fluctuating magnetic field. The qubit then picks up an extra phase that nobody expected: in a time <span class="math inline">\(t\)</span>, its relative phase turns by an extra angle <span class="math inline">\(\theta = \delta t\)</span>. This is the rotation <span class="math inline">\(R_Z(\theta)\)</span> of <a href="L1-platforms-and-measurement.html#eq-rx-rz" class="quarto-xref">Equation&nbsp;<span>1.2</span></a>. If we knew <span class="math inline">\(\delta\)</span>, we could undo this rotation. If we do not know it, we do not know <span class="math inline">\(\theta\)</span> either, and the qubit undergoes a random rotation. Its state becomes the mixture <span class="math inline">\(\Lambda(\rho) = \mathbb{E}\big[R_Z(\theta)\,\rho\,R_Z(\theta)^\dagger\big]\)</span>, where <span class="math inline">\(\mathbb{E}\)</span> is the average over <span class="math inline">\(\theta\)</span>. By <a href="L1-platforms-and-measurement.html#exr-virtual-z" class="quarto-xref">Exercise&nbsp;<span>1.4</span></a>, <span class="math inline">\(R_Z(\theta)XR_Z(\theta)^\dagger = \cos\theta\, X + \sin\theta\, Y\)</span>. For an angle that is as likely to be positive as negative, the sines average to zero: <span class="math display">\[
+\Lambda(X) = \mathbb{E}[\cos\theta]\, X, \qquad
+\Lambda(Y) = \mathbb{E}[\cos\theta]\, Y, \qquad
+\Lambda(Z) = Z .
+\]</span> These are the factors of a dephasing channel with <span class="math inline">\(1 - 2p = \mathbb{E}[\cos\theta]\)</span>: an unknown phase acts as dephasing. The longer the qubit waits, the wider the spread of <span class="math inline">\(\theta = \delta t\)</span>, and the more information about the phase is lost. Once the spread is much larger than a radian, <span class="math inline">\(\mathbb{E}[\cos\theta]\)</span> is close to zero and <span class="math inline">\(p\)</span> close to <span class="math inline">\(1/2\)</span>: the phase is lost. For a Gaussian angle with variance <span class="math inline">\(\sigma^2\)</span>, <span class="math inline">\(\mathbb{E}[\cos\theta] = e^{-\sigma^2/2}\)</span> (<a href="#exr-random-phase" class="quarto-xref">Exercise&nbsp;<span>2.1</span></a>).</p>
+<div id="exr-random-phase" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.1 (Random phases)</strong></span> A qubit undergoes the rotation <span class="math inline">\(R_Z(\theta)\)</span>, where <span class="math inline">\(\theta\)</span> is a Gaussian random angle with mean zero and variance <span class="math inline">\(\sigma^2\)</span>.</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\(\mathbb{E}[\cos\theta] = e^{-\sigma^2/2}\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p><span class="math inline">\(\cos\theta\)</span> is the real part of <span class="math inline">\(e^{i\theta}\)</span>.</p>
+</details></li>
+<li><p>Which dephasing probability <span class="math inline">\(p\)</span> does this channel have? What is it for <span class="math inline">\(\sigma \ll 1\)</span>?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-noisy-circuits" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="sec-noisy-circuits"><span class="header-section-number">2.2.3</span> Noise gate by gate</h3>
+<p>A common approximation of the noise on a device models each noisy gate as the ideal gate <span class="math inline">\(U\)</span> followed by a channel <span class="math inline">\(\Lambda\)</span>, so that it maps <span class="math inline">\(\rho\)</span> to <span class="math inline">\(\Lambda(U\rho U^\dagger)\)</span>. A circuit of noisy gates is then a composition of channels. Quantum software development kits (SDKs), such as the Qiskit of the tutorials, usually describe noise in this way. The approximation assumes that the noise has no memory: the channel after each gate does not depend on what happened before. Noise of this kind is called <a href="glossary.html#gloss-markovian" class="gloss" data-gloss="Noise without memory: the noise after each operation does not depend on what happened before. The model in which every gate is followed by a fixed channel assumes it.">Markovian</a>. <a href="#sec-slow-noise" class="quarto-xref"><span>Section 2.2.6</span></a> describes the main exception. The shrinking factors make compositions easy: two Pauli channels in a row multiply each expectation value by the factors of both.</p>
+<div id="exr-composition" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.2 (Composing depolarising channels)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Apply the depolarising channel with parameter <span class="math inline">\(p_1\)</span> and then the one with <span class="math inline">\(p_2\)</span>, using <a href="#eq-depolarising" class="quarto-xref">Equation&nbsp;<span>2.5</span></a>. Show that the result is again a depolarising channel, and check that its factor is <span class="math inline">\((1-p_1)(1-p_2)\)</span>.</p></li>
+<li><p>A qubit is prepared in <span class="math inline">\(\ket{+}\)</span>, and <span class="math inline">\(n\)</span> noisy <span class="math inline">\(X\)</span> gates are applied, each followed by depolarising noise with parameter <span class="math inline">\(p\)</span>. What is <span class="math inline">\(\langle X\rangle\)</span> at the end? For <span class="math inline">\(p = 10^{-3}\)</span>, after how many gates has <span class="math inline">\(\langle X\rangle\)</span> fallen to half of its initial value?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Where in the circuit can the channels be moved?</p>
+</details></li>
+<li><p>Two qubits each undergo depolarising noise with parameter <span class="math inline">\(p\)</span>, independently, so that the channel on both is <span class="math inline">\(\Lambda\otimes\Lambda\)</span>. By which factors do <span class="math inline">\(\langle Z\otimes I\rangle\)</span> and <span class="math inline">\(\langle Z\otimes Z\rangle\)</span> shrink? Do these factors depend on the state of the two qubits?</p>
+<details class="hint"><summary>Hint</summary>
+<p>A product of channels acts factor by factor: <span class="math inline">\((\Lambda\otimes\Lambda)(A\otimes B) = \Lambda(A)\otimes\Lambda(B)\)</span>.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-relaxation" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="sec-relaxation"><span class="header-section-number">2.2.4</span> Relaxation and non-unital noise</h3>
+<p>The channels so far are Pauli channels, and they share a property: they map the maximally mixed state to itself, <span class="math inline">\(\Lambda(I/2) = I/2\)</span>, so the centre of the Bloch ball stays where it is. A channel with this property is called <a href="glossary.html#gloss-unital" class="gloss" data-gloss="A channel is unital if it maps the maximally mixed state to itself; on one qubit, it keeps the centre of the Bloch ball fixed. Pauli channels are unital; relaxation, described by amplitude damping, is not.">unital</a>. Unital noise can only make a state more mixed: it destroys information, but it does not push the qubit towards any particular state.</p>
+<p><a href="glossary.html#gloss-relaxation" class="gloss" data-gloss="Loss of energy by a qubit: the excited state decays to the ground state. Its characteristic time is called T1, and the amplitude-damping channel describes it.">Relaxation</a>, the decay of <span class="math inline">\(\ket{1}\)</span> to <span class="math inline">\(\ket{0}\)</span> (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>), is different. A qubit in <span class="math inline">\(\ket{1}\)</span> gives its energy to the environment and ends up in <span class="math inline">\(\ket{0}\)</span>. Relaxation therefore pushes every state towards <span class="math inline">\(\ket{0}\)</span>, the maximally mixed state included: it is not unital. It is described by the <a href="glossary.html#gloss-amplitude-damping" class="gloss" data-gloss="The channel that describes relaxation: a qubit in the excited state decays to the ground state with probability gamma, which grows with time as one minus exp(-t/T1).">amplitude-damping</a> channel, with the Kraus operators <span id="eq-amplitude-damping"><span class="math display">\[
+K_0 = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; \sqrt{1-\gamma} \end{pmatrix}, \qquad
+K_1 = \begin{pmatrix} 0 &amp; \sqrt{\gamma} \\ 0 &amp; 0 \end{pmatrix} = \sqrt{\gamma}\,\ket{0}\bra{1} .
+\tag{2.6}\]</span></span> <span class="math inline">\(K_1\)</span> is the decay itself: a qubit in <span class="math inline">\(\ket{1}\)</span> jumps to <span class="math inline">\(\ket{0}\)</span>, with probability <span class="math inline">\(\gamma\)</span>. <span class="math inline">\(K_0\)</span> is the case without a decay, which also shrinks the amplitude of <span class="math inline">\(\ket{1}\)</span>, since a qubit that has not decayed is more likely to have been in <span class="math inline">\(\ket{0}\)</span> all along. Applied to a density matrix, the channel gives <span class="math display">\[
+\begin{pmatrix} \rho_{00} &amp; \rho_{01} \\ \rho_{10} &amp; \rho_{11} \end{pmatrix} \mapsto
+\begin{pmatrix} \rho_{00} + \gamma\rho_{11} &amp; \sqrt{1-\gamma}\,\rho_{01} \\
+\sqrt{1-\gamma}\,\rho_{10} &amp; (1-\gamma)\,\rho_{11} \end{pmatrix} .
+\]</span> In terms of the Bloch vector, <span class="math inline">\(r_z \mapsto (1-\gamma)\,r_z + \gamma\)</span> and <span class="math inline">\(r_{x,y} \mapsto \sqrt{1-\gamma}\, r_{x,y}\)</span>: the ball shrinks, and its centre moves towards <span class="math inline">\(\ket{0}\)</span>, to <span class="math inline">\(r_z = \gamma\)</span> (<a href="#fig-bloch-t1t2" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> a). Non-unital noise can thus make a state purer: for <span class="math inline">\(\gamma = 1\)</span>, even the maximally mixed state becomes the pure state <span class="math inline">\(\ket{0}\)</span>.</p>
+</section>
+<section id="sec-t1-t2" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="sec-t1-t2"><span class="header-section-number">2.2.5</span> Relaxation (<span class="math inline">\(T_1\)</span>) and dephasing (<span class="math inline">\(T_2^*\)</span>) times</h3>
+<p>Two experiments measure how fast a qubit relaxes and dephases, and define two of the times that providers quote for their devices (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>).</p>
+<div id="def-t1" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.5 (Relaxation time <span class="math inline">\(T_1\)</span>)</strong></span> Prepare a qubit in <span class="math inline">\(\ket{1}\)</span> and wait for a time <span class="math inline">\(t\)</span>: the probability of still finding it in <span class="math inline">\(\ket{1}\)</span> decays as <span class="math inline">\(e^{-t/T_1}\)</span>. <span class="math inline">\(T_1\)</span> is called the <em>relaxation time</em>.</p>
+</div>
+<div id="def-t2-star" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.6 (Dephasing time <span class="math inline">\(T_2^*\)</span>)</strong></span> Prepare a qubit in <span class="math inline">\(\ket{+}\)</span> and wait for a time <span class="math inline">\(t\)</span>: its <a href="glossary.html#gloss-coherence" class="gloss" data-gloss="The off-diagonal entry of a qubit’s density matrix, which carries the relative phase of a superposition. Its size decays over the dephasing time T2*, or over the longer time T2 with an echo.">coherence</a>, the size <span class="math inline">\(|\rho_{01}|\)</span> of the off-diagonal entry of its density matrix, decays approximately as <span class="math inline">\(e^{-t/T_2^*}\)</span>. <a href="glossary.html#gloss-t2-star" class="gloss" data-gloss="The dephasing time: the time over which the coherence of a qubit decays in a Ramsey experiment. It is shorter than T2, measured with an echo, because it also includes slow noise that the echo removes."><span class="math inline">\(T_2^*\)</span></a> is called the <em>dephasing time</em>. It is measured with a <a href="glossary.html#gloss-ramsey" class="gloss" data-gloss="A measurement of dephasing: a pulse puts the qubit in a superposition, the qubit waits, and a second pulse turns the remaining coherence into a measurable population. It measures T2*.">Ramsey experiment</a> (<a href="#fig-ramsey-echo" class="quarto-xref">Figure&nbsp;<span>2.3</span></a> a): a <span class="math inline">\(\pi/2\)</span> pulse turns <span class="math inline">\(\ket{0}\)</span> into <span class="math inline">\(\ket{+}\)</span>, and after the wait, a second <span class="math inline">\(\pi/2\)</span> pulse turns the <span class="math inline">\(x\)</span> component of the Bloch vector into the <span class="math inline">\(z\)</span> component, which the measurement reads out.</p>
+</div>
+<p>Which channels produce these two laws? For <span class="math inline">\(T_1\)</span>, it is amplitude damping: after a time <span class="math inline">\(t\)</span>, the probability <span class="math inline">\(\rho_{11}\)</span> of finding <span class="math inline">\(\ket{1}\)</span> has decayed by <span class="math inline">\(1-\gamma\)</span>, so <span class="math inline">\(\gamma = 1 - e^{-t/T_1}\)</span>. Amplitude damping also shrinks the coherence, by <span class="math inline">\(\sqrt{1-\gamma} = e^{-t/2T_1}\)</span>. Even without dephasing, relaxation therefore limits the coherence: for a pure state <span class="math inline">\(\alpha\ket{0} + \beta\ket{1}\)</span>, the coherence is <span class="math inline">\(|\alpha\beta|\)</span>, and the amplitude <span class="math inline">\(\beta\)</span> decays at half the rate of the probability <span class="math inline">\(|\beta|^2\)</span>.</p>
+<p>The rest of the decay is dephasing, caused by the unknown phases of <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>. The qubit frequency is shifted by an amount that we do not know, so the phase drifts by an angle that we do not know, and after some time the information about the phase is lost. We describe this by a dephasing channel whose factor decays as <span class="math inline">\(1 - 2p = e^{-t/T_\varphi}\)</span>. This is called <a href="glossary.html#gloss-pure-dephasing" class="gloss" data-gloss="The part of dephasing that does not come from relaxation, described by a dephasing channel whose strength grows with time, with characteristic time Tφ. It cannot be measured on its own, since relaxation also reduces the coherence.">pure dephasing</a>, to distinguish it from the loss of coherence caused by relaxation. Its time <span class="math inline">\(T_\varphi\)</span> is called the pure-dephasing time. Amplitude damping and dephasing commute (<a href="#exr-t1-t2" class="quarto-xref">Exercise&nbsp;<span>2.3</span></a>), and the coherence decays with both factors, <span class="math inline">\(e^{-t/2T_1}e^{-t/T_\varphi} = e^{-t/T_2^*}\)</span>, where <span id="eq-t2"><span class="math display">\[
+\frac{1}{T_2^*} = \frac{1}{2T_1} + \frac{1}{T_\varphi} .
+\tag{2.7}\]</span></span> <a href="#fig-bloch-t1t2" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> b shows the combined channel.</p>
+<p>Since <span class="math inline">\(1/T_\varphi \ge 0\)</span>, <a href="#eq-t2" class="quarto-xref">Equation&nbsp;<span>2.7</span></a> gives <span class="math inline">\(T_2^* \le 2T_1\)</span>. This bound matters in practice. The dephasing channel needs <span class="math inline">\(T_\varphi\)</span>, but <span class="math inline">\(T_\varphi\)</span> cannot be measured on its own, because relaxation cannot be switched off: every measurement of the coherence includes the decay <span class="math inline">\(e^{-t/2T_1}\)</span>. Experiments measure <span class="math inline">\(T_1\)</span> and <span class="math inline">\(T_2^*\)</span>, and <span class="math inline">\(T_\varphi\)</span> follows from <a href="#eq-t2" class="quarto-xref">Equation&nbsp;<span>2.7</span></a>. A noise model built from measured values therefore needs <span class="math inline">\(T_2^* \le 2T_1\)</span>. Otherwise, <span class="math inline">\(1/T_\varphi\)</span> would be negative, and the dephasing channel would need <span class="math inline">\(p &lt; 0\)</span>, which is not a channel. The simulators of SDKs reject or correct such values.</p>
+<div id="fig-bloch-t1t2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bloch-t1t2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/bloch-relaxation-dephasing.svg" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bloch-t1t2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: The Bloch sphere (grey) and its image (blue) under (a) amplitude damping, which shrinks the ball and pulls it towards <span class="math inline">\(\ket{0}\)</span>, and (b) an idle qubit, with relaxation and pure dephasing together, after a wait <span class="math inline">\(t = T_1/2\)</span> with <span class="math inline">\(T_2^* = T_1/2\)</span>. The dots mark where <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> go.
+</figcaption>
+</figure>
+</div>
+<p>An idle qubit undergoes this combined channel while it waits. For a short wait <span class="math inline">\(t\)</span>, its factors are <span class="math inline">\(1 - t/T_2^*\)</span> on the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes and <span class="math inline">\(1 - t/T_1\)</span> on the <span class="math inline">\(z\)</span> axis, so its error is of order <span class="math inline">\(t/T_2^*\)</span> (<a href="#sec-budgets" class="quarto-xref"><span>Section 2.6.3</span></a> makes this precise). A wait of 100 ns with <span class="math inline">\(T_2^* = 100\)</span> µs therefore costs as much as a single-qubit gate, or more. <a href="#tbl-channels" class="quarto-xref">Table&nbsp;<span>2.1</span></a> collects the single-qubit channels.</p>
+<div id="tbl-channels" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-channels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.1: Single-qubit channels. The factors multiply the components of the Bloch vector. For an idle qubit, <span class="math inline">\(\gamma = 1 - e^{-t/T_1}\)</span> and <span class="math inline">\(1 - 2p = e^{-t/T_\varphi}\)</span>.
+</figcaption>
+<div aria-describedby="tbl-channels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Channel</th>
+<th>Pauli errors</th>
+<th><span class="math inline">\(f_x = f_y\)</span></th>
+<th><span class="math inline">\(f_z\)</span></th>
+<th>Centre of the ball</th>
+<th>Describes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>depolarising</td>
+<td><span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>, each with probability <span class="math inline">\(p/4\)</span></td>
+<td><span class="math inline">\(1-p\)</span></td>
+<td><span class="math inline">\(1-p\)</span></td>
+<td>fixed</td>
+<td>gate errors</td>
+</tr>
+<tr class="even">
+<td>dephasing</td>
+<td><span class="math inline">\(Z\)</span> with probability <span class="math inline">\(p\)</span></td>
+<td><span class="math inline">\(1-2p\)</span></td>
+<td><span class="math inline">\(1\)</span></td>
+<td>fixed</td>
+<td>unknown phases (<span class="math inline">\(T_\varphi\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>amplitude damping</td>
+<td>not a Pauli channel (<a href="#eq-amplitude-damping" class="quarto-xref">Equation&nbsp;<span>2.6</span></a>)</td>
+<td><span class="math inline">\(\sqrt{1-\gamma}\)</span></td>
+<td><span class="math inline">\(1-\gamma\)</span></td>
+<td>moves to <span class="math inline">\(r_z = \gamma\)</span></td>
+<td>relaxation (<span class="math inline">\(T_1\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The widget below shows these channels acting on the Bloch ball. For an idle qubit, set the waiting time and <span class="math inline">\(T_2^*\)</span> in units of <span class="math inline">\(T_1\)</span>, with <span class="math inline">\(T_2^*\)</span> at most <span class="math inline">\(2T_1\)</span>. Drag the picture to turn the view.</p>
+<!-- Shared drawing code for the Bloch-ball widgets of L2 (_pauli-widget.qmd and
+     _channel-widget.qmd); web only. Each widget includes this file, so it may appear
+     twice on a page: the guard defines the function once. Every channel drawn here is an
+     affine map of the Bloch vector, r -> (f_x r_x, f_y r_y, f_z r_z) + (0, 0, c). -->
+<style>
+  .bloch-channel { max-width: 400px; margin: 0 auto 1rem; }
+  .bloch-channel svg { width: 100%; height: auto; touch-action: none; cursor: grab; display: block; }
+  .bloch-channel .bloch-controls { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+  .bloch-channel label { display: flex; align-items: center; gap: 0.6rem; margin: 0; }
+  .bloch-channel label > span { min-width: 7.5em; }
+  .bloch-channel input[type=range], .bloch-channel select { flex: 1; }
+  .bloch-channel .bloch-readout { font-size: 0.85rem; opacity: 0.85; min-height: 2.6em; }
+  .bloch-channel .outline, .bloch-channel .axes { stroke: currentColor; opacity: 0.55; fill: none; }
+  .bloch-channel .ref { stroke: currentColor; opacity: 0.3; fill: none; stroke-dasharray: 3 3; }
+  .bloch-channel .grid { stroke: #1f5fa8; fill: none; opacity: 0.8; }
+  .bloch-channel .grid.equator { stroke-width: 2px; }
+  .bloch-channel .body { fill: #1f5fa8; opacity: 0.13; stroke: none; }
+  .bloch-channel .back { opacity: 0.3; stroke-dasharray: 4 3; }
+  .bloch-channel .dot { fill: #1f5fa8; }
+  .bloch-channel text { fill: currentColor; font-size: 0.13px; font-family: inherit; }
+  .bloch-channel * { vector-effect: non-scaling-stroke; }
+  body.quarto-dark .bloch-channel .grid { stroke: #7fb2f0; }
+  body.quarto-dark .bloch-channel .body, body.quarto-dark .bloch-channel .dot { fill: #7fb2f0; }
+</style>
+<script>
+// ntqcBlochBall(root, update): draws the Bloch sphere and its image in root's <svg>.
+// update() reads the widget's inputs and returns {f: [f_x, f_y, f_z], c, text}, where c
+// moves the centre along z and text goes into [data-out=factors]. Every input
+// [data-in] redraws; dragging the picture turns the view.
+window.ntqcBlochBall = window.ntqcBlochBall || function (root, update) {
+  const svg = root.querySelector("svg");
+  let az = (30 * Math.PI) / 180, el = (20 * Math.PI) / 180;
+
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  function camera() {
+    const d = [Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)];
+    const r = [-Math.sin(az), Math.cos(az), 0];
+    const u = [-Math.sin(el) * Math.cos(az), -Math.sin(el) * Math.sin(az), Math.cos(el)];
+    const proj = (p) => [dot(p, r), -dot(p, u), dot(p, d)]; // screen x, screen y (down), depth
+    proj.d = d;
+    return proj;
+  }
+  // A polyline, solid where visible[i] is true and faint where it is false.
+  function line(pts, visible, proj, cls) {
+    let out = "", run = [], front = null;
+    const flush = () => {
+      if (run.length > 1) {
+        const s = run.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ");
+        out += `<polyline class="${cls}${front ? "" : " back"}" points="${s}"/>`;
+      }
+    };
+    pts.forEach((p, i) => {
+      const q = proj(p), f = visible[i];
+      if (front === null) front = f;
+      run.push(q);
+      if (f !== front) { flush(); run = [q]; front = f; }
+    });
+    flush();
+    return out;
+  }
+  const circle = (g, n = 120) => Array.from({ length: n + 1 }, (_, k) => g((2 * Math.PI * k) / n));
+  const label = (p, proj, text) => {
+    const q = proj(p);
+    return `<text x="${q[0].toFixed(3)}" y="${q[1].toFixed(3)}" text-anchor="middle" dominant-baseline="middle">${text}</text>`;
+  };
+  function hull(points) { // monotone chain, for the silhouette of the deformed ball
+    const p = points.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const turn = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const half = (seq) => {
+      const out = [];
+      for (const q of seq) {
+        while (out.length >= 2 && turn(out[out.length - 2], out[out.length - 1], q) <= 0) out.pop();
+        out.push(q);
+      }
+      return out.slice(0, -1);
+    };
+    return half(p).concat(half(p.reverse()));
+  }
+
+  function draw() {
+    const m = update();
+    const f = m.f, c = m.c || 0;
+    const map = (v) => [f[0] * v[0], f[1] * v[1], f[2] * v[2] + c];
+    // The image's outward normal is along cof * v, with the sign of the determinant
+    // (negative factors reflect the ball).
+    const cof = [f[1] * f[2], f[0] * f[2], f[0] * f[1]];
+    const sign = f[0] * f[1] * f[2] < 0 ? -1 : 1;
+    const proj = camera();
+    const seen = (v) => sign * (cof[0] * v[0] * proj.d[0] + cof[1] * v[1] * proj.d[1] + cof[2] * v[2] * proj.d[2]) >= -1e-9;
+    const sphereSeen = (v) => dot(v, proj.d) >= -1e-9;
+
+    let s = `<circle class="outline" cx="0" cy="0" r="1"/>`;
+    const eq = circle((a) => [Math.cos(a), Math.sin(a), 0]);
+    s += line(eq, eq.map(sphereSeen), proj, "ref");
+    for (const [v, name] of [[[1, 0, 0], "x"], [[0, 1, 0], "y"], [[0, 0, 1], "z"]]) {
+      s += line([[0, 0, 0], v], [true, true], proj, "axes") + label(v.map((x) => 1.2 * x), proj, name);
+    }
+    // silhouette of the image, then its grid lines
+    const sample = [];
+    for (let i = 0; i <= 24; i++) for (let j = 0; j < 48; j++) {
+      const th = (Math.PI * i) / 24, ph = (2 * Math.PI * j) / 48;
+      const q = proj(map([Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)]));
+      sample.push([q[0], q[1]]);
+    }
+    const h = hull(sample);
+    if (h.length >= 3) s += `<polygon class="body" points="${h.map((q) => q[0].toFixed(4) + "," + q[1].toFixed(4)).join(" ")}"/>`;
+    for (const z of [-0.6, 0, 0.6]) {
+      const r = Math.sqrt(1 - z * z), v = circle((a) => [r * Math.cos(a), r * Math.sin(a), z]);
+      s += line(v.map(map), v.map(seen), proj, "grid" + (z === 0 ? " equator" : ""));
+    }
+    for (let k = 0; k < 4; k++) {
+      const b = (k * Math.PI) / 4;
+      const v = circle((a) => [Math.sin(a) * Math.cos(b), Math.sin(a) * Math.sin(b), Math.cos(a)]);
+      s += line(v.map(map), v.map(seen), proj, "grid");
+    }
+    // where |0>, |1> and |+> go
+    for (const [v, name, dy] of [[[0, 0, 1], "|0⟩", -0.12], [[0, 0, -1], "|1⟩", 0.12], [[1, 0, 0], "|+⟩", 0.12]]) {
+      const q = proj(map(v));
+      s += `<circle class="dot" cx="${q[0].toFixed(4)}" cy="${q[1].toFixed(4)}" r="0.035"/>`;
+      s += `<text x="${(q[0] + 0.1).toFixed(3)}" y="${(q[1] + dy).toFixed(3)}" dominant-baseline="middle">${name}</text>`;
+    }
+    svg.innerHTML = s;
+    const out = root.querySelector("[data-out=factors]");
+    if (out) out.innerHTML = m.text;
+  }
+
+  for (const k of root.querySelectorAll("[data-in]")) k.addEventListener("input", draw);
+  let drag = null;
+  svg.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY]; svg.setPointerCapture(e.pointerId); });
+  svg.addEventListener("pointerup", () => { drag = null; });
+  svg.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    az -= (e.clientX - drag[0]) * 0.01;
+    el = Math.max(-1.4, Math.min(1.4, el + (e.clientY - drag[1]) * 0.01));
+    drag = [e.clientX, e.clientY];
+    draw();
+  });
+  draw();
+};
+</script>
+<!-- Interactive Bloch ball under the single-qubit channels of tbl-channels; web only (the
+     PDF has the static figures fig-bloch-pauli and fig-bloch-t1t2). -->
+<div class="bloch-channel" id="bloch-channel">
+  <svg viewbox="-1.5 -1.42 3 2.84" role="img" aria-label="The Bloch sphere and its image under the chosen channel. Drag to turn the view."></svg>
+  <div class="bloch-controls">
+    <label><span>channel</span>
+      <select data-in="channel" class="form-select form-select-sm">
+        <option value="depol" selected="">depolarising</option>
+        <option value="dephasing">dephasing</option>
+        <option value="ad">amplitude damping</option>
+        <option value="idle">idle qubit (T₁ and T₂*)</option>
+      </select></label>
+    <label data-group="strength"><span><span data-out="pname">p</span> = <output data-out="p"></output></span>
+      <input type="range" data-in="p" min="0" max="1" step="0.01" value="0.3"></label>
+    <label data-group="idle"><span>t / T₁ = <output data-out="t"></output></span>
+      <input type="range" data-in="t" min="0" max="3" step="0.01" value="0.5"></label>
+    <label data-group="idle"><span>T₂* / T₁ = <output data-out="t2"></output></span>
+      <input type="range" data-in="t2" min="0.05" max="2" step="0.01" value="1"></label>
+    <div class="bloch-readout" data-out="factors"></div>
+  </div>
+</div>
+<script>
+(function () {
+  const root = document.getElementById("bloch-channel");
+  if (!root) return;
+  const input = (k) => root.querySelector(`[data-in=${k}]`);
+  const output = (k) => root.querySelector(`[data-out=${k}]`);
+
+  // Parameter name and range of each channel, and its factors and offset.
+  const channels = {
+    depol: { name: "p", max: 1, map: (p) => ({ f: [1 - p, 1 - p, 1 - p], c: 0 }) },
+    dephasing: { name: "p", max: 0.5, map: (p) => ({ f: [1 - 2 * p, 1 - 2 * p, 1], c: 0 }) },
+    ad: { name: "γ", max: 1, map: (g) => ({ f: [Math.sqrt(1 - g), Math.sqrt(1 - g), 1 - g], c: g }) },
+  };
+  function idle() {
+    const t = parseFloat(input("t").value), t2 = parseFloat(input("t2").value); // in units of T1
+    const fxy = Math.exp(-t / t2), fz = Math.exp(-t);
+    return { f: [fxy, fxy, fz], c: 1 - fz };
+  }
+
+  window.ntqcBlochBall(root, function () {
+    const kind = input("channel").value;
+    for (const g of root.querySelectorAll("[data-group]")) {
+      g.style.display = (g.dataset.group === "idle") === (kind === "idle") ? "" : "none";
+    }
+    let m;
+    if (kind === "idle") {
+      m = idle();
+      output("t").textContent = parseFloat(input("t").value).toFixed(2);
+      output("t2").textContent = parseFloat(input("t2").value).toFixed(2);
+    } else {
+      const ch = channels[kind], slider = input("p");
+      slider.max = ch.max;
+      const p = Math.min(parseFloat(slider.value), ch.max);
+      output("pname").textContent = ch.name;
+      output("p").textContent = p.toFixed(2);
+      m = ch.map(p);
+    }
+    const f = m.f, c = m.c;
+    let text = `f<sub>x</sub> = ${f[0].toFixed(2)}, f<sub>y</sub> = ${f[1].toFixed(2)}, f<sub>z</sub> = ${f[2].toFixed(2)}`;
+    if (c > 0.005) text += `; centre moved up by ${c.toFixed(2)}`;
+    if (kind === "idle") {
+      const inv = 1 / parseFloat(input("t2").value) - 0.5; // T1 / Tφ
+      text += `<br>pure dephasing: T<sub>φ</sub> / T₁ = ${inv < 1e-3 ? "∞ (T₂* = 2T₁, relaxation only)" : (1 / inv).toFixed(2)}`;
+    }
+    return { f, c, text };
+  });
+})();
+</script>
+<div id="exr-t1-t2" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.3 (Relaxation and dephasing together)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Show that amplitude damping and dephasing commute. Write the Bloch vector of <span class="math inline">\(\ket{+}\)</span> after it has been idle for a time <span class="math inline">\(t\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Compare what the two channels do to <span class="math inline">\(\rho_{00}\)</span>, <span class="math inline">\(\rho_{11}\)</span> and <span class="math inline">\(\rho_{01}\)</span>.</p>
+</details></li>
+<li><p>Suppose the calibration data of a superconducting device give, for three of its qubits, <span class="math inline">\(T_1 = 150\)</span>, <span class="math inline">\(80\)</span> and <span class="math inline">\(200\)</span> µs and <span class="math inline">\(T_2^* = 120\)</span>, <span class="math inline">\(150\)</span> and <span class="math inline">\(60\)</span> µs. Compute <span class="math inline">\(T_\varphi\)</span> for each qubit. Which process limits the coherence of each, relaxation or dephasing?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-slow-noise" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="sec-slow-noise"><span class="header-section-number">2.2.6</span> Echoes and <span class="math inline">\(T_2\)</span></h3>
+<p>The dephasing channel describes a phase that we do not know: the frequency shift <span class="math inline">\(\delta\)</span> of <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>, and with it the angle <span class="math inline">\(\theta = \delta t\)</span>, differs from shot to shot by an amount that we cannot predict. Physically, this is a reasonable picture when the frequency fluctuates slowly, so that <span class="math inline">\(\delta\)</span> stays constant during each shot. But then the qubit picks up its unknown phase at a steady rate, and there is an easy way to undo it. An <span class="math inline">\(X\)</span> pulse halfway through the wait exchanges <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>, which reverses the sign of the phase picked up so far. The second half of the wait then undoes the first, whatever the value of <span class="math inline">\(\delta\)</span> (<a href="#exr-echo" class="quarto-xref">Exercise&nbsp;<span>2.4</span></a>). This is called an <a href="glossary.html#gloss-echo" class="gloss" data-gloss="An X pulse halfway through a wait, which reverses the phase accumulated before it, so that phase errors that stay constant during the wait cancel. An echo experiment measures T2.">echo</a>, or Hahn echo, after Erwin Hahn, who found it with nuclear spins in 1950. It leaves the qubit flipped, so a second <span class="math inline">\(X\)</span> is added at the end of the wait. Repeated echoes during a long wait, called <a href="glossary.html#gloss-dynamical-decoupling" class="gloss" data-gloss="Repeated echo pulses during a long wait, which remove noise that is slow compared with the spacing of the pulses. It suppresses noise on the device itself.">dynamical decoupling</a>, protect idle qubits from slow noise on the device itself, while the error mitigation of later chapters corrects the estimates after the run.</p>
+<p>If the frequency also changes during the wait, the phases picked up in the two halves differ, and the echo cancels only the part they have in common. What is left comes from fluctuations on timescales shorter than the wait. The angle is then a sum of many small, independent kicks, one for each short interval, so it is Gaussian (by the central limit theorem). Its variance is the sum of the variances of the kicks, the fact behind <a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>, and it therefore grows in proportion to <span class="math inline">\(t\)</span>. We write it as <span class="math inline">\(\sigma^2 = 2t/T_\varphi\)</span>, so that the coherence decays as <span class="math inline">\(e^{-\sigma^2/2} = e^{-t/T_\varphi}\)</span>. Fast noise gives the exponential decay of pure dephasing that <a href="#sec-t1-t2" class="quarto-xref"><span>Section 2.2.5</span></a> assumed.</p>
+<p>An echo experiment, a Ramsey experiment with an <span class="math inline">\(X\)</span> pulse halfway and another at the end of the wait (<a href="#fig-ramsey-echo" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>), therefore measures a longer time than <span class="math inline">\(T_2^*\)</span>, called <span class="math inline">\(T_2\)</span>: the decay due to relaxation and fast noise only. It obeys <a href="#eq-t2" class="quarto-xref">Equation&nbsp;<span>2.7</span></a> with <span class="math inline">\(T_2\)</span> in place of <span class="math inline">\(T_2^*\)</span> and a longer <span class="math inline">\(T_\varphi\)</span>, so <span class="math inline">\(T_2^* \le T_2 \le 2T_1\)</span>. The star of <span class="math inline">\(T_2^*\)</span> marks the time that includes slow noise. Dynamical decoupling is usually assumed to be available for idle qubits, so calibration data often quote <span class="math inline">\(T_2\)</span> rather than <span class="math inline">\(T_2^*\)</span>, and the error budgets of <a href="#sec-budgets" class="quarto-xref"><span>Section 2.6.3</span></a> use <span class="math inline">\(T_2\)</span> too. In a Ramsey experiment, slow noise makes the coherence decay faster, and the decay need not be exponential: for a frequency shift that is constant within each shot and Gaussian across shots, it is a Gaussian in <span class="math inline">\(t\)</span> (<a href="#exr-echo" class="quarto-xref">Exercise&nbsp;<span>2.4</span></a>).</p>
+<div id="fig-ramsey-echo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ramsey-echo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/ramsey-echo.svg" class="img-fluid figure-img" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ramsey-echo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: (a) A Ramsey experiment and an echo. Each <span class="math inline">\(\pi/2\)</span> pulse is a rotation by <span class="math inline">\(\pi/2\)</span> about an axis in the <span class="math inline">\(xy\)</span> plane, and M is the measurement. (b) The coherence left after a wait <span class="math inline">\(t\)</span>. With slow noise, the Ramsey signal decays faster than the echo signal, which decays as <span class="math inline">\(e^{-t/T_2}\)</span>. The curves are an illustration, with slow noise of one fixed strength.
+</figcaption>
+</figure>
+</div>
+<p>Slow noise has memory, so it is the main exception to the Markovian model of <a href="#sec-noisy-circuits" class="quarto-xref"><span>Section 2.2.3</span></a>. A common source is a defect in the chip that switches between two states and makes the qubit frequency jump (<a href="glossary.html#gloss-telegraph-noise" class="gloss" data-gloss="Noise from a defect that switches at random between two states, making the qubit frequency jump back and forth.">random telegraph noise</a>). Many such defects give noise in which slow fluctuations dominate (<a href="glossary.html#gloss-one-over-f" class="gloss" data-gloss="Noise in which slow fluctuations are much stronger than fast ones, in inverse proportion to their frequency. It typically comes from many defects, each switching at its own rate.">1/f noise</a>, with <span class="math inline">\(f\)</span> the frequency of the fluctuations).</p>
+<div id="exr-echo" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.4 (The echo)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\(X R_Z(\theta) X = R_Z(-\theta)\)</span>, and that <span class="math inline">\(R_Z(\theta/2)\, X\, R_Z(\theta/2) = X\)</span> for every angle <span class="math inline">\(\theta\)</span>. An echo on an idle qubit ends with a second <span class="math inline">\(X\)</span>. Why does this second <span class="math inline">\(X\)</span> cost nothing extra when the next gate on the qubit is a single-qubit gate?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <span class="math inline">\(XZX = -Z\)</span> and <a href="L1-platforms-and-measurement.html#eq-conjugation" class="quarto-xref">Equation&nbsp;<span>1.5</span></a>. For the second <span class="math inline">\(X\)</span>, see <a href="L1-platforms-and-measurement.html#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a>.</p>
+</details></li>
+<li><p>In a Ramsey experiment, the qubit frequency is shifted by an amount <span class="math inline">\(\delta\)</span> that is constant within each shot, and Gaussian with standard deviation <span class="math inline">\(\sigma_\delta\)</span> across shots. Ignoring relaxation and fast noise, show that the coherence after a wait <span class="math inline">\(t\)</span> is <span class="math inline">\(e^{-\sigma_\delta^2 t^2/2}\)</span>. What is it with an echo?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#exr-random-phase" class="quarto-xref">Exercise&nbsp;<span>2.1</span></a> with <span class="math inline">\(\theta = \delta t\)</span>.</p>
+</details></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-multi-qubit-noise" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-multi-qubit-noise"><span class="header-section-number">2.3</span> Noise on many qubits</h2>
+<p>On many qubits, the tools of <a href="#sec-pauli-channels" class="quarto-xref"><span>Section 2.2.1</span></a> carry over with one more fact of Pauli algebra. Two Pauli strings <span class="math inline">\(P\)</span> and <span class="math inline">\(Q\)</span> either commute, <span class="math inline">\(PQ = QP\)</span>, or anticommute, <span class="math inline">\(PQ = -QP\)</span>; we can summarise this by defining the sign <span class="math inline">\(s_{PQ} = \pm 1\)</span> such that <span class="math inline">\(PQ = s_{PQ}\,QP\)</span>. A Pauli channel on <span class="math inline">\(n\)</span> qubits, <span class="math inline">\(\Lambda(\rho) = \sum_Q q_Q\, Q\rho Q\)</span>, therefore multiplies the expectation value of every Pauli string <span class="math inline">\(P\)</span> by its own factor, <span id="eq-pauli-factors-n"><span class="math display">\[
+\langle P\rangle \mapsto f_P\langle P\rangle, \qquad f_P = \sum_Q s_{PQ}\, q_Q .
+\tag{2.8}\]</span></span></p>
+<p>Noise that acts on each qubit separately, with a channel <span class="math inline">\(\Lambda_j\)</span> on qubit <span class="math inline">\(j\)</span>, is called <em>local</em>: the channel on all qubits is <span class="math inline">\(\Lambda_1\otimes\cdots\otimes\Lambda_n\)</span>. It acts factor by factor on a Pauli string and leaves the identity factors unchanged, so the factor of a string is the product of the single-qubit factors at its non-identity positions.</p>
+<p>As examples, we extend the simplest noise of <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>, the depolarising channel, to many qubits. There are two natural ways to do this.</p>
+<div id="def-local-depolarising" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.7 (Local depolarising noise)</strong></span> <a href="glossary.html#gloss-local-depolarising" class="gloss" data-gloss="Depolarising noise that acts on each qubit separately and independently. It shrinks the expectation value of a Pauli string by one factor for each qubit on which the string acts, so strings of higher weight shrink faster.">Local depolarising noise</a> with parameter <span class="math inline">\(p\)</span> applies the depolarising channel of <a href="#def-depolarising" class="quarto-xref">Definition&nbsp;<span>2.4</span></a> to each qubit, independently.</p>
+</div>
+<div id="def-global-depolarising" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.8 (Global depolarising noise)</strong></span> The <a href="glossary.html#gloss-global-depolarising" class="gloss" data-gloss="The depolarising channel acting on all qubits at once: with probability p, the state of all qubits is replaced by the maximally mixed state. It shrinks every Pauli expectation value by the same factor, whatever its weight.">global depolarising channel</a> on <span class="math inline">\(n\)</span> qubits replaces the state of all qubits by the maximally mixed state with probability <span class="math inline">\(p\)</span>: <span class="math display">\[
+\Lambda(\rho) = (1-p)\,\rho + p\,\frac{I}{2^n} .
+\]</span></p>
+</div>
+<p>For <span class="math inline">\(n = 1\)</span>, both are the depolarising channel of <a href="#eq-depolarising" class="quarto-xref">Equation&nbsp;<span>2.5</span></a>. With local depolarising noise, a Pauli string of <a href="glossary.html#gloss-weight" class="gloss" data-gloss="The number of qubits on which a Pauli string acts with a Pauli matrix other than the identity. Under local noise, strings of higher weight lose their expectation value faster.">weight</a> <span class="math inline">\(w\)</span>, its number of non-identity positions, shrinks by <span class="math inline">\((1-p)^w\)</span>: strings of high weight lose their signal fastest.</p>
+<p>Global depolarising behaves differently. Compare the Kraus forms first. With local depolarising noise, each qubit independently suffers <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> or <span class="math inline">\(Z\)</span> with probability <span class="math inline">\(p/4\)</span> each, so an error on <span class="math inline">\(w\)</span> given qubits has a probability of order <span class="math inline">\((p/4)^w\)</span>: errors on many qubits at once are rare. The global channel is a Pauli channel too. Averaging <span class="math inline">\(Q\rho Q\)</span> over all <span class="math inline">\(4^n\)</span> Pauli strings <span class="math inline">\(Q\)</span> gives <span class="math inline">\(I/2^n\)</span>. Indeed, by <a href="#eq-pauli-factors-n" class="quarto-xref">Equation&nbsp;<span>2.8</span></a>, the factor of every non-identity string <span class="math inline">\(P\)</span> vanishes: at a position where <span class="math inline">\(P\)</span> is not the identity, two of the four choices of <span class="math inline">\(Q\)</span> anticommute with it, so half of all strings do. So <span class="math display">\[
+(1-p)\,\rho + p\,\frac{I}{2^n} = \Big(1 - p + \frac{p}{4^n}\Big)\rho + \frac{p}{4^n}\sum_{Q\ne I} Q\rho Q .
+\]</span> All <span class="math inline">\(4^n - 1\)</span> non-identity errors are equally likely, and an error on all <span class="math inline">\(n\)</span> qubits is as likely as an error on one. As a result, global depolarising shrinks every Pauli string by the same factor, <span class="math inline">\(1-p\)</span>, whatever its weight. No product of local channels does this: it would need <span class="math inline">\(f_{ZI} = f_{IZ} = f_{ZZ} = 1-p\)</span>, while a product gives <span class="math inline">\(f_{ZZ} = f_{ZI}\, f_{IZ}\)</span>.</p>
+<p>Like its single-qubit version, global depolarising noise commutes with every unitary, here on all <span class="math inline">\(n\)</span> qubits. If every gate <span class="math inline">\(i\)</span> of a circuit is followed by global depolarising noise with parameter <span class="math inline">\(p_i\)</span>, all of it can be moved to the end of the circuit. Every expectation value then shrinks by the same factor: <span id="eq-global-factor"><span class="math display">\[
+\langle P\rangle \mapsto f\langle P\rangle, \qquad f = \prod_i (1-p_i) .
+\tag{2.9}\]</span></span> A single number describes the noise of the whole circuit. This makes global depolarising noise much easier to model than local noise, and to correct for (<a href="#sec-rescaling" class="quarto-xref"><span>Section 2.7.2</span></a>).</p>
+<p>Local noise does not commute with entangling gates. Conjugation by CZ turns an <span class="math inline">\(X\)</span> on the second qubit into <span class="math inline">\(Z\otimes X\)</span> (<a href="L1-platforms-and-measurement.html#sec-compiling" class="quarto-xref"><span>Section 1.3.4</span></a>), so an <span class="math inline">\(X\)</span> error before a CZ is a two-qubit error after it. Errors therefore spread through a circuit: each later two-qubit gate can carry an error to one more qubit, and the qubits that it can reach form a cone, called its <em>light cone</em> (<a href="#fig-error-spreading" class="quarto-xref">Figure&nbsp;<span>2.4</span></a>). For deep circuits of random gates, global depolarising noise is then a good approximation of local noise. These circuits are called <a href="glossary.html#gloss-scrambling" class="gloss" data-gloss="A property of circuits, such as deep circuits of random gates, that spread every error over all the qubits, so that any error leaves the output close to random. For such circuits, global depolarising noise is a good model of local noise.">scrambling</a>: the light cone of every error soon covers all the qubits, so that any error, wherever it happens, leaves the output close to random. Global depolarising noise is therefore a very useful model for estimates (<a href="#sec-fidelity" class="quarto-xref"><span>Section 2.6</span></a> and <a href="#sec-bias-variance" class="quarto-xref"><span>Section 2.7</span></a>), although real noise is mostly local.</p>
+<div id="fig-error-spreading" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-error-spreading-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/error-spreading.svg" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-error-spreading-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: One error (star) in the brick-wall circuit of <a href="L1-platforms-and-measurement.html#exr-error-budget" class="quarto-xref">Exercise&nbsp;<span>1.8</span></a>, on qubit <span class="math inline">\(q_4\)</span> after the pulse of the second layer. The shaded wires are its light cone: the qubits that the later CZ gates can carry it to. By the last layers, it can reach every qubit.
+</figcaption>
+</figure>
+</div>
+<p><a href="glossary.html#gloss-correlated-errors" class="gloss" data-gloss="Errors that affect several qubits together, or that depend on what happens elsewhere in the circuit, such as crosstalk or bursts caused by cosmic rays.">Correlated errors</a> affect several qubits together. An example is <a href="glossary.html#gloss-crosstalk" class="gloss" data-gloss="An unwanted effect of an operation on one qubit on other qubits, for example through couplings that are never fully switched off.">crosstalk</a> (<a href="L1-platforms-and-measurement.html#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>), including the coupling between neighbouring superconducting qubits that is never fully off and acts as a small, unwanted <span class="math inline">\(R_{ZZ}\)</span> rotation (<a href="L1-platforms-and-measurement.html#eq-rzz" class="quarto-xref">Equation&nbsp;<span>1.3</span></a>). Some correlated errors affect a whole chip. When a cosmic ray, or the radioactive decay of a trace impurity, deposits energy in a superconducting chip, the energy spreads as vibrations of the crystal (<a href="glossary.html#gloss-phonon" class="gloss" data-gloss="A quantum of vibration. In an ion trap, phonons are the quanta of the vibrations that the whole chain of ions shares; in a solid, such as a qubit chip, they are the quanta of the vibrations of the crystal.">phonons</a>), and for tens of milliseconds all qubits on the chip relax much faster than usual. In the experiment of <span class="citation" data-cites="mcewen2022"><span class="nocase">McEwen et al.</span> (<a href="L1-platforms-and-measurement.html#ref-mcewen2022" role="doc-biblioref">2022</a>)</span>, this happened about once every ten seconds. Such bursts break the independence of errors that the estimates of <a href="#sec-fidelity" class="quarto-xref"><span>Section 2.6</span></a> assume, and they matter most for error correction.</p>
+</section>
+<section id="sec-gate-errors" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-gate-errors"><span class="header-section-number">2.4</span> Noisy gates</h2>
+<p>In <a href="#sec-noisy-circuits" class="quarto-xref"><span>Section 2.2.3</span></a>, we modelled the noisy gates of a device as ideal gates, each followed by a channel. But which channel is the right one? Part of it is the relaxation and dephasing during the gate. The rest comes from the control: the pulses that implement a gate are never exactly right.</p>
+<p>A <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent error</a> (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) is a fixed, wrong unitary. A pulse that is slightly too strong, for example, implements <span class="math inline">\(R_X(\theta+\eta) = R_X(\eta)R_X(\theta)\)</span> instead of <span class="math inline">\(R_X(\theta)\)</span>: the channel after the gate is the unitary <span class="math inline">\(R_X(\eta)\)</span>. Biased angles in parametrised gates return with variational algorithms. <!-- VQE-LINK: link "variational algorithms" to the variational
+chapter. --> An <a href="glossary.html#gloss-incoherent-error" class="gloss" data-gloss="A random error that differs from shot to shot and averages to a noisy channel. Random errors accumulate more slowly than coherent ones.">incoherent error</a> is random: the error unitary differs from shot to shot, and averages to a channel, as the random <span class="math inline">\(R_Z\)</span> did in <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>.</p>
+<p>The difference matters when a gate is repeated. Apply an <span class="math inline">\(X\)</span> gate <span class="math inline">\(n\)</span> times to a qubit that starts in <span class="math inline">\(\ket{0}\)</span>, each time over-rotated about the <span class="math inline">\(x\)</span> axis by a small angle <span class="math inline">\(\eta_k\)</span>. The result is <span class="math inline">\(X^n\)</span> followed by <span class="math inline">\(R_X(\sum_k\eta_k)\)</span>. A total error angle <span class="math inline">\(\theta\)</span> gives the wrong outcome with probability <span class="math inline">\(\sin^2(\theta/2)\)</span>. We use this <em>error probability</em> as the measure of error until <a href="#sec-fidelity" class="quarto-xref"><span>Section 2.6</span></a>. If the error is the same every time, <span class="math inline">\(\eta_k = \eta\)</span>, the angles add up like the slow noise of <a href="#sec-slow-noise" class="quarto-xref"><span>Section 2.2.6</span></a>, and the error probability is <span class="math inline">\(\sin^2(n\eta/2) \approx n^2\eta^2/4\)</span>. If the errors are random and independent, with mean zero and variance <span class="math inline">\(\sigma^2\)</span>, they add up like the fast noise there: the variance of the total angle is <span class="math inline">\(n\sigma^2\)</span>, and the average error probability is about <span class="math inline">\(n\sigma^2/4\)</span>. For the same error per gate, <span class="math inline">\(\eta = \sigma\)</span>, the coherent error after <span class="math inline">\(n\)</span> gates is <span class="math inline">\(n\)</span> times larger (<a href="#fig-coherent-incoherent" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>).</p>
+<div id="fig-coherent-incoherent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-coherent-incoherent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/coherent-incoherent.svg" class="img-fluid figure-img" style="width:55.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-coherent-incoherent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.5: The error probability after <span class="math inline">\(n\)</span> over-rotated gates, with the same error per gate: a fixed angle <span class="math inline">\(\eta = 0.02\)</span> (orange) and independent random angles with standard deviation <span class="math inline">\(\sigma = 0.02\)</span> (blue). On these logarithmic axes, the coherent error grows with slope 2 and the incoherent one with slope 1.
+</figcaption>
+</figure>
+</div>
+<p>Three consequences matter later:</p>
+<ol type="1">
+<li>The error budgets of <a href="#sec-fidelity" class="quarto-xref"><span>Section 2.6</span></a> assume incoherent errors, so they underestimate coherent ones.</li>
+<li>Circuits that repeat identical layers, such as those for time evolution, are the worst case.</li>
+<li>Coherent errors can be made incoherent on purpose: random Pauli gates before and after a gate such as CZ, chosen so that they cancel in the ideal circuit, average its error into a Pauli channel. This is called <a href="glossary.html#gloss-twirling" class="gloss" data-gloss="Inserting random Pauli gates around a gate, chosen so that they cancel in the ideal circuit. Averaged over the random choices, any error becomes a Pauli channel.">twirling</a>. Each random Pauli gate can be merged with the single-qubit gate next to it, which costs a single pulse anyway (<a href="L1-platforms-and-measurement.html#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a>), so twirling needs no extra pulses. <a href="#exr-over-rotation" class="quarto-xref">Exercise&nbsp;<span>2.5</span></a> (b) shows the simplest case.</li>
+</ol>
+<p><a href="glossary.html#gloss-leakage" class="gloss" data-gloss="An error in which a qubit leaves its two qubit levels, for example when a transmon is pushed into its third level.">Leakage</a> falls outside this description: it takes a qubit out of its two levels, for example into the third level of a transmon (<a href="L1-platforms-and-measurement.html#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>), so that channels on <span class="math inline">\(2\times 2\)</span> density matrices cannot describe it.</p>
+<div id="exr-over-rotation" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.5 (Coherent and incoherent errors)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>A gate has a coherent over-rotation of <span class="math inline">\(\eta = 0.01\)</span>. After how many repetitions is the error probability 1%? Answer the same question for random over- and under-rotations, with mean zero and standard deviation <span class="math inline">\(\sigma = 0.01\)</span>.</p></li>
+<li><p>An <span class="math inline">\(R_X(\theta)\)</span> gate has a small coherent error: it applies <span class="math inline">\(R_Z(\eta)\)</span> after the intended rotation. For each repetition of the gate, independently and with probability <span class="math inline">\(1/2\)</span>, we add a perfect <span class="math inline">\(X\)</span> gate just before it and another just after it. Since <span class="math inline">\(X\)</span> commutes with <span class="math inline">\(R_X(\theta)\)</span>, the ideal gate is unchanged, but the error becomes <span class="math inline">\(X R_Z(\eta) X\)</span>. Show that, averaged over these random choices, the error of each gate becomes a dephasing channel with <span class="math inline">\(p = \sin^2(\eta/2)\)</span>. How does it now add up over <span class="math inline">\(n\)</span> repetitions?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#exr-echo" class="quarto-xref">Exercise&nbsp;<span>2.4</span></a> (a), and compute the factors.</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-readout-errors" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-readout-errors"><span class="header-section-number">2.5</span> Readout errors</h2>
+<p>A measurement can report the wrong bit (<a href="L1-platforms-and-measurement.html#tbl-noise" class="quarto-xref">Table&nbsp;<span>1.4</span></a>). We describe this with the <a href="glossary.html#gloss-confusion-matrix" class="gloss" data-gloss="The table of probabilities of reading each outcome given each true state of the qubits. It describes readout errors.">confusion matrix</a> <span class="math inline">\(M\)</span>, whose entry <span class="math inline">\(M_{ij} = p(\text{read } i \mid \text{state } j)\)</span> is the probability of reading <span class="math inline">\(i\)</span> when the qubit is in <span class="math inline">\(\ket{j}\)</span>. On one qubit, <span class="math display">\[
+M = \begin{pmatrix} 1-e_0 &amp; e_1 \\ e_0 &amp; 1-e_1 \end{pmatrix},
+\]</span> where <span class="math inline">\(e_0 = p(1\mid 0)\)</span> and <span class="math inline">\(e_1 = p(0\mid 1)\)</span> are the two error rates. If we call reading 1 a positive, <span class="math inline">\(e_0\)</span> is the rate of false positives and <span class="math inline">\(e_1\)</span> the rate of false negatives. <span class="math inline">\(M\)</span> maps the probabilities of the true outcomes to those of the recorded ones, so it is a channel on classical probabilities <span class="citation" data-cites="walter2025">(<a href="L1-platforms-and-measurement.html#ref-walter2025" role="doc-biblioref">Walter and Ozols 2025, sec. 4.3</a>)</span>.</p>
+<p>If the two error rates are equal, <span class="math inline">\(e_0 = e_1 = e\)</span>, the readout acts as a perfect measurement after a <a href="glossary.html#gloss-bit-flip" class="gloss" data-gloss="The Pauli channel that applies X with some probability p: it flips the bit of a qubit. Readout errors with equal error rates act as a bit flip just before the measurement.">bit flip</a>: the Pauli channel that applies <span class="math inline">\(X\)</span> with probability <span class="math inline">\(e\)</span>. By <a href="#eq-pauli-factors" class="quarto-xref">Equation&nbsp;<span>2.4</span></a>, <span class="math inline">\(\langle Z\rangle\)</span> then shrinks by <span class="math inline">\(1-2e\)</span>, as in <a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a>. Usually, <span class="math inline">\(e_1 &gt; e_0\)</span>. A readout on a superconducting qubit takes about a microsecond (<a href="L1-platforms-and-measurement.html#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a>), and a qubit in <span class="math inline">\(\ket{1}\)</span> can relax during it, with a probability of order 1% for <span class="math inline">\(T_1 = 100\)</span> µs. With <span class="math inline">\(p_0 = (1+\langle Z\rangle)/2\)</span> and <span class="math inline">\(p_1 = (1-\langle Z\rangle)/2\)</span>, the recorded expectation value is then <span id="eq-readout"><span class="math display">\[
+\langle Z\rangle_{\text{read}} = (1 - e_0 - e_1)\,\langle Z\rangle + (e_1 - e_0) ,
+\tag{2.10}\]</span></span> a shrinking factor and an offset, as for amplitude damping.</p>
+<p>Preparation can fail too. A qubit that is thermally excited (<a href="L1-platforms-and-measurement.html#exr-thermal" class="quarto-xref">Exercise&nbsp;<span>1.1</span></a>) starts in <span class="math inline">\(\ket{1}\)</span> instead of <span class="math inline">\(\ket{0}\)</span>, and a measurement right after the preparation cannot tell this apart from a readout error (<a href="#exr-readout" class="quarto-xref">Exercise&nbsp;<span>2.6</span></a>). Errors in state preparation and measurement are therefore characterised together, as <a href="glossary.html#gloss-spam" class="gloss" data-gloss="State preparation and measurement errors, characterised together because a measurement right after a preparation cannot tell them apart.">SPAM errors</a>.</p>
+<p>On <span class="math inline">\(n\)</span> qubits, the confusion matrix is <span class="math inline">\(2^n\times 2^n\)</span>: its entry <span class="math inline">\(M_{xy}\)</span> is the probability of reading the bit string <span class="math inline">\(x\)</span> when the qubits are in the basis state <span class="math inline">\(\ket{y}\)</span>. For independent readouts, it is the tensor product of single-qubit matrices. If, in addition, each qubit’s two error rates are equal, every qubit of a Pauli string shrinks its expectation value by its own factor <span class="math inline">\(1 - 2e_j\)</span> (<a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a>). Otherwise, the offsets of <a href="#eq-readout" class="quarto-xref">Equation&nbsp;<span>2.10</span></a> also mix in the expectation values of shorter strings. Correcting estimates for known readout errors is the simplest form of error mitigation, which we meet later in the course.</p>
+<div id="exr-readout" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.6 (Unequal readout errors)</strong></span> A qubit has the readout error rates <span class="math inline">\(e_0 = 1\%\)</span> and <span class="math inline">\(e_1 = 4\%\)</span>.</p>
+<ol type="a">
+<li><p>Which value of <span class="math inline">\(\langle Z\rangle\)</span> is recorded on average for the states <span class="math inline">\(\ket{0}\)</span>, <span class="math inline">\(\ket{1}\)</span> and <span class="math inline">\(\ket{+}\)</span>?</p></li>
+<li><p>Suppose instead that the readout is perfect, but that preparing <span class="math inline">\(\ket{0}\)</span> gives <span class="math inline">\(\ket{1}\)</span> with probability <span class="math inline">\(e_p\)</span>, and that <span class="math inline">\(\ket{1}\)</span> is prepared by a perfect <span class="math inline">\(X\)</span> gate after that. Which confusion matrix does an experiment that prepares <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> and measures them report? Can it tell this situation apart from a readout error?</p></li>
+<li><p>Why does the difference between the two situations matter for a circuit with gates between the preparation and the measurement?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Where in the circuit does each error act, and what do the gates do to it?</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-fidelity" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="sec-fidelity"><span class="header-section-number">2.6</span> Fidelity and error budgets</h2>
+<p>Providers summarise the quality of each operation by a fidelity (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). In this section, we define fidelities, and we use the error rates that providers quote for a quick estimate of how much signal a circuit keeps. We work out one example, the same circuit on two platforms.</p>
+<section id="sec-fidelity-def" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="sec-fidelity-def"><span class="header-section-number">2.6.1</span> Fidelity of states and gates</h3>
+<div id="def-fidelity" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.9 (Fidelity)</strong></span> The <a href="glossary.html#gloss-state-fidelity" class="gloss" data-gloss="For a pure target state, the probability that a state passes a test for the target, that is, the expectation value of the projector onto the target.">state fidelity</a> of a state <span class="math inline">\(\rho\)</span> with a pure target state <span class="math inline">\(\ket{\psi}\)</span> is <span class="math inline">\(F = \bra{\psi}\rho\ket{\psi}\)</span>. The <a href="glossary.html#gloss-average-gate-fidelity" class="gloss" data-gloss="The state fidelity between the output of a noisy gate and the ideal output, averaged over all pure input states. One minus it is the error per gate.">average gate fidelity</a> <span class="math inline">\(F_{\text{avg}}\)</span> of a noisy gate is the state fidelity of its output with the ideal output <span class="math inline">\(U\ket{\psi}\)</span>, averaged over all pure input states <span class="math inline">\(\ket{\psi}\)</span>. The <em>error per gate</em> is <span class="math inline">\(r = 1 - F_{\text{avg}}\)</span>.</p>
+</div>
+<p>The state fidelity is the probability that <span class="math inline">\(\rho\)</span> passes a measurement that asks “is the state <span class="math inline">\(\ket{\psi}\)</span>?”. Some texts, including <span class="citation" data-cites="nielsen2010">Nielsen and Chuang (<a href="L1-platforms-and-measurement.html#ref-nielsen2010" role="doc-biblioref">2010</a>)</span> and the Quantum Information Theory notes <span class="citation" data-cites="walter2025">(<a href="L1-platforms-and-measurement.html#ref-walter2025" role="doc-biblioref">Walter and Ozols 2025, sec. 4.2</a>)</span>, call <span class="math inline">\(\sqrt{\bra{\psi}\rho\ket{\psi}}\)</span> the fidelity instead. We use the squared version, as Qiskit does.</p>
+<p>For example, after depolarising noise with parameter <span class="math inline">\(p\)</span>, every pure state has the fidelity <span class="math inline">\(1 - p/2\)</span> with the ideal one, so <span class="math inline">\(r = p/2\)</span>.</p>
+<p>Providers usually quote the error per gate <span class="math inline">\(r\)</span>, measured with <a href="glossary.html#gloss-randomised-benchmarking" class="gloss" data-gloss="A method to measure the average error per gate: random gate sequences of growing length, which ideally return to the initial state, are run, and the decay of the success probability with the length gives the error per gate.">randomised benchmarking</a>. An error budget needs instead the probability that an operation goes wrong. For a Pauli channel, this is the <em>Pauli error</em> <span class="math inline">\(\varepsilon = 1 - q_I\)</span>, the probability of an error other than the identity. It is slightly larger than <span class="math inline">\(r\)</span>. On <span class="math inline">\(d\)</span> levels (<span class="math inline">\(d = 2^n\)</span> for <span class="math inline">\(n\)</span> qubits), <span id="eq-pauli-error"><span class="math display">\[
+\varepsilon = \frac{d+1}{d}\, r ,
+\tag{2.11}\]</span></span> so <span class="math inline">\(\varepsilon = 3r/2\)</span> for a single-qubit gate and <span class="math inline">\(5r/4\)</span> for a two-qubit gate. Research papers often quote Pauli errors instead of <span class="math inline">\(r\)</span>, so a budget must check which of the two it uses. A derivation of <a href="#eq-pauli-error" class="quarto-xref">Equation&nbsp;<span>2.11</span></a> can be found in <span class="citation" data-cites="nielsen2002">Nielsen (<a href="L1-platforms-and-measurement.html#ref-nielsen2002" role="doc-biblioref">2002</a>)</span>.</p>
+</section>
+<section id="sec-signal-left" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="sec-signal-left"><span class="header-section-number">2.6.2</span> Circuit fidelity and the signal left</h3>
+<p>A circuit has many gates, each with a small error. Before we run it, we would like to know how much of the ideal result survives: by how much a measured expectation value shrinks, and whether what is left can be seen above the shot noise. Computing this exactly means simulating the noisy circuit, with a detailed noise model. Instead, we estimate it from the error rates that providers quote, with a few approximations.</p>
+<p>Suppose every gate and idle step <span class="math inline">\(i\)</span> of a circuit suffers a Pauli error with probability <span class="math inline">\(\varepsilon_i\)</span>, independently of the others. The probability that a shot runs without any error is then <span id="eq-circuit-fidelity"><span class="math display">\[
+f = \prod_i (1-\varepsilon_i) \approx e^{-\sum_i\varepsilon_i} ,
+\tag{2.12}\]</span></span> for small <span class="math inline">\(\varepsilon_i\)</span>, as in <a href="L1-platforms-and-measurement.html#sec-nisq" class="quarto-xref"><span>Section 1.1</span></a> and <a href="L1-platforms-and-measurement.html#exr-error-budget" class="quarto-xref">Exercise&nbsp;<span>1.8</span></a>. Virtual <span class="math inline">\(Z\)</span> gates add nothing to the sum (<a href="L1-platforms-and-measurement.html#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a>). In a scrambling circuit (<a href="#sec-multi-qubit-noise" class="quarto-xref"><span>Section 2.3</span></a>), any error leaves the output close to random, so the noise acts as global depolarising noise. Every expectation value then shrinks by the same factor <span class="math inline">\(f\)</span>, as in <a href="#eq-global-factor" class="quarto-xref">Equation&nbsp;<span>2.9</span></a> with <span class="math inline">\(p_i \approx \varepsilon_i\)</span>. So <span class="math inline">\(f\)</span>, the probability of a shot without an error, is also the fraction of the signal that is left, and approximately the fidelity of the output state with the ideal one.</p>
+<p>Readout errors act after the last gate and do not spread. With equal error rates <span class="math inline">\(e\)</span>, they shrink a Pauli string of weight <span class="math inline">\(w\)</span> by <span class="math inline">\((1-2e)^w \approx e^{-2ew}\)</span> (<a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a>). Each qubit of the string therefore adds <span class="math inline">\(2e\)</span> to the sum in <a href="#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>, and the other qubits add nothing.</p>
+<p>These estimates assume independent, incoherent errors and a circuit that spreads them. They are rough, but they are what we use to judge whether a result is plausible. With <span class="math inline">\(N\)</span> shots, the standard error is about <span class="math inline">\(1/\sqrt{N}\)</span> (<a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>). A measured value <span class="math inline">\(f\langle P\rangle\)</span> can therefore be told apart from zero only if <span class="math inline">\(f|\langle P\rangle|\)</span> is several times larger than <span class="math inline">\(1/\sqrt{N}\)</span>.</p>
+</section>
+<section id="sec-budgets" class="level3" data-number="2.6.3">
+<h3 data-number="2.6.3" class="anchored" data-anchor-id="sec-budgets"><span class="header-section-number">2.6.3</span> Example: error budgets on two platforms</h3>
+<p>As an example, we estimate how much signal one circuit keeps on a superconducting and on a trapped-ion device. Take the brick-wall circuit of <a href="L1-platforms-and-measurement.html#exr-error-budget" class="quarto-xref">Exercise&nbsp;<span>1.8</span></a>, on a line of 10 qubits with 8 layers, and estimate <span class="math inline">\(\langle Z\otimes Z\rangle\)</span> on two neighbouring qubits. Each layer applies an <span class="math inline">\(R_X\)</span> pulse to every qubit, its <span class="math inline">\(R_Z\)</span> being virtual, and CZs between neighbours: 80 pulses and 36 CZs. We take values that are typical of current devices (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a> and <a href="L1-platforms-and-measurement.html#tbl-timescales" class="quarto-xref">Table&nbsp;<span>1.5</span></a>):</p>
+<ul>
+<li>superconducting: Pauli errors of 0.03% per pulse (40 ns), 0.5% per CZ (80 ns) and 1% per readout, <span class="math inline">\(T_1 = 150\)</span> µs and <span class="math inline">\(T_2 = 100\)</span> µs;</li>
+<li>trapped ions: 0.01% per pulse (20 µs), 0.2% per two-qubit gate (300 µs) and 0.3% per readout, <span class="math inline">\(T_2 = 1\)</span> s and a much longer <span class="math inline">\(T_1\)</span>, with all gates run one after another.</li>
+</ul>
+<p>Idle qubits contribute too. Over a short wait <span class="math inline">\(t\)</span>, the error probability of an idle qubit is about <span class="math inline">\(t/(2T_2) + t/(4T_1)\)</span>, from the factors of <a href="#sec-t1-t2" class="quarto-xref"><span>Section 2.2.5</span></a>. It uses <span class="math inline">\(T_2\)</span> in place of <span class="math inline">\(T_2^*\)</span>, since dynamical decoupling protects the idle qubits (<a href="#sec-slow-noise" class="quarto-xref"><span>Section 2.2.6</span></a>). On the superconducting device, only the two qubits at the ends of the line wait, during the CZs of every other layer. On the ion trap, each qubit waits for about 10 ms of the 12 ms that the gates take. <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> collects the contributions.</p>
+<div id="tbl-budget" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-budget-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.2: Error budget of the 8-layer brick-wall circuit on 10 qubits, for <span class="math inline">\(\langle Z\otimes Z\rangle\)</span> on two neighbouring qubits, with the values in the text.
+</figcaption>
+<div aria-describedby="tbl-budget-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Contribution to <span class="math inline">\(\sum_i\varepsilon_i\)</span></th>
+<th>Superconducting</th>
+<th>Trapped ions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>two-qubit gates</td>
+<td><span class="math inline">\(36 \times 0.5\% = 0.18\)</span></td>
+<td><span class="math inline">\(36 \times 0.2\% = 0.072\)</span></td>
+</tr>
+<tr class="even">
+<td>single-qubit pulses</td>
+<td><span class="math inline">\(80 \times 0.03\% = 0.024\)</span></td>
+<td><span class="math inline">\(80 \times 0.01\% = 0.008\)</span></td>
+</tr>
+<tr class="odd">
+<td>idling</td>
+<td>8 waits of 80 ns: <span class="math inline">\(0.004\)</span></td>
+<td>about 100 ms in total: <span class="math inline">\(0.05\)</span></td>
+</tr>
+<tr class="even">
+<td>readout of the two qubits</td>
+<td><span class="math inline">\(2 \times 2 \times 1\% = 0.04\)</span></td>
+<td><span class="math inline">\(2 \times 2 \times 0.3\% = 0.012\)</span></td>
+</tr>
+<tr class="odd">
+<td>total</td>
+<td><span class="math inline">\(0.25\)</span></td>
+<td><span class="math inline">\(0.14\)</span></td>
+</tr>
+<tr class="even">
+<td>signal left, <span class="math inline">\(f\)</span></td>
+<td><span class="math inline">\(0.78\)</span></td>
+<td><span class="math inline">\(0.87\)</span></td>
+</tr>
+<tr class="odd">
+<td>duration of the gates</td>
+<td>about 1 µs</td>
+<td>about 12 ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>On the superconducting device, the two-qubit gates dominate, followed by the readout. Idling hardly matters, since all qubits are busy in most layers. On the ion trap, every error rate is lower, but the gates take long and run one after another. Each qubit therefore waits for most of the shot, and idling costs almost as much as the two-qubit gates. In general, readout errors dominate wide, shallow circuits and observables of high weight, while gate errors dominate deep circuits.</p>
+<p>The same specifications define a <a href="glossary.html#gloss-noise-model" class="gloss" data-gloss="A description of the noise of a device, gate by gate and qubit by qubit, used to simulate noisy circuits, for example built from the calibration data of the device.">noise model</a> for a simulator: after each gate, a depolarising channel with the relaxation and dephasing of its duration, together matching the quoted error; the same relaxation and dephasing on idle qubits; and a confusion matrix per qubit. Such a model is only as good as the last calibration (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). <!-- T2-LINK: link to Tutorial 2 once it is written. --></p>
+<div id="exr-visible-signal" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.7 (The largest visible circuit)</strong></span> Take the brick-wall circuit of <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> with <span class="math inline">\(L\)</span> layers instead of 8, and suppose that the ideal value of <span class="math inline">\(\langle Z\otimes Z\rangle\)</span> is <span class="math inline">\(0.5\)</span>. We take <span class="math inline">\(10^4\)</span> shots and call the signal visible if the measured value is at least three standard errors away from zero.</p>
+<ol type="a">
+<li><p>Write the signal left, <span class="math inline">\(f\)</span>, as a function of <span class="math inline">\(L\)</span> for each platform.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Split the contributions of <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> into a part per layer and a fixed part.</p>
+</details></li>
+<li><p>What is the largest <span class="math inline">\(L\)</span> with a visible signal on each platform? How long do the gates of the <span class="math inline">\(10^4\)</span> shots take in total on the ion trap?</p></li>
+<li><p>Which contribution limits <span class="math inline">\(L\)</span> on each platform? Which improvement would help the ion trap most?</p></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-bias-variance" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="sec-bias-variance"><span class="header-section-number">2.7</span> Bias and shot noise</h2>
+<section id="sec-mse" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="sec-mse"><span class="header-section-number">2.7.1</span> Mean squared error</h3>
+<p>In <a href="L1-platforms-and-measurement.html#sec-shot-noise" class="quarto-xref"><span>Section 1.4.3</span></a>, the sample mean <span class="math inline">\(\bar s\)</span> of <span class="math inline">\(N\)</span> shots was an unbiased estimator of <span class="math inline">\(\langle P\rangle\)</span>. With noise, each shot comes from the noisy state, and <span class="math inline">\(\bar s\)</span> averages to <span class="math inline">\(f\langle P\rangle\)</span> instead. Its error now has two parts. The <a href="glossary.html#gloss-bias" class="gloss" data-gloss="The difference between the average of an estimator and the true value. Noise biases estimates of expectation values; more shots do not reduce the bias.">bias</a> is the difference between its average and the value we want, <span class="math inline">\(b = \mathbb{E}[\bar s] - \langle P\rangle = (f-1)\langle P\rangle\)</span>. Its variance is <span class="math inline">\((1 - f^2\langle P\rangle^2)/N\)</span>, the square of <a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> with <span class="math inline">\(f\langle P\rangle\)</span> in place of <span class="math inline">\(\langle P\rangle\)</span>. The two add up in the <a href="glossary.html#gloss-mse" class="gloss" data-gloss="The average of the squared difference between an estimate and the true value. It equals the bias squared plus the variance.">mean squared error</a>: <span id="eq-mse"><span class="math display">\[
+\mathbb{E}\big[(\bar s - \langle P\rangle)^2\big] = b^2 + \mathrm{Var}(\bar s)
+= (1-f)^2\langle P\rangle^2 + \frac{1 - f^2\langle P\rangle^2}{N} .
+\tag{2.13}\]</span></span> To see the first equality, write <span class="math inline">\(\bar s - \langle P\rangle = (\bar s - \mathbb{E}[\bar s]) + b\)</span> and expand the square: the cross term averages to zero. More shots shrink only the variance, while the bias stays.</p>
+<p>The two terms are equal at <span class="math display">\[
+N^* = \frac{1 - f^2\langle P\rangle^2}{(1-f)^2\langle P\rangle^2} .
+\]</span> Beyond <span class="math inline">\(N^*\)</span> shots, the bias dominates the error, and more shots hardly help: they estimate the wrong value more precisely. For the superconducting example of <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a>, with <span class="math inline">\(f = 0.78\)</span> and <span class="math inline">\(\langle P\rangle = 0.5\)</span>, <span class="math inline">\(N^* \approx 70\)</span> shots. A larger circuit has a smaller <span class="math inline">\(f\)</span>, and an even smaller <span class="math inline">\(N^*\)</span>.</p>
+<div id="exr-shots-stop-helping" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.8 (When more shots stop helping)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\(N^* \approx (1 - \langle P\rangle^2)/\big(\langle P\rangle^2 (\sum_i\varepsilon_i)^2\big)\)</span> when the total error <span class="math inline">\(\sum_i\varepsilon_i\)</span> of the circuit is small.</p></li>
+<li><p>For the superconducting brick-wall circuit of <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> with <span class="math inline">\(L\)</span> layers and <span class="math inline">\(\langle P\rangle = 0.5\)</span>, compute the exact <span class="math inline">\(N^*\)</span> for <span class="math inline">\(L = 1\)</span>, 8 and 30. Why are more shots worth taking on a better device?</p></li>
+<li><p><a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a> (c) compared <span class="math inline">\(10^3\)</span> and <span class="math inline">\(10^5\)</span> shots. Compute <span class="math inline">\(N^*\)</span> there, and explain the result of that comparison.</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-rescaling" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="sec-rescaling"><span class="header-section-number">2.7.2</span> Correcting a known shrinking factor</h3>
+<p>If the shrinking factor <span class="math inline">\(f\)</span> is known, the bias can be removed: <span class="math inline">\(\bar s/f\)</span> averages to <span class="math inline">\(\langle P\rangle\)</span>. The price is in the variance. Dividing by <span class="math inline">\(f\)</span> multiplies the standard error by <span class="math inline">\(1/f\)</span>, so the same precision as without noise takes <span class="math inline">\(1/f^2 = e^{2\sum_i\varepsilon_i}\)</span> times as many shots. The cost grows exponentially with the total error of the circuit. For the superconducting example, this is a factor of 1.6. For a circuit ten times larger, with <span class="math inline">\(f \approx 0.08\)</span>, it is a factor of about 140. This is the simplest method of error mitigation, applied to readout errors in <a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a> (d).</p>
+<p>Knowing <span class="math inline">\(f\)</span> is the hard part. For global depolarising noise, every expectation value shrinks by the same factor, and the error rates of the device give it (<a href="#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>). Readout errors, which act only at the end of the circuit, are another simple case. For generic circuits and noise models, however, each expectation value is changed in its own way, and predicting it means simulating the noisy circuit. A cost in shots of the same kind returns with the other mitigation methods later in the course.</p>
+<p>Two questions follow from here. The observables of real applications, such as the energy of a physical system, are sums of many Pauli strings, each estimated with its own shots and its own noise. And the bias need not be accepted: error-mitigation methods estimate and remove it, at a price in shots. <!-- L3-LINK: link the two questions to the chapters on observables and on error
+mitigation, once the order of L3-L5 is decided. --></p>
+</section>
+</section>
+<section id="sec-L2-exercises" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="sec-L2-exercises"><span class="header-section-number">2.8</span> More exercises</h2>
+<p>These exercises combine material from several sections of the chapter.</p>
+<div id="exr-ghz" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.9 (GHZ states under local and global noise)</strong></span> The GHZ state <span class="math inline">\((\ket{0\cdots 0} + \ket{1\cdots 1})/\sqrt{2}\)</span> on <span class="math inline">\(n\)</span> qubits has <span class="math inline">\(\langle X\otimes\cdots\otimes X\rangle = 1\)</span>, with <span class="math inline">\(X\)</span> on all qubits, and <span class="math inline">\(\langle Z\otimes Z\otimes I\otimes\cdots\otimes I\rangle = 1\)</span>, with <span class="math inline">\(Z\)</span> on the first two qubits only.</p>
+<ol type="a">
+<li><p>Each qubit undergoes depolarising noise with parameter <span class="math inline">\(p\)</span>. By which factors do the two expectation values shrink?</p></li>
+<li><p>Which parameter of the global depolarising channel shrinks <span class="math inline">\(\langle X\otimes\cdots\otimes X\rangle\)</span> by the same factor? What does it then do to <span class="math inline">\(\langle Z\otimes Z\otimes I\otimes\cdots\otimes I\rangle\)</span>?</p></li>
+<li><p>How could measurements of these two expectation values show whether the noise on a GHZ state is closer to local or to global depolarising?</p></li>
+</ol>
+</div>
+<div id="exr-environment" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 2.10 (Dephasing from an environment)</strong></span> A qubit in the state <span class="math inline">\(\alpha\ket{0} + \beta\ket{1}\)</span> interacts with an environment qubit in the state <span class="math inline">\(\cos(\phi/2)\ket{0} + \sin(\phi/2)\ket{1}\)</span> through a CZ gate, after which the environment is discarded.</p>
+<ol type="a">
+<li><p>Show that the qubit undergoes a dephasing channel with <span class="math inline">\(p = \sin^2(\phi/2)\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>With the environment second, <span class="math inline">\(\gate{CZ} = I\otimes\ket{0}\bra{0} + Z\otimes\ket{1}\bra{1}\)</span>. Take the partial trace over the environment.</p>
+</details></li>
+<li><p>The Kraus operators of this channel are <span class="math inline">\(K_e = (I\otimes\bra{e})\,\gate{CZ}\,(I\otimes\ket{E})\)</span> for <span class="math inline">\(e = 0, 1\)</span>, where <span class="math inline">\(\ket{E}\)</span> is the initial state of the environment. Compute them, and compare them with those of <a href="#def-pauli-channel" class="quarto-xref">Definition&nbsp;<span>2.3</span></a>.</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-L2-reading" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="sec-L2-reading"><span class="header-section-number">2.9</span> Further reading</h2>
+<p><span class="citation" data-cites="nielsen2010">Nielsen and Chuang (<a href="L1-platforms-and-measurement.html#ref-nielsen2010" role="doc-biblioref">2010, sec. 8.3</a>)</span> treats the channels of this chapter in the same Kraus form, and the Quantum Information Theory notes <span class="citation" data-cites="walter2025">(<a href="L1-platforms-and-measurement.html#ref-walter2025" role="doc-biblioref">Walter and Ozols 2025, sec. 4.4</a> and 5.1-5.2)</span> give the general theory. <span class="citation" data-cites="krantz2019">Krantz et al. (<a href="L1-platforms-and-measurement.html#ref-krantz2019" role="doc-biblioref">2019</a>)</span> describes <span class="math inline">\(T_1\)</span>, <span class="math inline">\(T_2\)</span>, Ramsey and echo experiments on superconducting qubits.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-krantz2019" class="csl-entry" role="listitem">
+Krantz, Philip, Morten Kjaergaard, Fei Yan, Terry P. Orlando, Simon Gustavsson, and William D. Oliver. 2019. <span>“A Quantum Engineer’s Guide to Superconducting Qubits.”</span> <em>Applied Physics Reviews</em> 6 (2): 021318. <a href="https://doi.org/10.1063/1.5089550">https://doi.org/10.1063/1.5089550</a>.
+</div>
+<div id="ref-mcewen2022" class="csl-entry" role="listitem">
+<span class="nocase">McEwen, Matt, Lara Faoro, Kunal Arya, et al.</span> 2022. <span>“Resolving Catastrophic Error Bursts from Cosmic Rays in Large Arrays of Superconducting Qubits.”</span> <em>Nature Physics</em> 18 (1): 107–11. <a href="https://doi.org/10.1038/s41567-021-01432-8">https://doi.org/10.1038/s41567-021-01432-8</a>.
+</div>
+<div id="ref-nielsen2002" class="csl-entry" role="listitem">
+Nielsen, Michael A. 2002. <span>“A Simple Formula for the Average Gate Fidelity of a Quantum Dynamical Operation.”</span> <em>Physics Letters A</em> 303 (4): 249–52. <a href="https://doi.org/10.1016/S0375-9601(02)01272-0">https://doi.org/10.1016/S0375-9601(02)01272-0</a>.
+</div>
+<div id="ref-nielsen2010" class="csl-entry" role="listitem">
+Nielsen, Michael A., and Isaac L. Chuang. 2010. <em>Quantum Computation and Quantum Information</em>. 10th anniversary. Cambridge University Press.
+</div>
+<div id="ref-walter2025" class="csl-entry" role="listitem">
+Walter, Michael, and Maris Ozols. 2025. <em>Lecture Notes on Quantum Information Theory</em>. Course notes, University of Amsterdam; not publicly available. Students who do not take the Quantum Information Theory course can ask for a copy.
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+  a.gloss { text-decoration: underline dotted; color: inherit; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof tippy === "undefined") return;
+    tippy("a.gloss", {
+      content: (el) => el.getAttribute("data-gloss"),
+      theme: "quarto",
+      maxWidth: 360,
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/stefanopolla\.github\.io\/ntqc\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./L1-platforms-and-measurement.html" class="pagination-link" aria-label="Platforms, gates and measurement">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

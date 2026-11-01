@@ -57,7 +57,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./exercises.html" rel="next">
+<link href="./L2-noise.html" rel="next">
 <link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -348,6 +348,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L2-noise.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -443,7 +449,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">26 October 2026</p>
+      <p class="date-modified">1 November 2026</p>
     </div>
   </div>
     
@@ -1291,18 +1297,15 @@ s = (-1)^{\sum_{j:\, P_j \neq I} b_j} = \pm 1 .
 \sigma_{\bar s} = \sqrt{\frac{1-\langle P\rangle^2}{N}} .
 \tag{1.9}\]</span></span> In practice <span class="math inline">\(\langle P\rangle\)</span> is unknown, and we evaluate <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> with <span class="math inline">\(\bar s\)</span> in its place.</p>
 <p>The error is largest when <span class="math inline">\(\langle P\rangle = 0\)</span>, where every shot is a coin flip, and vanishes when <span class="math inline">\(\langle P\rangle = \pm 1\)</span>, where every shot gives the same result. It decreases only as <span class="math inline">\(1/\sqrt{N}\)</span>, so each extra digit of precision costs a hundred times more shots. To estimate an expectation value near zero with a standard error of 0.01, for example, we need <span class="math inline">\(N = 1/0.01^2 = 10^4\)</span> shots. <a href="#sec-timescales" class="quarto-xref"><span>Section 1.6</span></a> shows how long they take on each platform.</p>
-<p>Shot noise is one of two kinds of error in an estimated expectation value. Noise in the device (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) also shifts <span class="math inline">\(\langle P\rangle\)</span> itself, usually towards zero, and more shots cannot remove that shift; they only estimate the shifted value more precisely. The next chapter separates these two kinds of error.<!-- L2-LINK: @sec-bias-variance --> Tutorial 1 practises <a href="#eq-sample-mean" class="quarto-xref">Equation&nbsp;<span>1.8</span></a> and <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> in code: <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-01/T1-circuits-and-sampling_qiskit.ipynb">open the T1 notebook in Colab</a>.</p>
+<p>Shot noise is one of two kinds of error in an estimated expectation value. Noise in the device (<a href="#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) also shifts <span class="math inline">\(\langle P\rangle\)</span> itself, usually towards zero, and more shots cannot remove that shift; they only estimate the shifted value more precisely. The next chapter separates these two kinds of error (<a href="L2-noise.html#sec-bias-variance" class="quarto-xref"><span>Section 2.7</span></a>). Tutorial 1 practises <a href="#eq-sample-mean" class="quarto-xref">Equation&nbsp;<span>1.8</span></a> and <a href="#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a> in code: <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-01/T1-circuits-and-sampling_qiskit.ipynb">open the T1 notebook in Colab</a>.</p>
 </section>
 </section>
 <section id="sec-noise-sources" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="sec-noise-sources"><span class="header-section-number">1.5</span> Sources of noise</h2>
-<p>Every wire or laser beam used to control a qubit is also a way in for disturbances. This section describes in words what can go wrong; the next chapter<!-- L2-LINK: @sec-noise --> goes deeper into the mathematical description of noise and its effects.</p>
+<p>Every wire or laser beam used to control a qubit is also a way in for disturbances. This section describes in words what can go wrong; <a href="L2-noise.html" class="quarto-xref"><span>Chapter 2</span></a> goes deeper into the mathematical description of noise and its effects.</p>
 <p>The most important effect is that an excited qubit loses its energy. Left alone, <span class="math inline">\(\ket{1}\)</span> decays to <span class="math inline">\(\ket{0}\)</span>. This is the relaxation that initialises superconducting qubits between runs (<a href="#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>), but during a computation it corrupts the state. In superconducting qubits, the energy is absorbed by tiny defects in the materials of the chip. The qubit levels of trapped ions hardly decay on their own, but the lasers used for gates occasionally knock an ion out of its qubit state.</p>
-<p>A qubit can also lose its phase without losing energy. A superposition of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> carries a relative phase between its two parts, and the qubit’s frequency sets how fast this phase turns. If the frequency fluctuates, for example because of fluctuating magnetic fields or electric charges near the qubit, the phase wanders, and the superposition gradually becomes a random mixture of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>. This is called <a href="glossary.html#gloss-dephasing" class="gloss" data-gloss="Loss of the relative phase of a superposition without loss of energy, for example because the qubit frequency is shifted by an unknown amount. The measured times T2* and T2 include both dephasing and relaxation; the time of pure dephasing alone is called Tφ.">dephasing</a>. The time over which a qubit relaxes is called <span class="math inline">\(T_1\)</span>, and the time over which it dephases is called <span class="math inline">\(T_2\)</span>. These are the coherence times quoted for every device, and the next chapter defines them precisely.<!-- L2-LINK: @def-t1-t2 --></p>
+<p>A qubit can also lose its phase without losing energy. A superposition of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> carries a relative phase between its two parts, and the qubit’s frequency sets how fast this phase turns. If the frequency fluctuates, for example because of fluctuating magnetic fields or electric charges near the qubit, the phase wanders, and the superposition gradually becomes a random mixture of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span>. This is called <a href="glossary.html#gloss-dephasing" class="gloss" data-gloss="Loss of the relative phase of a superposition without loss of energy, for example because the qubit frequency is shifted by an unknown amount. The measured times T2* and T2 include both dephasing and relaxation; the time of pure dephasing alone is called Tφ.">dephasing</a>. The time over which a qubit relaxes is called <span class="math inline">\(T_1\)</span>, and the time over which it dephases is called <span class="math inline">\(T_2\)</span>. These are the coherence times quoted for every device, and the next chapter defines them precisely (<a href="L2-noise.html#def-t1" class="quarto-xref">Definition&nbsp;<span>2.5</span></a> and <a href="L2-noise.html#def-t2-star" class="quarto-xref">Definition&nbsp;<span>2.6</span></a>).</p>
 <p>A third kind of error is a gate that rotates by the wrong amount, because a pulse is slightly too long, too short or off axis, or because a laser’s intensity fluctuates. Unlike relaxation and dephasing, such <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent errors</a> are systematic: the same gate makes the same mistake every time. <a href="#tbl-noise" class="quarto-xref">Table&nbsp;<span>1.4</span></a> lists these effects together with the remaining ones.</p>
-<!-- L2-LINK, last column of the table: relaxation @sec-t1-t2; dephasing @sec-t1-t2;
-coherent error and leakage @sec-gate-errors; crosstalk and correlated errors
-@sec-multi-qubit-noise; readout error @sec-readout-errors; recalibration @sec-budgets -->
 <div id="tbl-noise" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1321,37 +1324,37 @@ Table&nbsp;1.4: What can go wrong in a quantum device.
 <tr class="odd">
 <td><span class="math inline">\(\ket{1}\)</span> decays to <span class="math inline">\(\ket{0}\)</span></td>
 <td>energy absorbed by defects in the chip</td>
-<td>relaxation (<span class="math inline">\(T_1\)</span>)</td>
+<td>relaxation (<span class="math inline">\(T_1\)</span>, <a href="L2-noise.html#sec-t1-t2" class="quarto-xref"><span>Section 2.2.5</span></a>)</td>
 </tr>
 <tr class="even">
 <td>the relative phase of a superposition wanders</td>
 <td>fluctuating magnetic fields</td>
-<td>dephasing (<span class="math inline">\(T_2\)</span>)</td>
+<td>dephasing (<span class="math inline">\(T_2\)</span>, <a href="L2-noise.html#sec-t1-t2" class="quarto-xref"><span>Section 2.2.5</span></a>)</td>
 </tr>
 <tr class="odd">
 <td>a gate rotates by the wrong amount</td>
 <td>a pulse slightly too long</td>
-<td>coherent error</td>
+<td>coherent error (<a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>)</td>
 </tr>
 <tr class="even">
 <td>the qubit leaves the qubit levels</td>
 <td>a pulse pushes a transmon into its third level (<a href="#fig-energy-levels" class="quarto-xref">Figure&nbsp;<span>1.2</span></a>)</td>
-<td><a href="glossary.html#gloss-leakage" class="gloss" data-gloss="An error in which a qubit leaves its two qubit levels, for example when a transmon is pushed into its third level.">leakage</a></td>
+<td><a href="glossary.html#gloss-leakage" class="gloss" data-gloss="An error in which a qubit leaves its two qubit levels, for example when a transmon is pushed into its third level.">leakage</a> (<a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>)</td>
 </tr>
 <tr class="odd">
 <td>an operation on one qubit disturbs another</td>
 <td>couplings that are never fully off; a laser beam that partly hits the next ion</td>
-<td>crosstalk</td>
+<td>crosstalk (<a href="L2-noise.html#sec-multi-qubit-noise" class="quarto-xref"><span>Section 2.3</span></a>)</td>
 </tr>
 <tr class="even">
 <td>the readout is wrong</td>
 <td>0 reported as 1, or the reverse</td>
-<td>readout error</td>
+<td>readout error (<a href="L2-noise.html#sec-readout-errors" class="quarto-xref"><span>Section 2.5</span></a>)</td>
 </tr>
 <tr class="odd">
 <td>many qubits fail at once</td>
 <td>a cosmic ray deposits energy in the chip and disturbs all qubits nearby</td>
-<td>correlated errors</td>
+<td>correlated errors (<a href="L2-noise.html#sec-multi-qubit-noise" class="quarto-xref"><span>Section 2.3</span></a>)</td>
 </tr>
 <tr class="even">
 <td>the device drifts</td>
@@ -1364,7 +1367,7 @@ Table&nbsp;1.4: What can go wrong in a quantum device.
 </figure>
 </div>
 <p>The last row explains why providers recalibrate their devices regularly and publish calibration data, the error rates of each qubit and gate at the last calibration. These data are a snapshot, and a few hours later the device may behave differently.</p>
-<p>Providers summarise the quality of each operation by a <a href="glossary.html#gloss-fidelity" class="gloss" data-gloss="A number between 0 and 1 measuring how close a state or operation is to the intended one. The state fidelity is the probability that a state passes a test for the target state; the average gate fidelity averages it over all input states. Informally, one minus the probability of an error.">fidelity</a>. For now, read it as one minus the probability that the operation goes wrong; the next chapter gives the precise definition.<!-- L2-LINK: @def-fidelity --> Typical values on current devices are 99.9-99.99% for single-qubit gates, 99-99.9% for two-qubit gates and 96-99.9% for readout, so two-qubit gates and readout are the weakest links.</p>
+<p>Providers summarise the quality of each operation by a <a href="glossary.html#gloss-fidelity" class="gloss" data-gloss="A number between 0 and 1 measuring how close a state or operation is to the intended one. The state fidelity is the probability that a state passes a test for the target state; the average gate fidelity averages it over all input states. Informally, one minus the probability of an error.">fidelity</a>. For now, read it as one minus the probability that the operation goes wrong; the next chapter gives the precise definition (<a href="L2-noise.html#def-fidelity" class="quarto-xref">Definition&nbsp;<span>2.9</span></a>). Typical values on current devices are 99.9-99.99% for single-qubit gates, 99-99.9% for two-qubit gates and 96-99.9% for readout, so two-qubit gates and readout are the weakest links.</p>
 </section>
 <section id="sec-timescales" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="sec-timescales"><span class="header-section-number">1.6</span> Timescales</h2>
@@ -1555,6 +1558,17 @@ Litinski, Daniel. 2019. <span>“A Game of Surface Codes: Large-Scale
 Quantum Computing with Lattice Surgery.”</span> <em>Quantum</em> 3: 128.
 <a href="https://doi.org/10.22331/q-2019-03-05-128">https://doi.org/10.22331/q-2019-03-05-128</a>.
 </div>
+<div id="ref-mcewen2022" class="csl-entry" role="listitem">
+<span class="nocase">McEwen, Matt, Lara Faoro, Kunal Arya, et al.</span>
+2022. <span>“Resolving Catastrophic Error Bursts from Cosmic Rays in
+Large Arrays of Superconducting Qubits.”</span> <em>Nature Physics</em>
+18 (1): 107–11. <a href="https://doi.org/10.1038/s41567-021-01432-8">https://doi.org/10.1038/s41567-021-01432-8</a>.
+</div>
+<div id="ref-nielsen2002" class="csl-entry" role="listitem">
+Nielsen, Michael A. 2002. <span>“A Simple Formula for the Average Gate
+Fidelity of a Quantum Dynamical Operation.”</span> <em>Physics Letters
+A</em> 303 (4): 249–52. <a href="https://doi.org/10.1016/S0375-9601(02)01272-0">https://doi.org/10.1016/S0375-9601(02)01272-0</a>.
+</div>
 <div id="ref-nielsen2010" class="csl-entry" role="listitem">
 Nielsen, Michael A., and Isaac L. Chuang. 2010. <em>Quantum Computation
 and Quantum Information</em>. 10th anniversary. Cambridge University
@@ -1584,6 +1598,12 @@ Tunable Coupler.”</span> <em>Physical Review X</em> 11: 021058. <a href="https
 <span class="nocase">Van Damme, J. et al.</span> 2024. <span>“Advanced
 <span>CMOS</span> Manufacturing of Superconducting Qubits on 300 Mm
 Wafers.”</span> <em>Nature</em> 634: 74–79. <a href="https://doi.org/10.1038/s41586-024-07941-9">https://doi.org/10.1038/s41586-024-07941-9</a>.
+</div>
+<div id="ref-walter2025" class="csl-entry" role="listitem">
+Walter, Michael, and Maris Ozols. 2025. <em>Lecture Notes on Quantum
+Information Theory</em>. Course notes, University of Amsterdam; not
+publicly available. Students who do not take the Quantum Information
+Theory course can ask for a copy.
 </div>
 </div>
 
@@ -2024,8 +2044,8 @@ Wafers.”</span> <em>Nature</em> 634: 74–79. <a href="https://doi.org/10.1038
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./L2-noise.html" class="pagination-link" aria-label="Noise channels and error budgets">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
