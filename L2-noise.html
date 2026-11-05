@@ -451,7 +451,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">1 November 2026</p>
+      <p class="date-modified">5 November 2026</p>
     </div>
   </div>
     
@@ -1290,7 +1290,7 @@ Table&nbsp;2.2: Error budget of the 8-layer brick-wall circuit on 10 qubits, for
 </figure>
 </div>
 <p>On the superconducting device, the two-qubit gates dominate, followed by the readout. Idling hardly matters, since all qubits are busy in most layers. On the ion trap, every error rate is lower, but the gates take long and run one after another. Each qubit therefore waits for most of the shot, and idling costs almost as much as the two-qubit gates. In general, readout errors dominate wide, shallow circuits and observables of high weight, while gate errors dominate deep circuits.</p>
-<p>The same specifications define a <a href="glossary.html#gloss-noise-model" class="gloss" data-gloss="A description of the noise of a device, gate by gate and qubit by qubit, used to simulate noisy circuits, for example built from the calibration data of the device.">noise model</a> for a simulator: after each gate, a depolarising channel with the relaxation and dephasing of its duration, together matching the quoted error; the same relaxation and dephasing on idle qubits; and a confusion matrix per qubit. Such a model is only as good as the last calibration (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). <!-- T2-LINK: link to Tutorial 2 once it is written. --></p>
+<p>The same specifications define a <a href="glossary.html#gloss-noise-model" class="gloss" data-gloss="A description of the noise of a device, gate by gate and qubit by qubit, used to simulate noisy circuits, for example built from the calibration data of the device.">noise model</a> for a simulator: after each gate, a depolarising channel with the relaxation and dephasing of its duration, together matching the quoted error; the same relaxation and dephasing on idle qubits; and a confusion matrix per qubit. Such a model is only as good as the last calibration (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>). Tutorial 2 builds such a model in code: <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-02/T2-noisy-simulation_qiskit.ipynb">open the T2 notebook in Colab</a>.</p>
 <div id="exr-visible-signal" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercise 2.7 (The largest visible circuit)</strong></span> Take the brick-wall circuit of <a href="#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> with <span class="math inline">\(L\)</span> layers instead of 8, and suppose that the ideal value of <span class="math inline">\(\langle Z\otimes Z\rangle\)</span> is <span class="math inline">\(0.5\)</span>. We take <span class="math inline">\(10^4\)</span> shots and call the signal visible if the measured value is at least three standard errors away from zero.</p>
 <ol type="a">
