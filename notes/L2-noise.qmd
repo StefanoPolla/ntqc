@@ -824,7 +824,8 @@ The same specifications define a [noise model]{.gloss key="noise-model"} for a
 simulator: after each gate, a depolarising channel with the relaxation and dephasing of
 its duration, together matching the quoted error; the same relaxation and dephasing on
 idle qubits; and a confusion matrix per qubit. Such a model is only as good as the last
-calibration (@sec-noise-sources). <!-- T2-LINK: link to Tutorial 2 once it is written. -->
+calibration (@sec-noise-sources). Tutorial 2 builds such a model in code:
+[open the T2 notebook in Colab]({{< var colab >}}/tutorials/tutorial-02/T2-noisy-simulation_qiskit.ipynb).
 
 ::: {#exr-visible-signal}
 ## The largest visible circuit
