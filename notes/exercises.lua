@@ -55,7 +55,7 @@ local function exercise_list(el)
     if #found > 0 then
       local heading = pandoc.Inlines { pandoc.Str("Chapter " .. number .. ": ") }
       heading:extend(title or {})
-      out:insert(pandoc.Header(2, heading, pandoc.Attr("", { "unnumbered" })))
+      out:insert(pandoc.Header(2, heading, pandoc.Attr("exercises-chapter-" .. number, { "unnumbered" })))
       for _, d in ipairs(found) do
         local body = pandoc.Blocks(d.content)
         local label = pandoc.Inlines { pandoc.Strong { citation(d.identifier) } }

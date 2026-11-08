@@ -20,6 +20,14 @@ details.hint > summary {
 details.hint > summary::-webkit-details-marker { display: none; }
 details.hint[open] > summary { margin-bottom: 0.4em; }
 
+/* Worked examples (examples.lua): a thin bar on the left, no box. */
+div.example {
+  border-left: 3px solid rgba(127, 127, 127, 0.35);
+  padding-left: 0.9em;
+  margin: 1em 0;
+}
+div.example > p:last-child { margin-bottom: 0; }
+
 /* Author, published and last updated (page-dates.lua) on one row, except on phones */
 @media (min-width: 576px) {
   #title-block-header.quarto-title-block.default .quarto-title-meta {

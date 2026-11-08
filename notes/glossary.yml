@@ -75,13 +75,14 @@ glossary:
     def: "A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances."
   spin:
     term: spin
-    def: "An intrinsic two-level property of an electron (up or down), which can serve as a qubit."
+    def: "An intrinsic two-level property of an electron (spin-1/2: up or down), which can serve as a qubit."
   quantum-dot:
     term: quantum dot
     def: "A tiny region in a semiconductor that can trap single electrons."
   pauli-string:
     term: Pauli string
     def: "A tensor product of single-qubit Pauli matrices (I, X, Y or Z), one for each qubit, such as ZZ or XIY. Hermitian, and squares to the identity."
+    ref: def-pauli-string
   native-gate:
     term: native gate
     def: "A gate the hardware implements directly with a calibrated control pulse. Every other gate must be compiled into native gates."
@@ -136,9 +137,11 @@ glossary:
   density-matrix:
     term: density matrix
     def: "The general description of a quantum state, including states that are uncertain mixtures of pure states: a positive semidefinite matrix with trace one. Expectation values are traces of the observable times the density matrix."
+    ref: def-density-matrix
   mixed-state:
     term: mixed state
     def: "A quantum state that is not pure: a probabilistic mixture of pure states, described by a density matrix. On one qubit, its Bloch vector lies inside the Bloch sphere."
+    ref: def-density-matrix
   bloch-vector:
     term: Bloch vector
     def: "The three expectation values of X, Y and Z of a qubit, which fix its density matrix. It has length one for pure states and less for mixed states."
@@ -148,15 +151,18 @@ glossary:
   quantum-channel:
     term: quantum channel
     def: "The general description of how a quantum state changes, including noise: a linear map of density matrices that can be written with Kraus operators. Unitary gates are the channels with a single Kraus operator."
+    ref: def-channel
   kraus-operators:
     term: Kraus operators
     def: "A set of matrices that defines a quantum channel: the channel maps a density matrix to the sum of each Kraus operator times the density matrix times its adjoint. The same channel can have different sets of Kraus operators."
+    ref: def-channel
   completely-positive:
     term: completely positive
     def: "A map of density matrices is completely positive if it still gives valid density matrices when it acts on part of a larger system. Quantum channels are exactly the completely positive maps that preserve the trace."
   pauli-channel:
     term: Pauli channel
     def: "A channel that applies a random Pauli error, chosen with fixed probabilities. It multiplies the expectation value of each Pauli string by its own factor."
+    ref: def-pauli-channel
   bit-flip:
     term: bit flip
     def: "The Pauli channel that applies X with some probability p: it flips the bit of a qubit. Readout errors with equal error rates act as a bit flip just before the measurement."
@@ -166,15 +172,18 @@ glossary:
   dephasing-channel:
     term: dephasing channel
     def: "The Pauli channel that applies Z with some probability p, also called the phase-flip channel. It keeps the probabilities of 0 and 1 and shrinks the coherence. An unknown phase, for example from an unknown shift of the qubit frequency, acts as a dephasing channel."
+    ref: def-depolarising
   depolarising:
     term: depolarising channel
     def: "On one qubit, the Pauli channel that applies X, Y or Z, each with probability p/4. It is the same as replacing the state by the maximally mixed state with probability p, and it shrinks the Bloch ball uniformly. On many qubits, it can be local or global."
+    ref: def-depolarising
   markovian:
     term: Markovian noise
     def: "Noise without memory: the noise after each operation does not depend on what happened before. The model in which every gate is followed by a fixed channel assumes it."
   coherence:
     term: coherence
     def: "The off-diagonal entry of a qubit's density matrix, which carries the relative phase of a superposition. Its size decays over the dephasing time T2*, or over the longer time T2 with an echo."
+    ref: def-t2-star
   amplitude-damping:
     term: amplitude damping
     def: "The channel that describes relaxation: a qubit in the excited state decays to the ground state with probability gamma, which grows with time as one minus exp(-t/T1)."
@@ -184,12 +193,14 @@ glossary:
   ramsey:
     term: Ramsey experiment
     def: "A measurement of dephasing: a pulse puts the qubit in a superposition, the qubit waits, and a second pulse turns the remaining coherence into a measurable population. It measures T2*."
+    ref: def-t2-star
   echo:
     term: echo
     def: "An X pulse halfway through a wait, which reverses the phase accumulated before it, so that phase errors that stay constant during the wait cancel. An echo experiment measures T2."
   t2-star:
     term: T2*
     def: "The dephasing time: the time over which the coherence of a qubit decays in a Ramsey experiment. It is shorter than T2, measured with an echo, because it also includes slow noise that the echo removes."
+    ref: def-t2-star
   dynamical-decoupling:
     term: dynamical decoupling
     def: "Repeated echo pulses during a long wait, which remove noise that is slow compared with the spacing of the pulses. It suppresses noise on the device itself."
@@ -208,9 +219,11 @@ glossary:
   local-depolarising:
     term: local depolarising noise
     def: "Depolarising noise that acts on each qubit separately and independently. It shrinks the expectation value of a Pauli string by one factor for each qubit on which the string acts, so strings of higher weight shrink faster."
+    ref: def-local-depolarising
   global-depolarising:
     term: global depolarising channel
     def: "The depolarising channel acting on all qubits at once: with probability p, the state of all qubits is replaced by the maximally mixed state. It shrinks every Pauli expectation value by the same factor, whatever its weight."
+    ref: def-global-depolarising
   scrambling:
     term: scrambling
     def: "A property of circuits, such as deep circuits of random gates, that spread every error over all the qubits, so that any error leaves the output close to random. For such circuits, global depolarising noise is a good model of local noise."
@@ -232,9 +245,11 @@ glossary:
   state-fidelity:
     term: state fidelity
     def: "For a pure target state, the probability that a state passes a test for the target, that is, the expectation value of the projector onto the target."
+    ref: def-fidelity
   average-gate-fidelity:
     term: average gate fidelity
     def: "The state fidelity between the output of a noisy gate and the ideal output, averaged over all pure input states. One minus it is the error per gate."
+    ref: def-fidelity
   randomised-benchmarking:
     term: randomised benchmarking
     def: "A method to measure the average error per gate: random gate sequences of growing length, which ideally return to the initial state, are run, and the decay of the success probability with the length gives the error per gate."
@@ -247,3 +262,70 @@ glossary:
   mse:
     term: mean squared error
     def: "The average of the squared difference between an estimate and the true value. It equals the bias squared plus the variance."
+  hamiltonian:
+    term: Hamiltonian
+    def: "The observable of the energy of a system, a Hermitian matrix. Its eigenvalues are the possible energies, and it also determines how the state of the system changes in time."
+  schrodinger-equation:
+    term: Schrödinger equation
+    def: "The equation that relates states to the Hamiltonian. In its time-independent form, it is the eigenvalue equation of the Hamiltonian; in its time-dependent form, it says how a state evolves, and its solution applies the unitary exp(-iHt)."
+  ground-state:
+    term: ground state
+    def: "The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest energy. A system that is cold enough settles in or near its ground state."
+  local-hamiltonian:
+    term: k-local Hamiltonian
+    def: "A Hamiltonian that is a sum of terms that each act on at most k qubits, with k fixed as the number of qubits grows. As a sum of Pauli strings, it has polynomially many terms instead of exponentially many. Often simply called a local Hamiltonian."
+    ref: def-local-hamiltonian
+  quantum-advantage:
+    term: quantum advantage
+    def: "A task that a quantum computer solves better than any classical method, faster, more cheaply or more accurately. For a task of a given size, it is a claim against the best classical methods known, and it is lost if better ones are found."
+  geometrically-local:
+    term: geometrically local Hamiltonian
+    def: "A Hamiltonian on qubits placed on a chain or lattice, whose terms each act only on qubits within a fixed distance of each other, for example single qubits and pairs of neighbours. Every qubit appears in only a few terms, so the number of terms is proportional to the number of qubits. A stronger property than k-locality."
+    ref: def-geometrically-local
+  locality:
+    term: locality
+    def: "The principle that physical interactions involve only a few particles at a time, usually ones close to each other in space. It is why the Hamiltonians of physical systems are local, with polynomially many terms instead of exponentially many."
+  tfim:
+    term: transverse-field Ising model
+    def: "A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM."
+    ref: def-tfim
+  heisenberg-model:
+    term: Heisenberg model
+    def: "A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved."
+    ref: def-heisenberg
+  pauli-1-norm:
+    term: Pauli 1-norm
+    def: "The sum of the absolute values of the coefficients of an operator written as a sum of Pauli strings, often written lambda in the literature. It sets the worst-case number of shots needed to estimate the energy, and it bounds the operator norm."
+  qubit-wise-commuting:
+    term: qubit-wise commuting
+    def: "Two Pauli strings are qubit-wise commuting if, on every qubit, their factors are equal or one of them is the identity. Such strings can be measured from the same shots, in one measurement setting."
+    ref: def-qwc
+  measurement-setting:
+    term: measurement setting
+    def: "A choice of basis (X, Y or Z) for every qubit, made with single-qubit rotations before the measurement. Each shot of a setting gives a value of every Pauli string whose factors agree with it."
+    ref: def-qwc
+  tensor-network:
+    term: tensor network
+    def: "A classical description of a quantum state as a network of small arrays, one per qubit, whose size grows with the entanglement. Efficient for weakly entangled states, such as those of a chain evolved for a short time."
+  trotter-formula:
+    term: Trotter formula
+    def: "An approximation of the evolution under a sum of terms by a product of evolutions under each group of terms in turn, repeated in many short Trotter steps. Its error, the Trotter error, comes from terms that do not commute and decreases as the number of steps grows."
+    ref: def-trotter
+  operator-norm:
+    term: operator norm
+    def: "The largest factor by which a matrix can stretch the length of a vector. For a Hermitian matrix, it is the largest absolute value of its eigenvalues."
+  brick-wall-circuit:
+    term: brick-wall circuit
+    def: "A circuit whose two-qubit gates act on alternating pairs of neighbouring qubits, first (1,2), (3,4), and so on, then (2,3), (4,5), and so on, like the bricks of a wall."
+  floquet-circuit:
+    term: Floquet circuit
+    def: "A circuit that repeats the same layer of gates many times, like a system driven periodically in time. With large Trotter steps, it follows the exact evolution under a Hamiltonian that differs from the intended one."
+  magnetisation:
+    term: magnetisation
+    def: "The average over the qubits of the expectation value of Z: the average alignment of the spins along z."
+  correlation-function:
+    term: correlation function
+    def: "An expectation value of a product of observables on two qubits, such as Z on qubit i times Z on qubit j, which shows how much the two qubits agree and how this changes with their distance."
+  light-cone:
+    term: light cone
+    def: "The qubits that an operation, an error or a change can influence after a given number of circuit layers or a given time. In a circuit of nearest-neighbour gates, it grows by a fixed number of qubits per layer; a local Hamiltonian also spreads changes at a finite speed."

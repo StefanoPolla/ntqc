@@ -909,10 +909,10 @@ course.
 
 Two questions follow from here. The observables of real applications, such as the energy
 of a physical system, are sums of many Pauli strings, each estimated with its own shots
-and its own noise. And the bias need not be accepted: error-mitigation methods estimate
-and remove it, at a price in shots.
-<!-- L3-LINK: link the two questions to the chapters on observables and on error
-mitigation, once the order of L3-L5 is decided. -->
+and its own noise; the next chapter shows how to measure them (@sec-measuring-observables).
+And the bias need not be accepted: error-mitigation methods estimate and remove it, at a
+price in shots.
+<!-- L5-LINK: link the second question to the chapter on error mitigation once it exists. -->
 
 ## More exercises {#sec-L2-exercises}
 
