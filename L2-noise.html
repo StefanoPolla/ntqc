@@ -57,7 +57,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./exercises.html" rel="next">
+<link href="./L3-hamiltonians.html" rel="next">
 <link href="./L1-platforms-and-measurement.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -354,6 +354,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L3-hamiltonians.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -451,7 +457,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">5 November 2026</p>
+      <p class="date-modified">8 November 2026</p>
     </div>
   </div>
     
@@ -1328,8 +1334,7 @@ N^* = \frac{1 - f^2\langle P\rangle^2}{(1-f)^2\langle P\rangle^2} .
 <h3 data-number="2.7.2" class="anchored" data-anchor-id="sec-rescaling"><span class="header-section-number">2.7.2</span> Correcting a known shrinking factor</h3>
 <p>If the shrinking factor <span class="math inline">\(f\)</span> is known, the bias can be removed: <span class="math inline">\(\bar s/f\)</span> averages to <span class="math inline">\(\langle P\rangle\)</span>. The price is in the variance. Dividing by <span class="math inline">\(f\)</span> multiplies the standard error by <span class="math inline">\(1/f\)</span>, so the same precision as without noise takes <span class="math inline">\(1/f^2 = e^{2\sum_i\varepsilon_i}\)</span> times as many shots. The cost grows exponentially with the total error of the circuit. For the superconducting example, this is a factor of 1.6. For a circuit ten times larger, with <span class="math inline">\(f \approx 0.08\)</span>, it is a factor of about 140. This is the simplest method of error mitigation, applied to readout errors in <a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a> (d).</p>
 <p>Knowing <span class="math inline">\(f\)</span> is the hard part. For global depolarising noise, every expectation value shrinks by the same factor, and the error rates of the device give it (<a href="#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>). Readout errors, which act only at the end of the circuit, are another simple case. For generic circuits and noise models, however, each expectation value is changed in its own way, and predicting it means simulating the noisy circuit. A cost in shots of the same kind returns with the other mitigation methods later in the course.</p>
-<p>Two questions follow from here. The observables of real applications, such as the energy of a physical system, are sums of many Pauli strings, each estimated with its own shots and its own noise. And the bias need not be accepted: error-mitigation methods estimate and remove it, at a price in shots. <!-- L3-LINK: link the two questions to the chapters on observables and on error
-mitigation, once the order of L3-L5 is decided. --></p>
+<p>Two questions follow from here. The observables of real applications, such as the energy of a physical system, are sums of many Pauli strings, each estimated with its own shots and its own noise; the next chapter shows how to measure them (<a href="L3-hamiltonians.html#sec-measuring-observables" class="quarto-xref"><span>Section 3.4</span></a>). And the bias need not be accepted: error-mitigation methods estimate and remove it, at a price in shots. <!-- L5-LINK: link the second question to the chapter on error mitigation once it exists. --></p>
 </section>
 </section>
 <section id="sec-L2-exercises" class="level2" data-number="2.8">
@@ -1815,8 +1820,8 @@ Walter, Michael, and Maris Ozols. 2025. <em>Lecture Notes on Quantum Information
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./L3-hamiltonians.html" class="pagination-link" aria-label="Measuring and simulating Hamiltonians">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

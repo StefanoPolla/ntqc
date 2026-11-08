@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stefano Polla">
+<meta name="dcterms.date" content="2026-11-08">
+
+<title>3&nbsp; Measuring and simulating Hamiltonians – Near-term Quantum Computing — lecture notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exercises.html" rel="next">
+<link href="./L2-noise.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b626d73c4c936ccc3cb08be7d45d1df6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-37a0ccb6f5b9899fcb884e11bb6f7458.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./L3-hamiltonians.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Near-term Quantum Computing — lecture notes</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/StefanoPolla/ntqc/tree/main/notes/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./ntqc-lecture-notes.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About these notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L1-platforms-and-measurement.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L2-noise.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L3-hamiltonians.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-energy-dynamics" id="toc-sec-energy-dynamics" class="nav-link active" data-scroll-target="#sec-energy-dynamics"><span class="header-section-number">3.1</span> Energy and time evolution</a></li>
+  <li><a href="#sec-local-hamiltonians" id="toc-sec-local-hamiltonians" class="nav-link" data-scroll-target="#sec-local-hamiltonians"><span class="header-section-number">3.2</span> Local Hamiltonians</a>
+  <ul class="collapse">
+  <li><a href="#sec-pauli-sums" id="toc-sec-pauli-sums" class="nav-link" data-scroll-target="#sec-pauli-sums"><span class="header-section-number">3.2.1</span> Pauli decomposition</a></li>
+  </ul></li>
+  <li><a href="#sec-spin-models" id="toc-sec-spin-models" class="nav-link" data-scroll-target="#sec-spin-models"><span class="header-section-number">3.3</span> Spin models</a></li>
+  <li><a href="#sec-measuring-observables" id="toc-sec-measuring-observables" class="nav-link" data-scroll-target="#sec-measuring-observables"><span class="header-section-number">3.4</span> Measuring observables</a>
+  <ul class="collapse">
+  <li><a href="#sec-shot-budget" id="toc-sec-shot-budget" class="nav-link" data-scroll-target="#sec-shot-budget"><span class="header-section-number">3.4.1</span> The shot budget</a></li>
+  <li><a href="#sec-settings" id="toc-sec-settings" class="nav-link" data-scroll-target="#sec-settings"><span class="header-section-number">3.4.2</span> Measurement settings</a></li>
+  </ul></li>
+  <li><a href="#sec-trotter" id="toc-sec-trotter" class="nav-link" data-scroll-target="#sec-trotter"><span class="header-section-number">3.5</span> Trotter circuits</a>
+  <ul class="collapse">
+  <li><a href="#sec-classical-simulation" id="toc-sec-classical-simulation" class="nav-link" data-scroll-target="#sec-classical-simulation"><span class="header-section-number">3.5.1</span> Simulating dynamics classically</a></li>
+  <li><a href="#sec-trotter-formula" id="toc-sec-trotter-formula" class="nav-link" data-scroll-target="#sec-trotter-formula"><span class="header-section-number">3.5.2</span> The Trotter formula</a></li>
+  <li><a href="#sec-trotter-circuits" id="toc-sec-trotter-circuits" class="nav-link" data-scroll-target="#sec-trotter-circuits"><span class="header-section-number">3.5.3</span> Circuits for one step</a></li>
+  <li><a href="#sec-floquet" id="toc-sec-floquet" class="nav-link" data-scroll-target="#sec-floquet"><span class="header-section-number">3.5.4</span> Large steps: Floquet circuits</a></li>
+  </ul></li>
+  <li><a href="#sec-dynamics-observables" id="toc-sec-dynamics-observables" class="nav-link" data-scroll-target="#sec-dynamics-observables"><span class="header-section-number">3.6</span> Observables after time evolution</a></li>
+  <li><a href="#sec-trotter-noise" id="toc-sec-trotter-noise" class="nav-link" data-scroll-target="#sec-trotter-noise"><span class="header-section-number">3.7</span> Trotter error against gate noise</a></li>
+  <li><a href="#sec-L3-exercises" id="toc-sec-L3-exercises" class="nav-link" data-scroll-target="#sec-L3-exercises"><span class="header-section-number">3.8</span> More exercises</a></li>
+  <li><a href="#sec-L3-reading" id="toc-sec-L3-reading" class="nav-link" data-scroll-target="#sec-L3-reading"><span class="header-section-number">3.9</span> Further reading</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-hamiltonians" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Stefano Polla </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">8 November 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">8 November 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\gate}[1]{\mathrm{#1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\]</span></p>
+</div>
+<p>In the first two chapters, we estimated the expectation values of single Pauli strings on noisy devices. In this chapter, we turn to the observables and the dynamics of physical systems. Both are described by a Hamiltonian, the matrix of the energy of a system, which on a quantum computer becomes a sum of many Pauli strings. These sums stay manageable because physical Hamiltonians are local: each term acts on a few nearby qubits.</p>
+<p>By the end of the chapter, you should be able to write a Hamiltonian as a sum of Pauli strings; estimate its energy with a given number of shots and few measurement settings; build circuits for time evolution from native gates and count their cost; and weigh the error of such a circuit against the noise of its gates.</p>
+<section id="sec-energy-dynamics" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-energy-dynamics"><span class="header-section-number">3.1</span> Energy and time evolution</h2>
+<p>The <a href="glossary.html#gloss-hamiltonian" class="gloss" data-gloss="The observable of the energy of a system, a Hermitian matrix. Its eigenvalues are the possible energies, and it also determines how the state of the system changes in time.">Hamiltonian</a> <span class="math inline">\(H\)</span> of a system is the observable representing its energy. On <span class="math inline">\(n\)</span> qubits, it is a Hermitian <span class="math inline">\(2^n\times 2^n\)</span> matrix. The eigenvalues <span class="math inline">\(E_k\)</span> of <span class="math inline">\(H\)</span> are the possible outcomes that a measurement of the energy can give, and its eigenvectors <span class="math inline">\(\ket{E_k}\)</span> are the states with a definite energy. Together, they solve the time-independent <a href="glossary.html#gloss-schrodinger-equation" class="gloss" data-gloss="The equation that relates states to the Hamiltonian. In its time-independent form, it is the eigenvalue equation of the Hamiltonian; in its time-dependent form, it says how a state evolves, and its solution applies the unitary exp(-iHt).">Schrödinger equation</a> <span class="math display">\[
+H\ket{E_k} = E_k\ket{E_k} .
+\]</span> The lowest eigenvalue is the ground-state energy, and its eigenvector the <a href="glossary.html#gloss-ground-state" class="gloss" data-gloss="The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest energy. A system that is cold enough settles in or near its ground state.">ground state</a>. They matter because a system that is cold enough settles in its ground state (or very close to it). The ground state of a Hamiltonian modeling a material determines how that material behaves at low temperature, for example whether it is magnetic, or whether it is superconducting. Differences between energies decide much of chemistry: whether a molecule is stable, how much energy a chemical reaction needs, which frequency of light a molecule absorbs (and hence its color). Finding ground states is the subject of the next chapter. <!-- L4-LINK: link "the next chapter" to the VQE chapter once it is
+released. --></p>
+<p>The Hamiltonian also decides how a state changes in time, through the time-dependent Schrödinger equation and its solution, <span id="eq-schrodinger"><span class="math display">\[
+i\,\frac{d}{dt}\ket{\psi(t)} = H\ket{\psi(t)}, \qquad
+\ket{\psi(t)} = e^{-iHt}\ket{\psi(0)} .
+\tag{3.1}\]</span></span> We use units in which the reduced Planck constant <span class="math inline">\(\hbar\)</span> is 1: energies and frequencies are measured in the same unit, and times are measured in units of one over energy.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Since <span class="math inline">\(H\)</span> is Hermitian, <span class="math inline">\(e^{-iHt}\)</span> is unitary. In the eigenbasis of <span class="math inline">\(H\)</span>, <span class="math inline">\(e^{-iHt} = \sum_k e^{-iE_kt}\ket{E_k}\bra{E_k}\)</span>: each eigenstate only picks up a phase, at a rate set by its energy, and a superposition changes because these phases turn at different rates.</p>
+<p>For a single qubit with <span class="math inline">\(H = -\frac{\omega}{2}Z\)</span>, for example, the relative phase of <span class="math inline">\(\ket{0}\)</span> and <span class="math inline">\(\ket{1}\)</span> turns at the angular frequency <span class="math inline">\(\omega = E_1 - E_0 = 2\pi f_{01}\)</span>, where <span class="math inline">\(f_{01}\)</span> is the qubit frequency of <a href="L1-platforms-and-measurement.html#sec-pulses" class="quarto-xref"><span>Section 1.2.2</span></a>. As long as the frequency <span class="math inline">\(f_{01}\)</span> is known, this rotation about the <span class="math inline">\(Z\)</span> axis can be compensated using virtual <span class="math inline">\(Z\)</span> rotations (<a href="L1-platforms-and-measurement.html#sec-virtual-z" class="quarto-xref"><span>Section 1.3.5</span></a>).</p>
+</section>
+<section id="sec-local-hamiltonians" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-local-hamiltonians"><span class="header-section-number">3.2</span> Local Hamiltonians</h2>
+<p>A Hamiltonian on <span class="math inline">\(n\)</span> qubits is a Hermitian <span class="math inline">\(2^n\times 2^n\)</span> matrix, described by <span class="math inline">\(4^n\)</span> real numbers. On 50 qubits, that is far too many to write down or store in memory. In practice, physics spares us this cost through <a href="glossary.html#gloss-locality" class="gloss" data-gloss="The principle that physical interactions involve only a few particles at a time, usually ones close to each other in space. It is why the Hamiltonians of physical systems are local, with polynomially many terms instead of exponentially many.">locality</a>. Interactions in physical systems involve only a few sub-systems (e.g.&nbsp;particles) at a time, often only neighbouring ones, so the Hamiltonian is a sum <span id="eq-local-terms"><span class="math display">\[
+H = \sum_{i=1}^{M} h_i
+\tag{3.2}\]</span></span> of terms <span class="math inline">\(h_i\)</span> that each act on a few qubits, and as the identity on all others, with a number of terms <span class="math inline">\(M\)</span> that grows polynomially in <span class="math inline">\(n\)</span> rather than as <span class="math inline">\(4^n\)</span>. <a href="#fig-locality" class="quarto-xref">Figure&nbsp;<span>3.1</span></a> shows the two common forms of locality.</p>
+<div id="def-local-hamiltonian" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.1 (<span class="math inline">\(k\)</span>-local Hamiltonian)</strong></span> A Hamiltonian <span class="math inline">\(H = \sum_i h_i\)</span> on <span class="math inline">\(n\)</span> qubits is <a href="glossary.html#gloss-local-hamiltonian" class="gloss" data-gloss="A Hamiltonian that is a sum of terms that each act on at most k qubits, with k fixed as the number of qubits grows. As a sum of Pauli strings, it has polynomially many terms instead of exponentially many. Often simply called a local Hamiltonian."><span class="math inline">\(k\)</span>-local</a> if each term <span class="math inline">\(h_i\)</span> acts on at most <span class="math inline">\(k\)</span> qubits, with <span class="math inline">\(k\)</span> fixed as <span class="math inline">\(n\)</span> grows.</p>
+</div>
+<div id="def-geometrically-local" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.2 (Geometrically local Hamiltonian)</strong></span> Place the <span class="math inline">\(n\)</span> qubits on the sites of a chain or a lattice. A Hamiltonian <span class="math inline">\(H = \sum_i h_i\)</span> is <a href="glossary.html#gloss-geometrically-local" class="gloss" data-gloss="A Hamiltonian on qubits placed on a chain or lattice, whose terms each act only on qubits within a fixed distance of each other, for example single qubits and pairs of neighbours. Every qubit appears in only a few terms, so the number of terms is proportional to the number of qubits. A stronger property than k-locality.">geometrically local</a> if each term <span class="math inline">\(h_i\)</span> acts only on qubits within a fixed distance of each other, with the distance fixed as <span class="math inline">\(n\)</span> grows.</p>
+</div>
+<div id="fig-locality" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-locality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/locality.svg" class="img-fluid figure-img" style="width:75.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-locality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Two forms of locality. (a) Geometrically local: the qubits sit on a lattice, and each term acts on qubits close to each other, such as a pair of neighbours (<span class="math inline">\(h_1\)</span>), a single qubit (<span class="math inline">\(h_2\)</span>) or a square of four (<span class="math inline">\(h_3\)</span>). (b) 2-local: each term acts on at most two qubits, but any pair can interact (grey lines), however far apart.
+</figcaption>
+</figure>
+</div>
+<p>In the models of this chapter, the terms act on single qubits or on pairs of neighbours. Every qubit then appears in only a few terms, and the number of terms is proportional to <span class="math inline">\(n\)</span>. A geometrically local Hamiltonian is also <span class="math inline">\(k\)</span>-local, but not the other way round: a Hamiltonian with a <span class="math inline">\(ZZ\)</span> term on every pair of qubits is 2-local, but it has <span class="math inline">\(n(n-1)/2\)</span> terms, and no arrangement of the qubits on a lattice makes it geometrically local. Several results below, such as the growth of the Trotter error and the light cones (which we discuss in <a href="#sec-dynamics-observables" class="quarto-xref"><span>Section 3.6</span></a>), rely on this stronger property.</p>
+<section id="sec-pauli-sums" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="sec-pauli-sums"><span class="header-section-number">3.2.1</span> Pauli decomposition</h3>
+<p>To measure a Hamiltonian, or to build a circuit from it, we write it as a sum of <a href="L1-platforms-and-measurement.html#def-pauli-string" class="gloss" data-gloss="A tensor product of single-qubit Pauli matrices (I, X, Y or Z), one for each qubit, such as ZZ or XIY. Hermitian, and squares to the identity.">Pauli strings</a>. We write <span class="math inline">\(\mathcal{P}_n = \{I, X, Y, Z\}^{\otimes n}\)</span> for the set of the <span class="math inline">\(4^n\)</span> Pauli strings on <span class="math inline">\(n\)</span> qubits (<a href="L1-platforms-and-measurement.html#def-pauli-string" class="quarto-xref">Definition&nbsp;<span>1.1</span></a>). They are orthogonal, <span class="math inline">\(\Tr[PQ] = 2^n\)</span> if <span class="math inline">\(P = Q\)</span> and <span class="math inline">\(0\)</span> otherwise, and they form a basis of all <span class="math inline">\(2^n\times 2^n\)</span> matrices (<a href="L2-noise.html#sec-mixed-states" class="quarto-xref"><span>Section 2.1.1</span></a>). Every Hamiltonian can therefore be written as <span id="eq-pauli-sum"><span class="math display">\[
+H = \sum_{P\in\mathcal{P}_n} c_P\, P, \qquad c_P = \frac{\Tr[PH]}{2^n} ,
+\tag{3.3}\]</span></span> with real coefficients, since <span class="math inline">\(c_P^* = \Tr[(PH)^\dagger]/2^n = \Tr[HP]/2^n = c_P\)</span>.</p>
+<p>In general, all <span class="math inline">\(4^n\)</span> coefficients can be nonzero. For a <span class="math inline">\(k\)</span>-local Hamiltonian, most of them vanish: each term <span class="math inline">\(h_i\)</span> acts as <span class="math inline">\(I\)</span> outside its qubits, so its Pauli strings do too, and all strings have <a href="glossary.html#gloss-weight" class="gloss" data-gloss="The number of qubits on which a Pauli string acts with a Pauli matrix other than the identity. Under local noise, strings of higher weight lose their expectation value faster.">weight</a> at most <span class="math inline">\(k\)</span>. Counting the strings of weight <span class="math inline">\(w \le k\)</span> (choose <span class="math inline">\(w\)</span> qubits, and <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> or <span class="math inline">\(Z\)</span> on each) shows that a <span class="math inline">\(k\)</span>-local Hamiltonian is a sum of at most <span class="math inline">\(\sum_{w\le k}\binom{n}{w}3^w\)</span> Pauli strings, which grows at most like <span class="math inline">\(n^k\)</span>.</p>
+</section>
+</section>
+<section id="sec-spin-models" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-spin-models"><span class="header-section-number">3.3</span> Spin models</h2>
+<p>Which local Hamiltonians do we study on a quantum computer? The simplest are spin models. Many particles, such as electrons, carry a <a href="glossary.html#gloss-spin" class="gloss" data-gloss="An intrinsic two-level property of an electron (spin-1/2: up or down), which can serve as a qubit.">spin</a>, which makes each of them a tiny magnet. The spin of an electron is a <em>spin-1/2</em>: measured along any axis, it gives one of two values, up or down: it is a qubit. The Pauli matrices <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> represent its components along the three axes (up to a factor <span class="math inline">\(\hbar/2\)</span>, which is <span class="math inline">\(1/2\)</span> in our units). In a magnetic material, the spins of neighbouring atoms interact. A spin model describes this with one qubit on each site of a chain or lattice (for spin-1/2; larger spins have more levels), and terms that couple neighbouring qubits. Spin models are standard test problems for quantum computers: each spin is one qubit, all terms are local, and yet many of their properties, in particular their dynamics, are hard to compute classically on large lattices. The Hamiltonians of molecules can be written as sums of Pauli strings too, after an encoding of the electrons into qubits, but with many more terms; we stay with spin models.</p>
+<div id="def-tfim" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.3 (Transverse-field Ising model)</strong></span> The <a href="glossary.html#gloss-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">transverse-field Ising model</a> (TFIM) on a chain or lattice of <span class="math inline">\(n\)</span> qubits is <span class="math display">\[
+H = -J\sum_{\langle i,j\rangle} Z_iZ_j \;-\; h\sum_{i=1}^{n} X_i ,
+\]</span> where <span class="math inline">\(Z_i\)</span> is <span class="math inline">\(Z\)</span> on qubit <span class="math inline">\(i\)</span> and the identity on the others, the first sum runs over the <em>bonds</em> <span class="math inline">\(\langle i,j\rangle\)</span>, the pairs of neighbouring qubits, and <span class="math inline">\(J, h &gt; 0\)</span> are energies. On an open chain, the bonds are the pairs <span class="math inline">\((i, i+1)\)</span> for <span class="math inline">\(i = 1, \dots, n-1\)</span>.</p>
+</div>
+<p>Each term favours something different. A bond term <span class="math inline">\(-JZ_iZ_j\)</span> has the energy <span class="math inline">\(-J\)</span> when the two qubits agree, in <span class="math inline">\(\ket{00}\)</span> or <span class="math inline">\(\ket{11}\)</span>, and <span class="math inline">\(+J\)</span> when they differ: it favours neighbours that are aligned along <span class="math inline">\(z\)</span>. A field term <span class="math inline">\(-hX_i\)</span> has its lowest energy in <span class="math inline">\(\ket{+}\)</span>: it favours each qubit pointing along <span class="math inline">\(x\)</span>, transverse to <span class="math inline">\(z\)</span>. No state minimises both kinds of terms at once, since <span class="math inline">\(Z\)</span> and <span class="math inline">\(X\)</span> do not commute. For <span class="math inline">\(h = 0\)</span>, the ground states are <span class="math inline">\(\ket{0\cdots 0}\)</span> and <span class="math inline">\(\ket{1\cdots 1}\)</span>, and for <span class="math inline">\(J = 0\)</span>, it is <span class="math inline">\(\ket{+\cdots +}\)</span>. In between, the ground state is entangled, and on a long chain its character changes abruptly at <span class="math inline">\(h = J\)</span>, a <em>quantum phase transition</em>. <a href="#exr-two-site-tfim" class="quarto-xref">Exercise&nbsp;<span>3.2</span></a> works out the smallest case.</p>
+<p>On a chain of <span class="math inline">\(n\)</span> qubits, the TFIM is a sum of <span class="math inline">\(2n-1\)</span> Pauli strings: <span class="math inline">\(n-1\)</span> bonds and <span class="math inline">\(n\)</span> fields. On an <span class="math inline">\(L\times L\)</span> square lattice (<a href="#fig-lattices" class="quarto-xref">Figure&nbsp;<span>3.2</span></a>), it has <span class="math inline">\(2L(L-1)\)</span> bonds and <span class="math inline">\(L^2\)</span> fields: 280 terms for <span class="math inline">\(L = 10\)</span>, against up to <span class="math inline">\(4^{100}\)</span> for a general Hamiltonian on 100 qubits.</p>
+<div id="fig-lattices" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lattices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/spin-lattices.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lattices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.2: Spin models on (a) an open chain of 6 qubits and (b) a <span class="math inline">\(4\times 4\)</span> square lattice. Each circle is a qubit, with its field term <span class="math inline">\(-hX_i\)</span>, and each line a bond, with its term <span class="math inline">\(-JZ_iZ_j\)</span> in the TFIM. (c) A path through all qubits of the lattice (orange). Placed on a line of qubits in this order, the bonds along the path join neighbours, while the others (dashed) join qubits up to 7 positions apart (<a href="#sec-trotter-circuits" class="quarto-xref"><span>Section 3.5.3</span></a>).
+</figcaption>
+</figure>
+</div>
+<p>The second model of this chapter describes the magnetism of many materials.</p>
+<div id="def-heisenberg" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.4 (Heisenberg model)</strong></span> The <a href="glossary.html#gloss-heisenberg-model" class="gloss" data-gloss="A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved.">Heisenberg model</a> on a chain or lattice of <span class="math inline">\(n\)</span> qubits is <span id="eq-heisenberg"><span class="math display">\[
+H = J\sum_{\langle i,j\rangle}\big(X_iX_j + Y_iY_j + Z_iZ_j\big) ,
+\tag{3.4}\]</span></span> with the bonds <span class="math inline">\(\langle i,j\rangle\)</span> of <a href="#def-tfim" class="quarto-xref">Definition&nbsp;<span>3.3</span></a> and a coupling energy <span class="math inline">\(J\)</span>.</p>
+</div>
+<p>Each bond treats the three axes alike, so its energy depends only on how the two spins are oriented relative to each other. In the rest of the chapter, the TFIM is the running example, and the Heisenberg model appears where it makes a point more clearly.</p>
+<p>One property of the Heisenberg model is used for the light cones of <a href="#sec-dynamics-observables" class="quarto-xref"><span>Section 3.6</span></a>. A bond term equals <span class="math inline">\(J(2\,\gate{SWAP} - I)\)</span> (<a href="#exr-pauli-decomposition" class="quarto-xref">Exercise&nbsp;<span>3.1</span></a>), so it can move a 1 from one qubit to its neighbour, but never create or remove one. The number of qubits in <span class="math inline">\(\ket{1}\)</span>, which we call the number of <em>flipped qubits</em>, therefore never changes during the evolution: it is a <em>conserved quantity</em> of the model. In particular, <span class="math inline">\(\ket{0\cdots 0}\)</span> is an eigenstate.</p>
+<div id="exr-pauli-decomposition" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.1 (Pauli decompositions)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>Write <span class="math inline">\(M = \begin{pmatrix} 0 &amp; 1-i \\ 1+i &amp; 2 \end{pmatrix}\)</span> as a sum of Pauli matrices.</p></li>
+<li><p>Write the SWAP gate as a sum of two-qubit Pauli strings, and conclude that <span class="math inline">\(X\otimes X + Y\otimes Y + Z\otimes Z = 2\,\gate{SWAP} - I\)</span>. Which eigenvalues does a bond term of the Heisenberg model have, and for which states?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <a href="#eq-pauli-sum" class="quarto-xref">Equation&nbsp;<span>3.3</span></a>, and compute each trace as a sum over the basis states <span class="math inline">\(\ket{ab}\)</span>.</p>
+</details></li>
+<li><p>Show that <span class="math inline">\(e^{-i\theta\,\gate{SWAP}} = \cos\theta\, I - i\sin\theta\,\gate{SWAP}\)</span>. What does this gate do to <span class="math inline">\(\ket{10}\)</span>?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Check which property of <span class="math inline">\(P\)</span> the derivation of <a href="L1-platforms-and-measurement.html#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> used.</p>
+</details></li>
+</ol>
+</div>
+<div id="exr-two-site-tfim" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.2 (The TFIM on two qubits)</strong></span> The <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> on two qubits is <span class="math inline">\(H = -JZ_1Z_2 - h(X_1 + X_2)\)</span>.</p>
+<ol type="a">
+<li><p>Write <span class="math inline">\(H\)</span> as a <span class="math inline">\(4\times 4\)</span> matrix in the basis <span class="math inline">\(\ket{00}, \ket{01}, \ket{10}, \ket{11}\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(H\)</span> maps the states <span class="math inline">\(\ket{00}+\ket{11}\)</span> and <span class="math inline">\(\ket{01}+\ket{10}\)</span> into combinations of each other, and the states <span class="math inline">\(\ket{00}-\ket{11}\)</span> and <span class="math inline">\(\ket{01}-\ket{10}\)</span> to multiples of themselves. Find the four eigenvalues, and show that the ground-state energy is <span class="math inline">\(-\sqrt{J^2 + 4h^2}\)</span>.</p></li>
+<li><p>What are the ground states for <span class="math inline">\(h = 0\)</span> and for <span class="math inline">\(J = 0\)</span>? Is the ground state entangled for <span class="math inline">\(J = h\)</span>?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-measuring-observables" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="sec-measuring-observables"><span class="header-section-number">3.4</span> Measuring observables</h2>
+<p>We now estimate the energy <span class="math inline">\(\langle H\rangle\)</span> of a state that a circuit prepares. The examples use the Hamiltonians of <a href="#sec-spin-models" class="quarto-xref"><span>Section 3.3</span></a>, but everything in this section holds for any observable written as a sum of Pauli strings. Local observables, like local Hamiltonians, have few terms. An example is the <a href="glossary.html#gloss-magnetisation" class="gloss" data-gloss="The average over the qubits of the expectation value of Z: the average alignment of the spins along z.">magnetisation</a> <span class="math inline">\(m = \frac{1}{n}\sum_i\langle Z_i\rangle\)</span>, the average of <span class="math inline">\(\langle Z_i\rangle\)</span> over the qubits, which measures how far the spins are aligned along <span class="math inline">\(z\)</span>.</p>
+<p>We know from <a href="L1-platforms-and-measurement.html#sec-shots" class="quarto-xref"><span>Section 1.4.2</span></a> how to estimate the expectation value of one Pauli string: rotate each qubit so that its factor becomes <span class="math inline">\(Z\)</span>, measure, and average the signs <span class="math inline">\(s = \pm 1\)</span> of the <a href="glossary.html#gloss-shot" class="gloss" data-gloss="One run of a circuit: prepare the qubits, apply the gates, measure. Returns one bit string.">shots</a>. With <span class="math inline">\(N\)</span> shots, the estimate has the standard error <span class="math inline">\(\sqrt{(1-\langle P\rangle^2)/N}\)</span> (<a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>). For a sum <span class="math inline">\(H = \sum_i c_iP_i\)</span> of <span class="math inline">\(M\)</span> Pauli strings, expectation values are linear, <span class="math inline">\(\langle H\rangle = \sum_i c_i\langle P_i\rangle\)</span>, so we can estimate each term and add up the estimates.</p>
+<section id="sec-shot-budget" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="sec-shot-budget"><span class="header-section-number">3.4.1</span> The shot budget</h3>
+<p>Suppose first that each term <span class="math inline">\(P_i\)</span> is measured independently from the others, using <span class="math inline">\(N_i\)</span> shots. The estimates <span class="math inline">\(\bar s_i\)</span> of different terms are then independent, so their variances add up, each multiplied by <span class="math inline">\(c_i^2\)</span>: <span id="eq-variance-sum"><span class="math display">\[
+\mathrm{Var}\Big(\sum_i c_i\,\bar s_i\Big) = \sum_i \frac{c_i^2\sigma_i^2}{N_i} ,
+\qquad \sigma_i^2 = 1 - \langle P_i\rangle^2 ,
+\tag{3.5}\]</span></span> where <span class="math inline">\(\sigma_i^2\)</span> is the variance of a single shot of term <span class="math inline">\(i\)</span>. Before the experiment, we do not know the state, so we plan for the worst case, <span class="math inline">\(\sigma_i^2 \le 1\)</span>.</p>
+<p>How should a total of <span class="math inline">\(N\)</span> shots be split among the terms? We minimise the variance under the constraint <span class="math inline">\(\sum_i N_i = N\)</span>, treating the <span class="math inline">\(N_i\)</span> as continuous. With a Lagrange multiplier <span class="math inline">\(\lambda\)</span>, we can instead minimise <span class="math inline">\(\sum_i c_i^2\sigma_i^2/N_i + \lambda\sum_i N_i\)</span> with each <span class="math inline">\(N_i\)</span> free, and choose <span class="math inline">\(\lambda\)</span> at the end so that the constraint holds. Setting the derivative with respect to <span class="math inline">\(N_i\)</span> to zero gives <span class="math inline">\(c_i^2\sigma_i^2/N_i^2 = \lambda\)</span>, so <span class="math inline">\(N_i\)</span> is proportional to <span class="math inline">\(|c_i|\sigma_i\)</span>. With the constraint, <span class="math display">\[
+N_i = N\,\frac{|c_i|\sigma_i}{\sum_j |c_j|\sigma_j}, \qquad
+\mathrm{Var} = \frac{1}{N}\Big(\sum_i |c_i|\sigma_i\Big)^2 .
+\]</span> A term gets shots in proportion to <span class="math inline">\(|c_i|\sigma_i\)</span>, the spread of its contribution to the energy. Since the <span class="math inline">\(\sigma_i\)</span> are not known in advance, we can split by <span class="math inline">\(|c_i|\)</span> alone (the worst case), or estimate the <span class="math inline">\(\sigma_i\)</span> from a first batch of shots. To reach a standard error <span class="math inline">\(\varepsilon\)</span>, we need <span id="eq-shot-budget"><span class="math display">\[
+N = \frac{\big(\sum_i |c_i|\sigma_i\big)^2}{\varepsilon^2}
+\;\le\; \frac{\big(\sum_i |c_i|\big)^2}{\varepsilon^2}
+\tag{3.6}\]</span></span> shots in total. In the worst case, the cost depends only on the sum of the absolute values of the coefficients, the <a href="glossary.html#gloss-pauli-1-norm" class="gloss" data-gloss="The sum of the absolute values of the coefficients of an operator written as a sum of Pauli strings, often written lambda in the literature. It sets the worst-case number of shots needed to estimate the energy, and it bounds the operator norm.">Pauli 1-norm</a> <span class="math inline">\(\|c\|_1 = \sum_i |c_i|\)</span> of the vector <span class="math inline">\(c = (c_1, \dots, c_M)\)</span>, so that <span class="math inline">\(N \le \|c\|_1^2/\varepsilon^2\)</span>. In the literature, <span class="math inline">\(\|c\|_1\)</span> is often written <span class="math inline">\(\lambda\)</span>; here that letter is already taken by the Lagrange multiplier.</p>
+<p>If we instead split the shots equally, <span class="math inline">\(N_i = N/M\)</span>, <a href="#eq-variance-sum" class="quarto-xref">Equation&nbsp;<span>3.5</span></a> gives <span class="math inline">\(\mathrm{Var} = (M/N)\sum_i c_i^2\sigma_i^2 \le M\|c\|_2^2/N\)</span>, with the <em>Pauli 2-norm</em> <span class="math inline">\(\|c\|_2 = \big(\sum_i c_i^2\big)^{1/2}\)</span>. By the Cauchy-Schwarz inequality, <span class="math inline">\(\|c\|_1^2 \le M\|c\|_2^2\)</span>, so the optimal split never needs more shots than the equal one. The two are equal when all <span class="math inline">\(|c_i|\)</span> are equal, and the optimal split saves most when a few large coefficients dominate many small ones.</p>
+<div class="example">
+<p><em>Example.</em> For the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> on a chain of <span class="math inline">\(n = 10\)</span> qubits with <span class="math inline">\(J = h = 1\)</span>, <span class="math inline">\(\|c\|_1 = 19\)</span>, and a standard error of 0.1 takes at most <span class="math inline">\(19^2/0.1^2 = 36{,}100\)</span> shots, spread over 19 different circuits. All 19 coefficients have the same size, so in the worst case the equal split is already optimal. Switching between circuits costs time (<a href="L1-platforms-and-measurement.html#sec-timescales" class="quarto-xref"><span>Section 1.6</span></a>), so the number of circuits matters too.</p>
+</div>
+</section>
+<section id="sec-settings" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="sec-settings"><span class="header-section-number">3.4.2</span> Measurement settings</h3>
+<p>The shots of one circuit can serve several terms at once. In <a href="L1-platforms-and-measurement.html#exr-measure-basis" class="quarto-xref">Exercise&nbsp;<span>1.10</span></a>, <span class="math inline">\(\langle X\otimes I\rangle\)</span> and <span class="math inline">\(\langle X\otimes X\rangle\)</span> could be estimated from the same shots: after a Hadamard on each qubit, every shot gives both signs. This works whenever two strings need the same rotation on every qubit on which both act.</p>
+<div id="def-qwc" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.5 (Qubit-wise commuting strings and measurement settings)</strong></span> Two Pauli strings are <a href="glossary.html#gloss-qubit-wise-commuting" class="gloss" data-gloss="Two Pauli strings are qubit-wise commuting if, on every qubit, their factors are equal or one of them is the identity. Such strings can be measured from the same shots, in one measurement setting.">qubit-wise commuting</a> if, on every qubit, their factors are equal or at least one of them is <span class="math inline">\(I\)</span>. A <a href="glossary.html#gloss-measurement-setting" class="gloss" data-gloss="A choice of basis (X, Y or Z) for every qubit, made with single-qubit rotations before the measurement. Each shot of a setting gives a value of every Pauli string whose factors agree with it.">measurement setting</a> assigns a basis, <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> or <span class="math inline">\(Z\)</span>, to each qubit. It measures every Pauli string whose factors agree with it wherever they are not <span class="math inline">\(I\)</span>, and these strings are qubit-wise commuting.</p>
+</div>
+<div class="example">
+<p><em>Example.</em> The <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> needs only two settings, on any chain or lattice: in the <span class="math inline">\(Z\)</span> setting, each shot gives the signs of all bond terms, and in the <span class="math inline">\(X\)</span> setting, with a Hadamard on every qubit, the signs of all field terms (<a href="#fig-tfim-settings" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>). The Heisenberg model needs three, <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> on all qubits, also on any lattice. Its terms <span class="math inline">\(X_1X_2\)</span> and <span class="math inline">\(Y_1Y_2\)</span> commute as matrices, but not qubit-wise, so no setting measures both; with an entangling circuit before the measurement, they could be measured together (<a href="#sec-L3-reading" class="quarto-xref"><span>Section 3.9</span></a>).</p>
+</div>
+<div id="fig-tfim-settings" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tfim-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/tfim-settings.svg" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tfim-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.3: The two measurement settings of the TFIM on four qubits, after the circuit that prepares the state <span class="math inline">\(\ket{\psi}\)</span>. M is a measurement in the computational basis. (a) Each shot gives the signs of all <span class="math inline">\(Z_iZ_{i+1}\)</span>; (b) after a Hadamard on every qubit, each shot gives the signs of all <span class="math inline">\(X_i\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>Sharing shots changes the variance. A shot of the setting for a group <span class="math inline">\(g\)</span> of terms gives one value of the whole group, <span class="math inline">\(s_g = \sum_{i\in g} c_i s_i\)</span>, and the mean of these values estimates <span class="math inline">\(\sum_{i\in g} c_i\langle P_i\rangle\)</span>. The terms now come from the same shots, so the single-shot variance of the group includes their covariances, which measure how two signs vary together <span class="citation" data-cites="blitzstein2019">(<a href="L1-platforms-and-measurement.html#ref-blitzstein2019" role="doc-biblioref">Blitzstein and Hwang 2019</a>)</span>. The product <span class="math inline">\(s_is_j\)</span> of two signs from the same shot is the sign of the Pauli string <span class="math inline">\(P_iP_j\)</span>, so that: <span id="eq-group-variance"><span class="math display">\[
+\sigma_g^2 = \mathrm{Var}(s_g) = \sum_{i,j\in g} c_ic_j\,\mathrm{Cov}(s_i,s_j) ,
+\qquad
+\mathrm{Cov}(s_i, s_j) = \langle P_iP_j\rangle - \langle P_i\rangle\langle P_j\rangle .
+\tag{3.7}\]</span></span> Different settings can use different numbers of shots, so <a href="#eq-shot-budget" class="quarto-xref">Equation&nbsp;<span>3.6</span></a> holds with groups in place of terms: <span class="math inline">\(N = (\sum_g\sigma_g)^2/\varepsilon^2\)</span> (<a href="#exr-group-shots" class="quarto-xref">Exercise&nbsp;<span>3.4</span></a>). In the worst case, nothing is gained: <span class="math inline">\(|s_g| \le \sum_{i\in g}|c_i|\)</span>, so <span class="math inline">\(\sigma_g \le \sum_{i\in g}|c_i|\)</span>, and the bound of <a href="#eq-shot-budget" class="quarto-xref">Equation&nbsp;<span>3.6</span></a> stays the same. In practice, most pairs of terms in a group act on distant qubits, and in many states distant qubits are nearly uncorrelated. If all terms of a group are uncorrelated, <span class="math inline">\(\sigma_g^2 = \sum_{i\in g} c_i^2\sigma_i^2 \le \sum_{i\in g} c_i^2\)</span>: a group of <span class="math inline">\(m\)</span> terms with equal coefficients costs up to <span class="math inline">\(m\)</span> times fewer shots than in the worst case.</p>
+<div class="example">
+<p><em>Example.</em> For the TFIM chain with <span class="math inline">\(n = 10\)</span>, uncorrelated groups give <span class="math inline">\((\sqrt{9} + \sqrt{10})^2/0.1^2 \approx 3{,}800\)</span> shots instead of 36,100, in 2 circuits instead of 19. For the state that the chain reaches from <span class="math inline">\(\ket{0\cdots0}\)</span> after a time <span class="math inline">\(t = 1\)</span>, the exact group variances give about 3,100 shots.</p>
+</div>
+<p>With data, the sample variance of the values <span class="math inline">\(s_g\)</span> of each setting gives the standard error. <!-- T3-LINK: once Tutorial 3 is published, add "; Tutorial 3 does this in code" to the sentence above, with a link to the T3 notebook in Colab. --></p>
+<!-- L5-LINK: symmetry verification in L5 can use the Heisenberg model's conserved
+number of flipped qubits (@sec-spin-models), read from the Z setting. -->
+<div id="exr-settings" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.3 (Measurement settings)</strong></span> How many measurement settings does <span class="math inline">\(H = Z_1Z_2 + Z_2Z_3 + X_1 + X_2 + X_3 + Z_1X_2\)</span> need, with single-qubit rotations only? Give the settings and the terms that each measures.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Look for terms that cannot pairwise share a setting.</p>
+</details>
+</div>
+<div id="exr-group-shots" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.4 (Shots for groups)</strong></span> A Hamiltonian is measured in several settings, with single-shot variances <span class="math inline">\(\sigma_g^2\)</span>.</p>
+<ol type="a">
+<li><p>Show that the best split of <span class="math inline">\(N\)</span> shots gives setting <span class="math inline">\(g\)</span> a number of shots proportional to <span class="math inline">\(\sigma_g\)</span>, and that <span class="math inline">\(N = (\sum_g \sigma_g)^2/\varepsilon^2\)</span> shots give the standard error <span class="math inline">\(\varepsilon\)</span>.</p></li>
+<li><p>For the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> chain with <span class="math inline">\(n = 10\)</span>, <span class="math inline">\(J = 1\)</span> and <span class="math inline">\(h = 0.2\)</span>, assume that the terms of each group are uncorrelated and <span class="math inline">\(\sigma_i = 1\)</span>. How many shots go to each setting for a standard error of 0.1? How many would an equal split need?</p></li>
+<li><p>A study reports the energy of a state of this chain with a standard error of 0.1 from 200 shots in total. Is the claim plausible? What would have to be true of the state?</p></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-trotter" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="sec-trotter"><span class="header-section-number">3.5</span> Trotter circuits</h2>
+<p>We now turn to dynamics: we prepare a simple state, such as <span class="math inline">\(\ket{0\cdots0}\)</span>, let it evolve under <span class="math inline">\(H\)</span> for a time <span class="math inline">\(t\)</span>, and measure. In this section, we build circuits for <span class="math inline">\(e^{-iHt}\)</span>.</p>
+<section id="sec-classical-simulation" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="sec-classical-simulation"><span class="header-section-number">3.5.1</span> Simulating dynamics classically</h3>
+<p>For a few qubits, <span class="math inline">\(e^{-iHt}\ket{\psi(0)}\)</span> can be computed exactly on a classical computer. <!-- T3-LINK: once Tutorial 3 is published, add ", and Tutorial 3 does so" to the sentence above, with a link to the T3 notebook in Colab. --> The cost grows exponentially: the state has <span class="math inline">\(2^n\)</span> complex amplitudes of 16 bytes each, so 30 qubits take about 17 GB of memory, and 50 qubits about 18 PB (<span class="math inline">\(1.8\times10^{16}\)</span> bytes), close to the entire memory of the largest supercomputers.</p>
+<p>Approximate methods avoid storing all amplitudes by using the structure of the state. For dynamics, the most widely used are <a href="glossary.html#gloss-tensor-network" class="gloss" data-gloss="A classical description of a quantum state as a network of small arrays, one per qubit, whose size grows with the entanglement. Efficient for weakly entangled states, such as those of a chain evolved for a short time.">tensor networks</a>. They write the state as a network of small arrays, one per qubit, connected along the lattice, and the size of the arrays is set by the entanglement between the parts of the system. Product states and states with limited entanglement are therefore cheap to represent. Tensor networks are especially effective at describing dynamics for short times, in particular for <a href="#def-geometrically-local" class="gloss" data-gloss="A Hamiltonian on qubits placed on a chain or lattice, whose terms each act only on qubits within a fixed distance of each other, for example single qubits and pairs of neighbours. Every qubit appears in only a few terms, so the number of terms is proportional to the number of qubits. A stronger property than k-locality.">geometrically local</a> Hamiltonians on a chain. During an evolution, however, the entanglement typically grows in proportion to the time, and the size of the arrays grows exponentially with it, so that long times and two-dimensional lattices stay out of reach. Other methods use other structure, such as the light cones of <a href="#sec-dynamics-observables" class="quarto-xref"><span>Section 3.6</span></a>.</p>
+<p>A quantum computer needs no amplitudes in memory: it holds the state in its <span class="math inline">\(n\)</span> qubits and applies <span class="math inline">\(e^{-iHt}\)</span> as a circuit. Simulating quantum systems is the application that motivated the early proposals of quantum computers, such as <span class="citation" data-cites="feynman1982">Feynman (<a href="L1-platforms-and-measurement.html#ref-feynman1982" role="doc-biblioref">1982</a>)</span>. This does not make a quantum computer the right tool for every simulation. For many questions, approximate classical methods do well, on classical hardware that is faster, cheaper and free of noise. A quantum computer is worth using only where all classical methods fail, as for long times or two-dimensional lattices, and only if its own noise allows (<a href="#sec-trotter-noise" class="quarto-xref"><span>Section 3.7</span></a>). Finding such problems is part of the work, and it is hard: there is no general test that rules out every classical method, so a claimed <a href="glossary.html#gloss-quantum-advantage" class="gloss" data-gloss="A task that a quantum computer solves better than any classical method, faster, more cheaply or more accurately. For a task of a given size, it is a claim against the best classical methods known, and it is lost if better ones are found.">quantum advantage</a> holds only as long as new classical methods, often developed in response to it, fail to match it.</p>
+</section>
+<section id="sec-trotter-formula" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="sec-trotter-formula"><span class="header-section-number">3.5.2</span> The Trotter formula</h3>
+<p>If all terms of <span class="math inline">\(H\)</span> commuted, <span class="math inline">\(e^{-iHt}\)</span> would split exactly into a product of exponentials of single terms, each a rotation about a Pauli string (<a href="L1-platforms-and-measurement.html#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>). For the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a>, we split <span class="math inline">\(H = A + B\)</span> into the bond terms <span class="math inline">\(A = -J\sum_i Z_iZ_{i+1}\)</span> and the field terms <span class="math inline">\(B = -h\sum_i X_i\)</span>. The terms of <span class="math inline">\(A\)</span> commute with each other, and so do those of <span class="math inline">\(B\)</span>, so <span class="math inline">\(e^{-iA\delta}\)</span> and <span class="math inline">\(e^{-iB\delta}\)</span> are products of rotations that a circuit can apply. But <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> do not commute, so applying first <span class="math inline">\(e^{-iA\delta}\)</span> and then <span class="math inline">\(e^{-iB\delta}\)</span>, which is the product <span class="math inline">\(e^{-iB\delta}e^{-iA\delta}\)</span> (the rightmost factor acts first), differs from <span class="math inline">\(e^{-i(A+B)\delta}\)</span>. For a short time <span class="math inline">\(\delta\)</span>, the difference is small. Expanding both sides to second order in <span class="math inline">\(\delta\)</span>, <span class="math display">\[
+\begin{aligned}
+e^{-iB\delta}e^{-iA\delta} &amp;= I - i(A+B)\delta - \tfrac{1}{2}\big(A^2 + 2BA + B^2\big)\delta^2 + O(\delta^3) , \\
+e^{-i(A+B)\delta} &amp;= I - i(A+B)\delta - \tfrac{1}{2}\big(A^2 + AB + BA + B^2\big)\delta^2 + O(\delta^3) ,
+\end{aligned}
+\]</span> so that <span id="eq-trotter-step-error"><span class="math display">\[
+e^{-iB\delta}e^{-iA\delta} = e^{-i(A+B)\delta} + \frac{\delta^2}{2}\,[A,B] + O(\delta^3) ,
+\tag{3.8}\]</span></span> with the commutator <span class="math inline">\([A,B] = AB - BA\)</span>. The error of one short step is of order <span class="math inline">\(\delta^2\)</span>, and it vanishes if <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> commute. To evolve for a time <span class="math inline">\(t\)</span>, we divide it into <span class="math inline">\(r\)</span> steps of length <span class="math inline">\(\delta = t/r\)</span>: <span class="math inline">\(r\)</span> errors of order <span class="math inline">\((t/r)^2\)</span> add up to an error of order <span class="math inline">\(t^2/r\)</span>, which falls as the number of steps grows.</p>
+<p>To make this precise, we need a size for matrices. The <a href="glossary.html#gloss-operator-norm" class="gloss" data-gloss="The largest factor by which a matrix can stretch the length of a vector. For a Hermitian matrix, it is the largest absolute value of its eigenvalues.">operator norm</a> <span class="math inline">\(\|M\| = \max_{\|\psi\| = 1}\|M\ket{\psi}\|\)</span> is the largest factor by which <span class="math inline">\(M\)</span> can stretch the length of a vector; for a Hermitian matrix, it is the largest absolute value of its eigenvalues. For a Pauli sum <span class="math inline">\(H = \sum_i c_iP_i\)</span>, the triangle inequality <span class="math inline">\(\|M + N\| \le \|M\| + \|N\|\)</span> and <span class="math inline">\(\|P_i\| = 1\)</span> give <span class="math inline">\(\|H\| \le \|c\|_1\)</span>: the <a href="glossary.html#gloss-pauli-1-norm" class="gloss" data-gloss="The sum of the absolute values of the coefficients of an operator written as a sum of Pauli strings, often written lambda in the literature. It sets the worst-case number of shots needed to estimate the energy, and it bounds the operator norm.">Pauli 1-norm</a> of <a href="#sec-shot-budget" class="quarto-xref"><span>Section 3.4.1</span></a> also bounds the energies of <span class="math inline">\(H\)</span>.</p>
+<div id="def-trotter" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3.6 (First-order Trotter formula)</strong></span> For <span class="math inline">\(H = A + B\)</span> and a time <span class="math inline">\(t\)</span> divided into <span class="math inline">\(r\)</span> <a href="glossary.html#gloss-trotter-formula" class="gloss" data-gloss="An approximation of the evolution under a sum of terms by a product of evolutions under each group of terms in turn, repeated in many short Trotter steps. Its error, the Trotter error, comes from terms that do not commute and decreases as the number of steps grows.">Trotter steps</a> of length <span class="math inline">\(\delta = t/r\)</span>, <span class="math display">\[
+e^{-iHt} \approx \big(e^{-iB\delta}e^{-iA\delta}\big)^r ,
+\]</span> with an error, the <em>Trotter error</em>, of at most <span id="eq-trotter-bound"><span class="math display">\[
+\Big\| e^{-iHt} - \big(e^{-iB\delta}e^{-iA\delta}\big)^r \Big\| \le \frac{t^2}{2r}\,\big\|[A,B]\big\| .
+\tag{3.9}\]</span></span> The bound is the same for the other order, <span class="math inline">\(e^{-iA\delta}e^{-iB\delta}\)</span>.</p>
+</div>
+<p><a href="#eq-trotter-bound" class="quarto-xref">Equation&nbsp;<span>3.9</span></a> says that, for every initial state, the state of the circuit differs from the exact one by a vector of length at most <span class="math inline">\((t^2/2r)\|[A,B]\|\)</span>. This bound rests on two facts. First, the error of a single step is at most <span class="math inline">\((\delta^2/2)\|[A,B]\|\)</span> for every <span class="math inline">\(\delta\)</span>. <a href="#eq-trotter-step-error" class="quarto-xref">Equation&nbsp;<span>3.8</span></a> suggests this, but the proof takes more work <span class="citation" data-cites="childs2021">(<a href="L1-platforms-and-measurement.html#ref-childs2021" role="doc-biblioref">Childs et al. 2021, sec. V.A</a>)</span>. Second, the errors of the <span class="math inline">\(r\)</span> steps add up at most linearly. With <span class="math inline">\(U = e^{-iB\delta}e^{-iA\delta}\)</span> for one Trotter step and <span class="math inline">\(V = e^{-iH\delta}\)</span> for one exact step, the sum <span class="math display">\[
+V^r - U^r = \sum_{k=0}^{r-1} V^{r-1-k}\,(V - U)\,U^{k}
+\]</span> telescopes: neighbouring terms cancel, and only <span class="math inline">\(V^r\)</span> and <span class="math inline">\(-U^r\)</span> remain. Unitaries do not change the length of vectors, so each term has norm at most <span class="math inline">\(\|V - U\|\)</span>, and <span class="math inline">\(\|V^r - U^r\| \le r\,\|V - U\| \le r\,(\delta^2/2)\|[A,B]\| = (t^2/2r)\|[A,B]\|\)</span>. <span class="citation" data-cites="dewolf2026"><span class="nocase">de Wolf</span> (<a href="L1-platforms-and-measurement.html#ref-dewolf2026" role="doc-biblioref">2026, sec. 9.2</a>)</span> derives the bound <span class="math inline">\(O(\|A\|\|B\|\,t^2/r)\)</span> in the same way.</p>
+<p>In general, a Hamiltonian may need more than two groups of commuting terms; each step then applies one exponential per group, and the bound becomes a sum over the commutators of all pairs of groups.</p>
+<div class="example">
+<p><em>Example.</em> For the TFIM, two groups suffice on any lattice, since all <span class="math inline">\(ZZ\)</span> terms commute with each other, and so do all <span class="math inline">\(X\)</span> terms. The TFIM is also geometrically local (<a href="#def-geometrically-local" class="quarto-xref">Definition&nbsp;<span>3.2</span></a>), so only terms that overlap fail to commute: <span class="math inline">\(Z_iZ_{i+1}\)</span> anticommutes with <span class="math inline">\(X_i\)</span> and <span class="math inline">\(X_{i+1}\)</span>, and commutes with every other <span class="math inline">\(X_j\)</span>. As a result, <span class="math inline">\(\|[A,B]\| \le 4Jh(n-1)\)</span> (<a href="#exr-commutator" class="quarto-xref">Exercise&nbsp;<span>3.5</span></a>): the bound grows in proportion to the number of qubits. The weaker bound <span class="math inline">\(O(\|A\|\|B\|\,t^2/r)\)</span> grows faster: here the norms reach the Pauli 1-norms of the two groups, <span class="math inline">\(\|A\| = J(n-1)\)</span> and <span class="math inline">\(\|B\| = hn\)</span> (all spins aligned along <span class="math inline">\(z\)</span>, or along <span class="math inline">\(x\)</span>), so <span class="math inline">\(\|A\|\|B\|\)</span> grows as <span class="math inline">\(n^2\)</span>.</p>
+</div>
+</section>
+<section id="sec-trotter-circuits" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="sec-trotter-circuits"><span class="header-section-number">3.5.3</span> Circuits for one step</h3>
+<p>For any Hamiltonian, each group of commuting terms gives one Pauli rotation per term (<a href="L1-platforms-and-measurement.html#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>), so a Trotter step is a circuit of Pauli rotations. To run it, we arrange the rotations so that those on different qubits act at the same time, compile them into native gates, and fit them on the coupling graph of the device.</p>
+<div class="example">
+<p><em>Example.</em> For the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a>, these rotations are <span class="math inline">\(e^{iJ\delta Z_iZ_{i+1}} = R_{ZZ}(-2J\delta)\)</span> on every bond, and <span class="math inline">\(e^{ih\delta X_i} = R_X(-2h\delta)\)</span> on every qubit. Two bond gates that share a qubit cannot act at the same time, so the bonds are applied in two layers, first <span class="math inline">\((1,2)\)</span>, <span class="math inline">\((3,4)\)</span>, …, then <span class="math inline">\((2,3)\)</span>, <span class="math inline">\((4,5)\)</span>, …, and the field rotations in a third (<a href="#fig-trotter-step" class="quarto-xref">Figure&nbsp;<span>3.4</span></a>). Two-qubit gates on alternating pairs of neighbours form a <a href="glossary.html#gloss-brick-wall-circuit" class="gloss" data-gloss="A circuit whose two-qubit gates act on alternating pairs of neighbouring qubits, first (1,2), (3,4), and so on, then (2,3), (4,5), and so on, like the bricks of a wall.">brick-wall circuit</a>, as in <a href="L1-platforms-and-measurement.html#fig-brick-wall" class="quarto-xref">Figure&nbsp;<span>1.12</span></a>. On a device with CZ gates, each <span class="math inline">\(R_{ZZ}\)</span> is two CNOTs and an <span class="math inline">\(R_Z\)</span> (<a href="#fig-trotter-step" class="quarto-xref">Figure&nbsp;<span>3.4</span></a> b), so it costs two CZs, and a step on a chain of <span class="math inline">\(n\)</span> qubits costs <span class="math inline">\(2(n-1)\)</span> CZs; on some trapped-ion devices, <span class="math inline">\(R_{ZZ}(\theta)\)</span> is a single <a href="glossary.html#gloss-native-gate" class="gloss" data-gloss="A gate the hardware implements directly with a calibrated control pulse. Every other gate must be compiled into native gates.">native gate</a> (<a href="L1-platforms-and-measurement.html#tbl-native" class="quarto-xref">Table&nbsp;<span>1.3</span></a>).</p>
+</div>
+<div id="fig-trotter-step" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trotter-step-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/trotter-step.svg" class="img-fluid figure-img" style="width:75.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trotter-step-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.4: One Trotter step of the TFIM on a chain of 6 qubits. (a) <span class="math inline">\(R_{ZZ}(-2J\delta)\)</span> on the bonds <span class="math inline">\((1,2)\)</span>, <span class="math inline">\((3,4)\)</span>, <span class="math inline">\((5,6)\)</span>, then on <span class="math inline">\((2,3)\)</span>, <span class="math inline">\((4,5)\)</span>, then <span class="math inline">\(R_X(-2h\delta)\)</span> on every qubit. (b) Each <span class="math inline">\(R_{ZZ}(\theta)\)</span>, here on the bond <span class="math inline">\((1,2)\)</span>, compiled into two CNOTs and one <span class="math inline">\(R_Z(\theta)\)</span>, as in <a href="L1-platforms-and-measurement.html#fig-rzz" class="quarto-xref">Figure&nbsp;<span>1.6</span></a>.
+</figcaption>
+</figure>
+</div>
+<p>A Trotter circuit repeats the same step <span class="math inline">\(r\)</span> times, so a <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent error</a> of a gate, such as an over-rotation, repeats <span class="math inline">\(r\)</span> times too and adds up: this is the worst case of <a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>.</p>
+<p>The lattice of the model must also fit the <a href="glossary.html#gloss-coupling-graph" class="gloss" data-gloss="Graph whose vertices are qubits and whose edges are the pairs on which a native two-qubit gate is available.">coupling graph</a> of the device (<a href="L1-platforms-and-measurement.html#sec-connectivity" class="quarto-xref"><span>Section 1.3.6</span></a>). A chain fits on any device whose coupling graph contains a path of <span class="math inline">\(n\)</span> qubits, and every bond is then a coupled pair. A square lattice fits directly on a device with a square coupling graph, such as IQM’s 20-qubit Garnet, with four layers of bond gates per step instead of two. On a line of qubits, we can place the lattice along a path through it (<a href="#fig-lattices" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> c). The bonds along the path then join neighbours, but the others join qubits up to <span class="math inline">\(2L-1\)</span> positions apart, and each of them needs <a href="glossary.html#gloss-swap" class="gloss" data-gloss="A two-qubit gate that exchanges the states of two qubits. It costs three CNOTs.">SWAPs</a> (<a href="L1-platforms-and-measurement.html#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a>), which multiply the cost of a step (<a href="#exr-trotter-cost" class="quarto-xref">Exercise&nbsp;<span>3.6</span></a>). Trapped ions, coupled all to all, need no SWAPs.</p>
+<div id="exr-commutator" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.5 (The commutator of the TFIM)</strong></span> Take the TFIM chain of <a href="#def-tfim" class="quarto-xref">Definition&nbsp;<span>3.3</span></a>, with <span class="math inline">\(A\)</span> the bond terms and <span class="math inline">\(B\)</span> the field terms.</p>
+<ol type="a">
+<li><p>Show that <span class="math inline">\([Z_1Z_2, X_1] = 2i\,Y_1Z_2\)</span>, and that <span class="math inline">\(Z_iZ_{i+1}\)</span> commutes with <span class="math inline">\(X_j\)</span> for <span class="math inline">\(j \ne i, i+1\)</span>.</p></li>
+<li><p>Show that <span class="math inline">\(\|[A,B]\| \le 4Jh(n-1)\)</span>.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Write <span class="math inline">\([A,B]\)</span> as a sum of Pauli strings, and bound its norm by its Pauli 1-norm.</p>
+</details></li>
+</ol>
+</div>
+<div id="exr-trotter-cost" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.6 (The cost of a step on a device)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>How many CZs does one Trotter step of the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> on an <span class="math inline">\(L\times L\)</span> square lattice cost on a device with a square coupling graph?</p></li>
+<li><p>Place a <span class="math inline">\(3\times 3\)</span> lattice on a line of 9 qubits, along a path like that of <a href="#fig-lattices" class="quarto-xref">Figure&nbsp;<span>3.2</span></a> (c). Which bonds join qubits that are not neighbours on the line, and how far apart are they?</p></li>
+<li><p>Implement each such bond by moving one of its qubits next to the other with SWAPs, applying <span class="math inline">\(R_{ZZ}\)</span>, and moving it back. Without cancelling any gates, how many CZs does one step cost now?</p>
+<details class="hint"><summary>Hint</summary>
+<p>A SWAP is three CNOTs (<a href="L1-platforms-and-measurement.html#fig-swap" class="quarto-xref">Figure&nbsp;<span>1.11</span></a>), and each CNOT is one CZ with single-qubit gates (<a href="L1-platforms-and-measurement.html#exr-swap-native" class="quarto-xref">Exercise&nbsp;<span>1.6</span></a>).</p>
+</details></li>
+</ol>
+</div>
+</section>
+<section id="sec-floquet" class="level3" data-number="3.5.4">
+<h3 data-number="3.5.4" class="anchored" data-anchor-id="sec-floquet"><span class="header-section-number">3.5.4</span> Large steps: Floquet circuits</h3>
+<p>What does the circuit do when <span class="math inline">\(\delta\)</span> is not small? Each step is still a unitary, and every unitary can be written as <span class="math inline">\(e^{-iH_F\delta}\)</span> for some Hermitian <span class="math inline">\(H_F\)</span>, by taking the logarithms of its eigenvalues. The circuit therefore follows the exact evolution under the Hamiltonian <span class="math inline">\(H_F\)</span>, seen at the times <span class="math inline">\(t = \delta, 2\delta, \dots\)</span>. Expanding <span class="math inline">\(e^{-iH_F\delta}\)</span> to second order in <span class="math inline">\(\delta\)</span> and comparing with <a href="#eq-trotter-step-error" class="quarto-xref">Equation&nbsp;<span>3.8</span></a> gives <span id="eq-floquet"><span class="math display">\[
+H_F = A + B + \frac{i\delta}{2}[A,B] + O(\delta^2) ,
+\tag{3.10}\]</span></span> which is close to <span class="math inline">\(H\)</span> only for small <span class="math inline">\(\delta\)</span>. For small <span class="math inline">\(\delta\)</span>, this gives a second way to read the Trotter error: the circuit evolves exactly, but under <span class="math inline">\(H_F\)</span> instead of <span class="math inline">\(H\)</span>. Two Hamiltonians that differ by <span class="math inline">\(\|H_F - H\| \approx (\delta/2)\|[A,B]\|\)</span> give evolutions that drift apart by at most <span class="math inline">\(t\,\|H_F - H\|\)</span> in a time <span class="math inline">\(t\)</span>, which for <span class="math inline">\(\delta = t/r\)</span> is the bound of <a href="#eq-trotter-bound" class="quarto-xref">Equation&nbsp;<span>3.9</span></a>. At large <span class="math inline">\(\delta\)</span>, the circuit therefore simulates a different Hamiltonian: it costs the same per step, but its dynamics can be completely different from that of <span class="math inline">\(H\)</span>. A circuit that repeats one layer of gates is called a <a href="glossary.html#gloss-floquet-circuit" class="gloss" data-gloss="A circuit that repeats the same layer of gates many times, like a system driven periodically in time. With large Trotter steps, it follows the exact evolution under a Hamiltonian that differs from the intended one.">Floquet circuit</a>, after the mathematician Gaston Floquet, whose theory describes systems that are driven periodically in time, such as atoms under a pulsed laser. The circuit applies <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> in turn, over and over, and so acts like such a periodic drive.</p>
+<div class="example">
+<p><em>Example.</em> <a href="#fig-trotter-time" class="quarto-xref">Figure&nbsp;<span>3.5</span></a> shows both regimes for a <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> chain of 6 qubits that starts in <span class="math inline">\(\ket{0\cdots0}\)</span>. Panel (a) shows the magnetisation. With steps of 0.25, it follows the exact curve. With steps of 1, it follows a different one, for example <span class="math inline">\(-0.42\)</span> instead of <span class="math inline">\(0.20\)</span> at <span class="math inline">\(t = 1\)</span>. Panel (b) shows the <a href="glossary.html#gloss-fidelity" class="gloss" data-gloss="A number between 0 and 1 measuring how close a state or operation is to the intended one. The state fidelity is the probability that a state passes a test for the target state; the average gate fidelity averages it over all input states. Informally, one minus the probability of an error.">fidelity</a> of the circuit’s state with the exact state (<a href="L2-noise.html#def-fidelity" class="quarto-xref">Definition&nbsp;<span>2.9</span></a>). At steps of 0.5, the magnetisation stays within 0.1 of the exact curve, while the fidelity drops to values between 0.37 and 0.71 after the first step.</p>
+</div>
+<p>The fidelity compares the whole state, and small errors in many parts of it multiply, so local observables such as the magnetisation are often much more accurate than the state as a whole.</p>
+<div id="fig-trotter-time" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trotter-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/trotter-time.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trotter-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.5: A TFIM chain of 6 qubits (<span class="math inline">\(J = h = 1\)</span>) evolved from <span class="math inline">\(\ket{0\cdots0}\)</span>, exactly (orange) and with Trotter steps of 0.25, 0.5 and 1 (blue, light to dark; the same markers in both panels). (a) The magnetisation; (b) the fidelity of the circuit’s state with the exact state.
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-dynamics-observables" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="sec-dynamics-observables"><span class="header-section-number">3.6</span> Observables after time evolution</h2>
+<p>Once the circuit has prepared <span class="math inline">\(e^{-iHt}\ket{\psi(0)}\)</span>, we measure it. Three quantities are common, and the shots of the <span class="math inline">\(Z\)</span> setting give all of them:</p>
+<ul>
+<li>the magnetisation <span class="math inline">\(m\)</span> of <a href="#sec-measuring-observables" class="quarto-xref"><span>Section 3.4</span></a>;</li>
+<li><a href="glossary.html#gloss-correlation-function" class="gloss" data-gloss="An expectation value of a product of observables on two qubits, such as Z on qubit i times Z on qubit j, which shows how much the two qubits agree and how this changes with their distance.">correlation functions</a> <span class="math inline">\(\langle Z_iZ_j\rangle\)</span>, which show how much the qubits <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> agree, and how this changes with their distance;</li>
+<li>the return probability <span class="math inline">\(|\bra{\psi(0)}e^{-iHt}\ket{\psi(0)}|^2\)</span>, which for <span class="math inline">\(\ket{\psi(0)} = \ket{0\cdots0}\)</span> is the fraction of shots that give all zeros; it decreases quickly with <span class="math inline">\(n\)</span>, so large systems need many shots.</li>
+</ul>
+<p>How fast does a change spread through a system?</p>
+<div class="example">
+<p><em>Example.</em> <a href="#fig-light-cone" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> shows a Heisenberg chain of 21 qubits, with <span class="math inline">\(J = 1\)</span>, that starts in <span class="math inline">\(\ket{0\cdots0}\)</span> with the middle qubit flipped, evolved with Trotter steps of 0.2. Each bond gate conserves the number of flipped qubits, as the Hamiltonian does (<a href="#sec-spin-models" class="quarto-xref"><span>Section 3.3</span></a>), so there is always exactly one flipped qubit, and <span class="math inline">\((1-\langle Z_i\rangle)/2\)</span> is the probability of finding it on qubit <span class="math inline">\(i\)</span>. Since <span class="math inline">\(\ket{0\cdots0}\)</span> is an eigenstate, the qubits that the flip has not reached show no change at all, so the spreading can be read off directly. Each bond gate partly swaps its two qubits (<a href="#exr-pauli-decomposition" class="quarto-xref">Exercise&nbsp;<span>3.1</span></a>), and the flip spreads out from the middle.</p>
+</div>
+<div id="fig-light-cone" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-light-cone-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/light-cone.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-light-cone-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.6: Light cones in a Heisenberg chain of 21 qubits (<span class="math inline">\(J = 1\)</span>) that starts in <span class="math inline">\(\ket{0\cdots0}\)</span> with qubit 11 flipped, evolved with Trotter steps of 0.2. The colour is the probability of finding the flip on qubit <span class="math inline">\(i\)</span>, on a logarithmic scale; white is <span class="math inline">\(10^{-3}\)</span> or less. Dashed: the light cone of the circuit, 2 qubits per side per step.
+</figcaption>
+</figure>
+</div>
+<p>The figure shows two cones, with different causes. The dashed lines are the <a href="glossary.html#gloss-light-cone" class="gloss" data-gloss="The qubits that an operation, an error or a change can influence after a given number of circuit layers or a given time. In a circuit of nearest-neighbour gates, it grows by a fixed number of qubits per layer; a local Hamiltonian also spreads changes at a finite speed.">light cone</a> of the circuit. Since the Hamiltonian is geometrically local (<a href="#def-geometrically-local" class="quarto-xref">Definition&nbsp;<span>3.2</span></a>), each gate acts on two neighbouring qubits, and each step has two layers of bond gates, so after <span class="math inline">\(k\)</span> steps the flip can have reached at most <span class="math inline">\(2k\)</span> qubits on each side. Outside the dashed lines, the probability is exactly zero, up to rounding errors of order <span class="math inline">\(10^{-15}\)</span> in the simulation. This is the cone along which errors spread in <a href="L2-noise.html#fig-error-spreading" class="quarto-xref">Figure&nbsp;<span>2.4</span></a>, and it holds for every circuit with this layout, whatever its angles. Read backwards, it also means that a local observable after <span class="math inline">\(k\)</span> steps depends only on the qubits inside its cone, so that short circuits can be checked by simulating only those qubits (<a href="#exr-cone-size" class="quarto-xref">Exercise&nbsp;<span>3.8</span></a>).</p>
+<p>The coloured region is narrower: it is the cone of the Hamiltonian itself. In a geometrically local Hamiltonian, information spreads at a finite speed, and far away from the flip nothing changes for a while, up to tails that decrease exponentially with the distance. In the Heisenberg chain of the figure, the flip travels about <span class="math inline">\(4J\)</span> qubits per unit time, much slower than the <span class="math inline">\(2/\delta = 10\)</span> qubits per unit time of the circuit cone. When it reaches the ends of the chain, around <span class="math inline">\(t = 2\)</span>, it is reflected, and soon it is spread over the whole chain. A circuit can only follow the physics while its cone is wider than that of the Hamiltonian, which is one more reason for small steps. <!-- T3-LINK: once Tutorial 3 is published, add "Tutorial 3 asks you to rebuild this figure and @fig-trotter-time, with 15 qubits; there, as in Qiskit, the qubits are numbered from 0.", with a link to the T3 notebook in Colab. --></p>
+</section>
+<section id="sec-trotter-noise" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="sec-trotter-noise"><span class="header-section-number">3.7</span> Trotter error against gate noise</h2>
+<p>More Trotter steps reduce the Trotter error, but each step adds gates, and with them noise. How many steps give the state closest to the exact one? We measure the distance with the fidelity of <a href="L2-noise.html#def-fidelity" class="quarto-xref">Definition&nbsp;<span>2.9</span></a>, and estimate both errors with simple models.</p>
+<ul>
+<li><em>Trotter error.</em> By <a href="#eq-trotter-bound" class="quarto-xref">Equation&nbsp;<span>3.9</span></a>, the state of the circuit differs from the exact one by a vector of length at most <span class="math inline">\(at^2/r\)</span>, with <span class="math inline">\(a = \|[A,B]\|/2\)</span>. For two pure states, the infidelity <span class="math inline">\(1 - F\)</span> is at most the square of this length, so the Trotter error contributes at most <span class="math inline">\((at^2/r)^2\)</span>.</li>
+<li><em>Gate noise.</em> Let <span class="math inline">\(\varepsilon_{\text{step}}\)</span> be the sum of the Pauli errors of the gates of one step. By <a href="L2-noise.html#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>, <span class="math inline">\(r\)</span> steps run without an error with probability about <span class="math inline">\(1 - r\varepsilon_{\text{step}}\)</span>, which approximates the fidelity with the noiseless state.</li>
+</ul>
+<p>For small errors, the two infidelities add up, <span id="eq-tradeoff"><span class="math display">\[
+1 - F \approx \Big(\frac{at^2}{r}\Big)^2 + r\,\varepsilon_{\text{step}} .
+\tag{3.11}\]</span></span> The first term falls with <span class="math inline">\(r\)</span>, and the second grows. Setting the derivative with respect to <span class="math inline">\(r\)</span> to zero gives the best number of steps, <span id="eq-optimal-steps"><span class="math display">\[
+r^* = \Big(\frac{2a^2t^4}{\varepsilon_{\text{step}}}\Big)^{1/3} .
+\tag{3.12}\]</span></span></p>
+<div class="example">
+<p><em>Example.</em> Take a <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> chain of 4 qubits, <span class="math inline">\(t = 1\)</span> and <span class="math inline">\(J = h = 1\)</span>. The bound gives <span class="math inline">\(a = 2Jh(n-1) = 6\)</span>. For the noise, we take the depolarising <a href="glossary.html#gloss-noise-model" class="gloss" data-gloss="A description of the noise of a device, gate by gate and qubit by qubit, used to simulate noisy circuits, for example built from the calibration data of the device.">noise model</a> of Tutorial 2 with the values typical of current devices quoted there, <span class="math inline">\(p = 0.1\%\)</span> after each single-qubit gate and <span class="math inline">\(0.5\%\)</span> after each CZ, which are Pauli errors of <span class="math inline">\(3p/4\)</span> and <span class="math inline">\(15p/16\)</span> (<a href="L2-noise.html#def-depolarising" class="quarto-xref">Definition&nbsp;<span>2.4</span></a> and <a href="L2-noise.html#def-global-depolarising" class="quarto-xref">Definition&nbsp;<span>2.8</span></a>). As in Tutorial 2, the circuit is compiled into PRX and CZ gates without simplification, and every single-qubit gate, <span class="math inline">\(Z\)</span> rotations included, is a noisy pulse. One step then has 37 single-qubit gates and 6 CZs, so <span class="math inline">\(\varepsilon_{\text{step}} \approx 0.056\)</span>, and <a href="#eq-optimal-steps" class="quarto-xref">Equation&nbsp;<span>3.12</span></a> gives <span class="math inline">\(r^* \approx 11\)</span>. A simulation of the noisy circuit (<a href="#fig-trotter-noise" class="quarto-xref">Figure&nbsp;<span>3.7</span></a>) finds the best fidelity, 0.82, at 3 steps instead. The bound is pessimistic for three reasons: the exact <span class="math inline">\(\|[A,B]\|\)</span> is smaller than our estimate (8.9 instead of 12 here), the bound holds for the worst initial state, and it assumes that the errors of all steps add up. The value of <span class="math inline">\(a\)</span> that fits the simulation without noise, <span class="math inline">\(a \approx 0.70\)</span>, gives <span class="math inline">\(r^* \approx 2.6\)</span>, close to the simulated optimum. The model therefore gives the shape of the trade-off and how it scales, while the best number of steps in practice is found by simulating small instances. For local observables, which are more accurate than the state (<a href="#fig-trotter-time" class="quarto-xref">Figure&nbsp;<span>3.5</span></a>), fewer steps can be enough. <!-- T3-LINK: once Tutorial 3 is published, add ", as Tutorial 3 does" after "simulating small instances" above, with a link to the T3 notebook in Colab. --></p>
+</div>
+<div id="fig-trotter-noise" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-trotter-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/trotter-noise.svg" class="img-fluid figure-img" style="width:55.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-trotter-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.7: The fidelity with the exact state after a time <span class="math inline">\(t = 1\)</span>, for a TFIM chain of 4 qubits (<span class="math inline">\(J = h = 1\)</span>), against the number of Trotter steps <span class="math inline">\(r\)</span>: without noise (blue) and with depolarising noise after every native gate (orange; <span class="math inline">\(p = 0.1\%\)</span> per single-qubit gate, <span class="math inline">\(0.5\%\)</span> per CZ). With noise, the fidelity is highest at 3 steps.
+</figcaption>
+</figure>
+</div>
+<div id="exr-optimal-steps" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.7 (How many steps?)</strong></span> A circuit evolves a system for a time <span class="math inline">\(t = 1\)</span>, with <span class="math inline">\(a = 1\)</span> in <a href="#eq-tradeoff" class="quarto-xref">Equation&nbsp;<span>3.11</span></a>, on a device with <span class="math inline">\(\varepsilon_{\text{step}} = 0.01\)</span>.</p>
+<ol type="a">
+<li><p>Compute <span class="math inline">\(r^*\)</span> and the two terms of the infidelity at <span class="math inline">\(r^*\)</span>. How do they compare? Is this a coincidence?</p></li>
+<li><p>The device improves tenfold, to <span class="math inline">\(\varepsilon_{\text{step}} = 0.001\)</span>. By which factors do <span class="math inline">\(r^*\)</span> and the smallest infidelity change?</p></li>
+<li><p>Back at <span class="math inline">\(\varepsilon_{\text{step}} = 0.01\)</span>, suppose we use a bound that overestimates <span class="math inline">\(a\)</span> ninefold, as in the example of the text. How many steps do we choose, and what is the infidelity of the circuit, with the true <span class="math inline">\(a = 1\)</span>?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-L3-exercises" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="sec-L3-exercises"><span class="header-section-number">3.8</span> More exercises</h2>
+<div id="exr-cone-size" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.8 (Light cones and classical simulation)</strong></span> &nbsp;</p>
+<ol type="a">
+<li><p>In the Trotter circuit of <a href="#fig-trotter-step" class="quarto-xref">Figure&nbsp;<span>3.4</span></a> on a long chain, on which qubits of the initial state can <span class="math inline">\(\langle Z_i\rangle\)</span> depend after <span class="math inline">\(k\)</span> steps?</p></li>
+<li><p>On a square lattice, each step has four layers of bond gates, two along the rows and two along the columns. Which qubits can <span class="math inline">\(\langle Z_i\rangle\)</span> depend on after <span class="math inline">\(k\)</span> steps, and how many are they?</p></li>
+<li><p>A laptop can simulate about 30 qubits exactly. For how many steps can it compute <span class="math inline">\(\langle Z_i\rangle\)</span> exactly on a chain of 1000 qubits, and on a square lattice of 1000 qubits?</p></li>
+</ol>
+</div>
+<div id="exr-noisy-energy" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 3.9 (The energy of a noisy state)</strong></span> A circuit prepares a state of the <a href="#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> chain of <span class="math inline">\(n\)</span> qubits, but each qubit undergoes local depolarising noise with parameter <span class="math inline">\(p\)</span> (<a href="L2-noise.html#def-local-depolarising" class="quarto-xref">Definition&nbsp;<span>2.7</span></a>) just before the measurement. Write <span class="math inline">\(E_A\)</span> and <span class="math inline">\(E_B\)</span> for the ideal expectation values of the bond terms and of the field terms.</p>
+<ol type="a">
+<li><p>Which energy does the measurement give on average, in terms of <span class="math inline">\(E_A\)</span>, <span class="math inline">\(E_B\)</span> and <span class="math inline">\(p\)</span>?</p></li>
+<li><p>For <span class="math inline">\(n = 10\)</span>, <span class="math inline">\(p = 1\%\)</span>, <span class="math inline">\(E_A = -6\)</span> and <span class="math inline">\(E_B = -5\)</span>, compute the <a href="glossary.html#gloss-bias" class="gloss" data-gloss="The difference between the average of an estimator and the true value. Noise biases estimates of expectation values; more shots do not reduce the bias.">bias</a>. Compare it with the standard error of 0.1 of <a href="#sec-shot-budget" class="quarto-xref"><span>Section 3.4.1</span></a>. Do more shots help?</p></li>
+<li><p>If <span class="math inline">\(p\)</span> is known, can the bias be removed by dividing the estimate by a single factor, as in <a href="L2-noise.html#sec-rescaling" class="quarto-xref"><span>Section 2.7.2</span></a>? How else?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-L3-reading" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="sec-L3-reading"><span class="header-section-number">3.9</span> Further reading</h2>
+<p><span class="citation" data-cites="dewolf2026"><span class="nocase">de Wolf</span> (<a href="L1-platforms-and-measurement.html#ref-dewolf2026" role="doc-biblioref">2026</a>, ch.&nbsp;9)</span> treats Hamiltonian simulation from the algorithmic side, including methods that scale better than the Trotter formula. <span class="citation" data-cites="childs2021">Childs et al. (<a href="L1-platforms-and-measurement.html#ref-childs2021" role="doc-biblioref">2021</a>)</span> analyse Trotter errors in detail. <span class="citation" data-cites="tilly2022">Tilly et al. (<a href="L1-platforms-and-measurement.html#ref-tilly2022" role="doc-biblioref">2022, sec. 5</a>)</span> review measurement strategies for sums of Pauli strings, in the context of the variational methods of the next chapters: among them, grouping strings that commute in the ordinary sense, measured together after an entangling circuit, and <em>classical shadows</em>, which measure in random bases.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-blitzstein2019" class="csl-entry" role="listitem">
+Blitzstein, Joseph K., and Jessica Hwang. 2019. <em>Introduction to Probability</em>. 2nd ed. Chapman; Hall/CRC. <a href="https://probabilitybook.net">https://probabilitybook.net</a>.
+</div>
+<div id="ref-childs2021" class="csl-entry" role="listitem">
+Childs, Andrew M., Yuan Su, Minh C. Tran, Nathan Wiebe, and Shuchen Zhu. 2021. <span>“Theory of <span>Trotter</span> Error with Commutator Scaling.”</span> <em>Physical Review X</em> 11 (1): 011020. <a href="https://doi.org/10.1103/PhysRevX.11.011020">https://doi.org/10.1103/PhysRevX.11.011020</a>.
+</div>
+<div id="ref-dewolf2026" class="csl-entry" role="listitem">
+<span class="nocase">de Wolf, Ronald</span>. 2026. <em>Quantum Computing: Lecture Notes</em>. arXiv:1907.09415, version 6. <a href="https://arxiv.org/abs/1907.09415">https://arxiv.org/abs/1907.09415</a>.
+</div>
+<div id="ref-feynman1982" class="csl-entry" role="listitem">
+Feynman, Richard P. 1982. <span>“Simulating Physics with Computers.”</span> <em>International Journal of Theoretical Physics</em> 21 (6–7): 467–88. <a href="https://doi.org/10.1007/BF02650179">https://doi.org/10.1007/BF02650179</a>.
+</div>
+<div id="ref-tilly2022" class="csl-entry" role="listitem">
+Tilly, Jules, Hongxiang Chen, Shuxiang Cao, et al. 2022. <span>“The Variational Quantum Eigensolver: A Review of Methods and Best Practices.”</span> <em>Physics Reports</em> 986: 1–128. <a href="https://doi.org/10.1016/j.physrep.2022.08.003">https://doi.org/10.1016/j.physrep.2022.08.003</a>.
+</div>
+</div>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Some texts, including the Quantum Computing notes of <span class="citation" data-cites="dewolf2026"><span class="nocase">de Wolf</span> (<a href="L1-platforms-and-measurement.html#ref-dewolf2026" role="doc-biblioref">2026, sec. 9.1</a>)</span>, drop the minus sign for convenience and take Hamiltonian simulation to mean implementing <span class="math inline">\(e^{+iHt}\)</span>, which is evolution under <span class="math inline">\(-H\)</span> and costs the same.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<style>
+  a.gloss { text-decoration: underline dotted; color: inherit; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof tippy === "undefined") return;
+    tippy("a.gloss", {
+      content: (el) => el.getAttribute("data-gloss"),
+      theme: "quarto",
+      maxWidth: 360,
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/stefanopolla\.github\.io\/ntqc\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./L2-noise.html" class="pagination-link" aria-label="Noise channels and error budgets">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

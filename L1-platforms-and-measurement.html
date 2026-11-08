@@ -354,6 +354,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L3-hamiltonians.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -691,7 +697,7 @@ Figure&nbsp;1.5: A trapped-ion chain as balls joined by springs. The ions repel 
 </section>
 <section id="sec-other-platforms" class="level3" data-number="1.2.5">
 <h3 data-number="1.2.5" class="anchored" data-anchor-id="sec-other-platforms"><span class="header-section-number">1.2.5</span> Other platforms</h3>
-<p>Several other platforms are developing quickly, following the same recipe of a two-level system, a way to drive it, an interaction between qubits and a readout. In <em>neutral-atom</em> devices, uncharged atoms are held, and can be moved, by tightly focused laser beams (<a href="glossary.html#gloss-optical-tweezers" class="gloss" data-gloss="Tightly focused laser beams that hold single neutral atoms in place and can move them.">optical tweezers</a>), and they interact when lasers excite them to very large <a href="glossary.html#gloss-rydberg" class="gloss" data-gloss="A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances.">Rydberg states</a>; arrays of hundreds to thousands of atoms have been built <span class="citation" data-cites="henriet2020">(<a href="L1-platforms-and-measurement.html#ref-henriet2020" role="doc-biblioref">Henriet et al. 2020</a>)</span>. <em>Photonic</em> devices carry qubits on particles of light, which hardly interact with their surroundings but, for the same reason, hardly with each other either, so their entangling operations succeed only some of the time <span class="citation" data-cites="slussarenko2019">(<a href="L1-platforms-and-measurement.html#ref-slussarenko2019" role="doc-biblioref">Slussarenko and Pryde 2019</a>)</span>. <em>Spin qubits</em> use the <a href="glossary.html#gloss-spin" class="gloss" data-gloss="An intrinsic two-level property of an electron (up or down), which can serve as a qubit.">spin</a> of single electrons trapped in tiny semiconductor structures (<a href="glossary.html#gloss-quantum-dot" class="gloss" data-gloss="A tiny region in a semiconductor that can trap single electrons.">quantum dots</a>); they can be made with the techniques of the chip industry, but current devices have at most a few tens of qubits <span class="citation" data-cites="burkard2023">(<a href="L1-platforms-and-measurement.html#ref-burkard2023" role="doc-biblioref">Burkard et al. 2023</a>)</span>. <a href="#tbl-platforms" class="quarto-xref">Table&nbsp;<span>1.2</span></a> compares the five platforms.</p>
+<p>Several other platforms are developing quickly, following the same recipe of a two-level system, a way to drive it, an interaction between qubits and a readout. In <em>neutral-atom</em> devices, uncharged atoms are held, and can be moved, by tightly focused laser beams (<a href="glossary.html#gloss-optical-tweezers" class="gloss" data-gloss="Tightly focused laser beams that hold single neutral atoms in place and can move them.">optical tweezers</a>), and they interact when lasers excite them to very large <a href="glossary.html#gloss-rydberg" class="gloss" data-gloss="A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances.">Rydberg states</a>; arrays of hundreds to thousands of atoms have been built <span class="citation" data-cites="henriet2020">(<a href="L1-platforms-and-measurement.html#ref-henriet2020" role="doc-biblioref">Henriet et al. 2020</a>)</span>. <em>Photonic</em> devices carry qubits on particles of light, which hardly interact with their surroundings but, for the same reason, hardly with each other either, so their entangling operations succeed only some of the time <span class="citation" data-cites="slussarenko2019">(<a href="L1-platforms-and-measurement.html#ref-slussarenko2019" role="doc-biblioref">Slussarenko and Pryde 2019</a>)</span>. <em>Spin qubits</em> use the <a href="glossary.html#gloss-spin" class="gloss" data-gloss="An intrinsic two-level property of an electron (spin-1/2: up or down), which can serve as a qubit.">spin</a> of single electrons trapped in tiny semiconductor structures (<a href="glossary.html#gloss-quantum-dot" class="gloss" data-gloss="A tiny region in a semiconductor that can trap single electrons.">quantum dots</a>); they can be made with the techniques of the chip industry, but current devices have at most a few tens of qubits <span class="citation" data-cites="burkard2023">(<a href="L1-platforms-and-measurement.html#ref-burkard2023" role="doc-biblioref">Burkard et al. 2023</a>)</span>. <a href="#tbl-platforms" class="quarto-xref">Table&nbsp;<span>1.2</span></a> compares the five platforms.</p>
 <div id="tbl-platforms" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-platforms-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1517,10 +1523,24 @@ Burkard, Guido, Thaddeus D. Ladd, Andrew Pan, John M. Nichol, and Jason
 R. Petta. 2023. <span>“Semiconductor Spin Qubits.”</span> <em>Reviews of
 Modern Physics</em> 95 (2): 025003. <a href="https://doi.org/10.1103/RevModPhys.95.025003">https://doi.org/10.1103/RevModPhys.95.025003</a>.
 </div>
+<div id="ref-childs2021" class="csl-entry" role="listitem">
+Childs, Andrew M., Yuan Su, Minh C. Tran, Nathan Wiebe, and Shuchen Zhu.
+2021. <span>“Theory of <span>Trotter</span> Error with Commutator
+Scaling.”</span> <em>Physical Review X</em> 11 (1): 011020. <a href="https://doi.org/10.1103/PhysRevX.11.011020">https://doi.org/10.1103/PhysRevX.11.011020</a>.
+</div>
+<div id="ref-dewolf2026" class="csl-entry" role="listitem">
+<span class="nocase">de Wolf, Ronald</span>. 2026. <em>Quantum
+Computing: Lecture Notes</em>. arXiv:1907.09415, version 6. <a href="https://arxiv.org/abs/1907.09415">https://arxiv.org/abs/1907.09415</a>.
+</div>
 <div id="ref-divincenzo2000" class="csl-entry" role="listitem">
 DiVincenzo, David P. 2000. <span>“The Physical Implementation of Quantum
 Computation.”</span> <em>Fortschritte Der Physik</em> 48 (9–11): 771–83.
 <a href="https://doi.org/10.1002/1521-3978(200009)48:9/11<771::AID-PROP771>3.0.CO;2-E">https://doi.org/10.1002/1521-3978(200009)48:9/11&lt;771::AID-PROP771&gt;3.0.CO;2-E</a>.
+</div>
+<div id="ref-feynman1982" class="csl-entry" role="listitem">
+Feynman, Richard P. 1982. <span>“Simulating Physics with
+Computers.”</span> <em>International Journal of Theoretical Physics</em>
+21 (6–7): 467–88. <a href="https://doi.org/10.1007/BF02650179">https://doi.org/10.1007/BF02650179</a>.
 </div>
 <div id="ref-fowler2012" class="csl-entry" role="listitem">
 Fowler, Austin G., Matteo Mariantoni, John M. Martinis, and Andrew N.
@@ -1593,6 +1613,11 @@ Reviews</em> 6 (4): 041303. <a href="https://doi.org/10.1063/1.5115814">https://
 <span>“Realization of High-Fidelity <span>CZ</span> and
 <span>ZZ</span>-Free <span class="nocase">iSWAP</span> Gates with a
 Tunable Coupler.”</span> <em>Physical Review X</em> 11: 021058. <a href="https://doi.org/10.1103/PhysRevX.11.021058">https://doi.org/10.1103/PhysRevX.11.021058</a>.
+</div>
+<div id="ref-tilly2022" class="csl-entry" role="listitem">
+Tilly, Jules, Hongxiang Chen, Shuxiang Cao, et al. 2022. <span>“The
+Variational Quantum Eigensolver: A Review of Methods and Best
+Practices.”</span> <em>Physics Reports</em> 986: 1–128. <a href="https://doi.org/10.1016/j.physrep.2022.08.003">https://doi.org/10.1016/j.physrep.2022.08.003</a>.
 </div>
 <div id="ref-vandamme2024" class="csl-entry" role="listitem">
 <span class="nocase">Van Damme, J. et al.</span> 2024. <span>“Advanced
