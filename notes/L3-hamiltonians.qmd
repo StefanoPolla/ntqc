@@ -261,8 +261,7 @@ For the TFIM chain with $n = 10$, uncorrelated groups give $(\sqrt{9} + \sqrt{10
 For the state that the chain reaches from $\ket{0\cdots0}$ after a time $t = 1$, the exact group variances give about 3,100 shots.
 :::
 
-With data, the sample variance of the values $s_g$ of each setting gives the standard error.
-<!-- T3-LINK: once Tutorial 3 is published, add "; Tutorial 3 does this in code" to the sentence above, with a link to the T3 notebook in Colab. -->
+With data, the sample variance of the values $s_g$ of each setting gives the standard error; [Tutorial 3]({{< var colab >}}/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb) does this in code.
 
 <!-- L5-LINK: symmetry verification in L5 can use the Heisenberg model's conserved
 number of flipped qubits (@sec-spin-models), read from the Z setting. -->
@@ -299,8 +298,7 @@ In this section, we build circuits for $e^{-iHt}$.
 
 ### Simulating dynamics classically {#sec-classical-simulation}
 
-For a few qubits, $e^{-iHt}\ket{\psi(0)}$ can be computed exactly on a classical computer.
-<!-- T3-LINK: once Tutorial 3 is published, add ", and Tutorial 3 does so" to the sentence above, with a link to the T3 notebook in Colab. -->
+For a few qubits, $e^{-iHt}\ket{\psi(0)}$ can be computed exactly on a classical computer, and [Tutorial 3]({{< var colab >}}/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb) does so.
 The cost grows exponentially: the state has $2^n$ complex amplitudes of 16 bytes each, so 30 qubits take about 17 GB of memory, and 50 qubits about 18 PB ($1.8\times10^{16}$ bytes), close to the entire memory of the largest supercomputers.
 
 Approximate methods avoid storing all amplitudes by using the structure of the state.
@@ -491,7 +489,7 @@ In a geometrically local Hamiltonian, information spreads at a finite speed, and
 In the Heisenberg chain of the figure, the flip travels about $4J$ qubits per unit time, much slower than the $2/\delta = 10$ qubits per unit time of the circuit cone.
 When it reaches the ends of the chain, around $t = 2$, it is reflected, and soon it is spread over the whole chain.
 A circuit can only follow the physics while its cone is wider than that of the Hamiltonian, which is one more reason for small steps.
-<!-- T3-LINK: once Tutorial 3 is published, add "Tutorial 3 asks you to rebuild this figure and @fig-trotter-time, with 15 qubits; there, as in Qiskit, the qubits are numbered from 0.", with a link to the T3 notebook in Colab. -->
+[Tutorial 3]({{< var colab >}}/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb) asks you to rebuild this figure with 15 qubits, and @fig-trotter-time with 6; there, as in Qiskit, the qubits are numbered from 0.
 
 ## Trotter error against gate noise {#sec-trotter-noise}
 
@@ -525,9 +523,8 @@ One step then has 37 single-qubit gates and 6 CZs, so $\varepsilon_{\text{step}}
 A simulation of the noisy circuit (@fig-trotter-noise) finds the best fidelity, 0.82, at 3 steps instead.
 The bound is pessimistic for three reasons: the exact $\|[A,B]\|$ is smaller than our estimate (8.9 instead of 12 here), the bound holds for the worst initial state, and it assumes that the errors of all steps add up.
 The value of $a$ that fits the simulation without noise, $a \approx 0.70$, gives $r^* \approx 2.6$, close to the simulated optimum.
-The model therefore gives the shape of the trade-off and how it scales, while the best number of steps in practice is found by simulating small instances.
+The model therefore gives the shape of the trade-off and how it scales, while the best number of steps in practice is found by simulating small instances, as [Tutorial 3]({{< var colab >}}/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb) does.
 For local observables, which are more accurate than the state (@fig-trotter-time), fewer steps can be enough.
-<!-- T3-LINK: once Tutorial 3 is published, add ", as Tutorial 3 does" after "simulating small instances" above, with a link to the T3 notebook in Colab. -->
 :::
 
 ![The fidelity with the exact state after a time $t = 1$, for a TFIM chain of 4 qubits ($J = h = 1$), against the number of Trotter steps $r$: without noise (blue) and with depolarising noise after every native gate (orange; $p = 0.1\%$ per single-qubit gate, $0.5\%$ per CZ). With noise, the fidelity is highest at 3 steps.](figures/trotter-noise){#fig-trotter-noise width=55%}
