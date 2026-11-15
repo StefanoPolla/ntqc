@@ -22,9 +22,7 @@ The lowest eigenvalue is the ground-state energy, and its eigenvector the [groun
 They matter because a system that is cold enough settles in its ground state (or very close to it).
 The ground state of a Hamiltonian modeling a material determines how that material behaves at low temperature, for example whether it is magnetic, or whether it is superconducting.
 Differences between energies decide much of chemistry: whether a molecule is stable, how much energy a chemical reaction needs, which frequency of light a molecule absorbs (and hence its color).
-Finding ground states is the subject of the next chapter.
-<!-- L4-LINK: link "the next chapter" to the VQE chapter once it is
-released. -->
+Finding ground states is the subject of the next chapter (@sec-ground-states).
 
 The Hamiltonian also decides how a state changes in time, through the time-dependent Schrödinger equation and its solution,
 $$
@@ -576,7 +574,7 @@ How else?
 
 @dewolf2026 [ch. 9] treats Hamiltonian simulation from the algorithmic side, including methods that scale better than the Trotter formula.
 @childs2021 analyse Trotter errors in detail.
-@tilly2022 [sec. 5] review measurement strategies for sums of Pauli strings, in the context of the variational methods of the next chapters: among them, grouping strings that commute in the ordinary sense, measured together after an entangling circuit, and *classical shadows*, which measure in random bases.
+@tilly2022 [sec. 5] review measurement strategies for sums of Pauli strings, in the context of the variational methods of the next chapters (@sec-vqe): among them, grouping strings that commute in the ordinary sense, measured together after an entangling circuit, and *classical shadows*, which measure in random bases.
 
 ::: {.content-visible when-format="html"}
 ## References {.unnumbered}

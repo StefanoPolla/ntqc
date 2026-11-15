@@ -20,3 +20,8 @@ photo-ion-string-friis2018.png
   Adapted from N. Friis et al., "Observation of Entangled States of a Fully Controlled
   20-Qubit System", Phys. Rev. X 8, 021012 (2018), Fig. 1(a),
   https://doi.org/10.1103/PhysRevX.8.021012. CC BY 4.0. Cropped (axes removed).
+
+vqe-scheme.pdf / vqe-scheme.svg
+  Drawn by Stefano Polla for the introduction of his PhD thesis, "The power of one qubit in
+  quantum simulation algorithms" (Leiden University), Fig. 1.4. Own work, reused unchanged
+  (SVG converted from the PDF with pdftocairo).

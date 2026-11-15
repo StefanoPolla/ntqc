@@ -414,8 +414,8 @@ Pauli string, built from native gates.
 ![$R_{ZZ}(\theta)$ built from two CNOTs and one $R_Z(\theta)$.](figures/rzz-decomposition){#fig-rzz width=40%}
 
 @eq-pauli-rotation will come back several times in this course, in circuits for time
-evolution, which are built from Pauli rotations, and in the parameter-shift rule, which
-gives exact gradients of variational circuits.
+evolution (@sec-trotter), which are built from Pauli rotations, and in the parameter-shift
+rule (@sec-parameter-shift), which gives exact gradients of variational circuits.
 
 ### Physical implementation of gates {#sec-driving-gates}
 
@@ -739,7 +739,8 @@ reliably.
 In practice, nobody inserts SWAPs by hand. [Transpilation]{.gloss key="transpilation"}
 maps a circuit onto the native gates and coupling graph of a device. It chooses which
 physical qubit plays the role of each qubit in the circuit, inserts SWAPs where needed,
-and simplifies the result. We return to its cost in later chapters.
+and simplifies the result. We return to its cost in later chapters (@sec-trotter-circuits and
+@sec-ansatz).
 
 ::: {#exr-swap}
 ## The cost of distance

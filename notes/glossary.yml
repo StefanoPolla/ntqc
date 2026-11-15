@@ -329,3 +329,64 @@ glossary:
   light-cone:
     term: light cone
     def: "The qubits that an operation, an error or a change can influence after a given number of circuit layers or a given time. In a circuit of nearest-neighbour gates, it grows by a fixed number of qubits per layer; a local Hamiltonian also spreads changes at a finite speed."
+  gap:
+    term: gap
+    def: "The difference between the two lowest energies of a Hamiltonian, the first excited energy minus the ground-state energy. A small gap makes a ground state hard to prepare adiabatically."
+  variational-principle:
+    term: variational principle
+    def: "No state has a lower energy than the ground state: the expectation value of a Hamiltonian in any state is at least its lowest eigenvalue, with equality only in the ground state."
+  adiabatic-preparation:
+    term: adiabatic state preparation
+    def: "Preparing the ground state of a Hamiltonian by starting in the ground state of a simple one and changing the Hamiltonian slowly into the target. It works if the change is slow compared with the inverse square of the smallest gap along the way."
+  pqc:
+    term: parametrised quantum circuit
+    def: "PQC: a quantum circuit in which some gates, usually rotations, depend on classical parameters that can be changed from run to run. Variational algorithms such as VQE and QAOA optimise these parameters. The states it can prepare, and by extension the circuit itself, are called an ansatz."
+  ansatz:
+    term: ansatz
+    def: "The family of trial states that a parametrised circuit can prepare in a variational algorithm, a guess for the form of the solution; by extension, also the circuit itself, with its fixed structure and free parameters such as rotation angles. Plural: ansätze."
+  hva:
+    term: Hamiltonian variational ansatz
+    def: "An ansatz built from the terms of the Hamiltonian: layers that look like Trotter steps, with one free angle per group of terms in each layer. With the angles of a slow schedule, it reproduces adiabatic state preparation. Sometimes also called the variational Hamiltonian ansatz (VHA)."
+  vqe:
+    term: variational quantum eigensolver
+    def: "VQE: a loop in which a quantum computer prepares a state with a parametrised circuit and estimates its energy from shots, and a classical optimiser changes the parameters to lower the energy."
+    ref: def-vqe
+  maxcut:
+    term: MaxCut
+    def: "The problem of splitting the vertices of a graph into two groups so that as many edges as possible join vertices in different groups. It is equivalent to finding the ground state of a classical Ising model on the graph."
+  quantum-annealing:
+    term: quantum annealing
+    def: "Adiabatic state preparation run on an analog device, usually to find low-energy states of a classical Ising model that encodes an optimisation problem."
+  qaoa:
+    term: QAOA
+    def: "Two related names with the same acronym. The quantum approximate optimisation algorithm is a variational ansatz for classical optimisation problems: layers that alternate the cost Hamiltonian and a transverse field, like a Trotterised annealing path with free angles. The quantum alternating operator ansatz generalises it by allowing other mixing layers, for example ones that keep the state among the bitstrings that satisfy the constraints of a problem."
+  cobyla:
+    term: COBYLA
+    def: "Constrained optimisation by linear approximation: a gradient-free optimiser that fits a linear model of the cost through recent evaluations and steps towards its minimum within a shrinking region."
+  spsa:
+    term: SPSA
+    def: "Simultaneous perturbation stochastic approximation: an optimiser for noisy costs that changes all parameters at once along a random direction, using two cost evaluations per step whatever the number of parameters."
+  gradient-descent:
+    term: gradient descent
+    def: "An optimiser that repeatedly moves the parameters a small step against the gradient of the cost, the direction in which it decreases fastest."
+  newton-raphson:
+    term: Newton–Raphson
+    def: "An optimiser that uses the first and second derivatives of the cost to fit a quadratic model around the current parameters and jumps to its minimum. Fast near a minimum, but every second derivative must be computed or estimated."
+  bfgs:
+    term: BFGS
+    def: "Broyden–Fletcher–Goldfarb–Shanno: a quasi-Newton optimiser that builds an estimate of the second derivatives from successive gradients instead of computing them. A standard choice for smooth costs without noise."
+  adam:
+    term: Adam
+    def: "Adaptive moment estimation: a gradient-based optimiser that gives each parameter its own step size, set from running averages of its derivative and of its square. The default optimiser in machine learning; it copes well with noisy gradients."
+  qng:
+    term: quantum natural gradient
+    def: "A gradient-based optimiser for parametrised quantum circuits that rescales the gradient by how much the prepared state changes with each parameter, so that steps are measured in the state rather than in the angles."
+  parameter-shift-rule:
+    term: parameter-shift rule
+    def: "An exact formula for the derivative of an expectation value with respect to the angle of a Pauli rotation: half the difference of the values at the angle plus and minus a quarter turn."
+  barren-plateau:
+    term: barren plateau
+    def: "A region of parameters, often almost all of them, where the cost of a variational circuit is nearly flat, with slopes that shrink exponentially with the number of qubits, so that estimating them takes exponentially many shots."
+  symmetry:
+    term: symmetry
+    def: "A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed."

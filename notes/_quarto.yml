@@ -8,12 +8,13 @@ project:
 book:
   title: "Near-term Quantum Computing — lecture notes"
   author: "Stefano Polla"
-  date: "2026-11-14"  # release date of the PDF; update on each release
+  date: "2026-11-15"  # release date of the PDF; update on each release
   chapters:
     - index.qmd
     - L1-platforms-and-measurement.qmd
     - L2-noise.qmd
     - L3-hamiltonians.qmd
+    - L4-ground-states.qmd
   appendices:
     - exercises.qmd
     - glossary.qmd

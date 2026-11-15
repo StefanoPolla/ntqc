@@ -591,8 +591,7 @@ A [coherent error]{.gloss key="coherent-error"} (@sec-noise-sources) is a fixed,
 unitary. A pulse that is slightly too strong, for example, implements
 $R_X(\theta+\eta) = R_X(\eta)R_X(\theta)$ instead of $R_X(\theta)$: the channel after the
 gate is the unitary $R_X(\eta)$. Biased angles in parametrised gates return with
-variational algorithms. <!-- VQE-LINK: link "variational algorithms" to the variational
-chapter. --> An [incoherent error]{.gloss key="incoherent-error"} is random: the error
+variational algorithms (@sec-vqe-loop). An [incoherent error]{.gloss key="incoherent-error"} is random: the error
 unitary differs from shot to shot, and averages to a channel, as the random $R_Z$ did in
 @sec-depolarising-dephasing.
 
