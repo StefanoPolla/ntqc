@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://stefanopolla.github.io/ntqc/index.html</loc>
-    <lastmod>2026-11-14T15:21:50.243Z</lastmod>
+    <lastmod>2026-10-25T19:13:48.959Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/L1-platforms-and-measurement.html</loc>
-    <lastmod>2026-11-14T15:21:50.229Z</lastmod>
+    <lastmod>2026-11-15T21:40:56.940Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/L2-noise.html</loc>
-    <lastmod>2026-11-14T15:21:50.229Z</lastmod>
+    <lastmod>2026-11-15T21:40:56.940Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/L3-hamiltonians.html</loc>
-    <lastmod>2026-11-14T15:24:35.048Z</lastmod>
+    <lastmod>2026-11-15T21:40:56.940Z</lastmod>
+  </url>
+  <url>
+    <loc>https://stefanopolla.github.io/ntqc/L4-ground-states.html</loc>
+    <lastmod>2026-11-15T21:40:56.940Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/exercises.html</loc>
-    <lastmod>2026-11-14T15:21:50.230Z</lastmod>
+    <lastmod>2026-11-08T17:41:18.736Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/glossary.html</loc>
-    <lastmod>2026-11-14T15:21:50.243Z</lastmod>
+    <lastmod>2026-10-25T19:13:48.960Z</lastmod>
   </url>
   <url>
     <loc>https://stefanopolla.github.io/ntqc/ntqc-lecture-notes.pdf</loc>
-    <lastmod>2026-11-14T15:25:22.306Z</lastmod>
+    <lastmod>2026-11-15T21:42:11.427Z</lastmod>
   </url>
 </urlset>

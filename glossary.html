@@ -311,6 +311,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L4-ground-states.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -372,7 +378,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">8 November 2026</p>
+      <p class="date-modified">15 November 2026</p>
     </div>
   </div>
     
@@ -388,13 +394,33 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 Noise in which slow fluctuations are much stronger than fast ones, in inverse proportion to their frequency. It typically comes from many defects, each switching at its own rate.
 </dd>
+<dt><span id="gloss-adam">Adam</span></dt>
+<dd>
+Adaptive moment estimation: a gradient-based optimiser that gives each parameter its own step size, set from running averages of its derivative and of its square. The default optimiser in machine learning; it copes well with noisy gradients.
+</dd>
+<dt><span id="gloss-adiabatic-preparation">adiabatic state preparation</span></dt>
+<dd>
+Preparing the ground state of a Hamiltonian by starting in the ground state of a simple one and changing the Hamiltonian slowly into the target. It works if the change is slow compared with the inverse square of the smallest gap along the way.
+</dd>
 <dt><span id="gloss-amplitude-damping">amplitude damping</span></dt>
 <dd>
 The channel that describes relaxation: a qubit in the excited state decays to the ground state with probability gamma, which grows with time as one minus exp(-t/T1).
 </dd>
+<dt><span id="gloss-ansatz">ansatz</span></dt>
+<dd>
+The family of trial states that a parametrised circuit can prepare in a variational algorithm, a guess for the form of the solution; by extension, also the circuit itself, with its fixed structure and free parameters such as rotation angles. Plural: ansätze.
+</dd>
 <dt><span id="gloss-average-gate-fidelity">average gate fidelity</span></dt>
 <dd>
 The state fidelity between the output of a noisy gate and the ideal output, averaged over all pure input states. One minus it is the error per gate.
+</dd>
+<dt><span id="gloss-barren-plateau">barren plateau</span></dt>
+<dd>
+A region of parameters, often almost all of them, where the cost of a variational circuit is nearly flat, with slopes that shrink exponentially with the number of qubits, so that estimating them takes exponentially many shots.
+</dd>
+<dt><span id="gloss-bfgs">BFGS</span></dt>
+<dd>
+Broyden–Fletcher–Goldfarb–Shanno: a quasi-Newton optimiser that builds an estimate of the second derivatives from successive gradients instead of computing them. A standard choice for smooth costs without noise.
 </dd>
 <dt><span id="gloss-bias">bias</span></dt>
 <dd>
@@ -415,6 +441,10 @@ A circuit whose two-qubit gates act on alternating pairs of neighbouring qubits,
 <dt><span id="gloss-calibration">calibration</span></dt>
 <dd>
 Measuring and adjusting the control pulses of a device so that its gates do what they should. Providers publish calibration data: the error rates of each qubit and gate at the last calibration.
+</dd>
+<dt><span id="gloss-cobyla">COBYLA</span></dt>
+<dd>
+Constrained optimisation by linear approximation: a gradient-free optimiser that fits a linear model of the cost through recent evaluations and steps towards its minimum within a shrinking region.
 </dd>
 <dt><span id="gloss-coherence">coherence</span></dt>
 <dd>
@@ -520,6 +550,10 @@ A number between 0 and 1 measuring how close a state or operation is to the inte
 <dd>
 A circuit that repeats the same layer of gates many times, like a system driven periodically in time. With large Trotter steps, it follows the exact evolution under a Hamiltonian that differs from the intended one.
 </dd>
+<dt><span id="gloss-gap">gap</span></dt>
+<dd>
+The difference between the two lowest energies of a Hamiltonian, the first excited energy minus the ground-state energy. A small gap makes a ground state hard to prepare adiabatically.
+</dd>
 <dt><span id="gloss-geometrically-local">geometrically local Hamiltonian</span></dt>
 <dd>
 A Hamiltonian on qubits placed on a chain or lattice, whose terms each act only on qubits within a fixed distance of each other, for example single qubits and pairs of neighbours. Every qubit appears in only a few terms, so the number of terms is proportional to the number of qubits. A stronger property than k-locality.
@@ -528,6 +562,10 @@ A Hamiltonian on qubits placed on a chain or lattice, whose terms each act only 
 <dd>
 The depolarising channel acting on all qubits at once: with probability p, the state of all qubits is replaced by the maximally mixed state. It shrinks every Pauli expectation value by the same factor, whatever its weight.
 </dd>
+<dt><span id="gloss-gradient-descent">gradient descent</span></dt>
+<dd>
+An optimiser that repeatedly moves the parameters a small step against the gradient of the cost, the direction in which it decreases fastest.
+</dd>
 <dt><span id="gloss-ground-state">ground state</span></dt>
 <dd>
 The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest energy. A system that is cold enough settles in or near its ground state.
@@ -535,6 +573,10 @@ The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest
 <dt><span id="gloss-hamiltonian">Hamiltonian</span></dt>
 <dd>
 The observable of the energy of a system, a Hermitian matrix. Its eigenvalues are the possible energies, and it also determines how the state of the system changes in time.
+</dd>
+<dt><span id="gloss-hva">Hamiltonian variational ansatz</span></dt>
+<dd>
+An ansatz built from the terms of the Hamiltonian: layers that look like Trotter steps, with one free angle per group of terms in each layer. With the angles of a slow schedule, it reproduces adiabatic state preparation. Sometimes also called the variational Hamiltonian ansatz (VHA).
 </dd>
 <dt><span id="gloss-heisenberg-model">Heisenberg model</span></dt>
 <dd>
@@ -596,6 +638,10 @@ The average over the qubits of the expectation value of Z: the average alignment
 <dd>
 Noise without memory: the noise after each operation does not depend on what happened before. The model in which every gate is followed by a fixed channel assumes it.
 </dd>
+<dt><span id="gloss-maxcut">MaxCut</span></dt>
+<dd>
+The problem of splitting the vertices of a graph into two groups so that as many edges as possible join vertices in different groups. It is equivalent to finding the ground state of a classical Ising model on the graph.
+</dd>
 <dt><span id="gloss-mse">mean squared error</span></dt>
 <dd>
 The average of the squared difference between an estimate and the true value. It equals the bias squared plus the variance.
@@ -616,6 +662,10 @@ The standard two-qubit gate of trapped ions. Laser beams couple two ions to the 
 <dd>
 A gate the hardware implements directly with a calibrated control pulse. Every other gate must be compiled into native gates.
 </dd>
+<dt><span id="gloss-newton-raphson">Newton–Raphson</span></dt>
+<dd>
+An optimiser that uses the first and second derivatives of the cost to fit a quadratic model around the current parameters and jumps to its minimum. Fast near a minimum, but every second derivative must be computed or estimated.
+</dd>
 <dt><span id="gloss-nisq">NISQ</span></dt>
 <dd>
 Noisy intermediate-scale quantum: devices with tens to thousands of qubits whose errors are not corrected, so noise limits the size of the circuits they can run.
@@ -631,6 +681,14 @@ The largest factor by which a matrix can stretch the length of a vector. For a H
 <dt><span id="gloss-optical-tweezers">optical tweezers</span></dt>
 <dd>
 Tightly focused laser beams that hold single neutral atoms in place and can move them.
+</dd>
+<dt><span id="gloss-parameter-shift-rule">parameter-shift rule</span></dt>
+<dd>
+An exact formula for the derivative of an expectation value with respect to the angle of a Pauli rotation: half the difference of the values at the angle plus and minus a quarter turn.
+</dd>
+<dt><span id="gloss-pqc">parametrised quantum circuit</span></dt>
+<dd>
+PQC: a quantum circuit in which some gates, usually rotations, depend on classical parameters that can be changed from run to run. Variational algorithms such as VQE and QAOA optimise these parameters. The states it can prepare, and by extension the circuit itself, are called an ansatz.
 </dd>
 <dt><span id="gloss-pauli-1-norm">Pauli 1-norm</span></dt>
 <dd>
@@ -672,6 +730,10 @@ The part of dephasing that does not come from relaxation, described by a dephasi
 <dd>
 The trace of the square of a density matrix: 1 for pure states, smaller for mixed states, and smallest, one over 2 to the n, for the maximally mixed state of n qubits (1/2 for a uniformly random qubit).
 </dd>
+<dt><span id="gloss-qaoa">QAOA</span></dt>
+<dd>
+Two related names with the same acronym. The quantum approximate optimisation algorithm is a variational ansatz for classical optimisation problems: layers that alternate the cost Hamiltonian and a transverse field, like a Trotterised annealing path with free angles. The quantum alternating operator ansatz generalises it by allowing other mixing layers, for example ones that keep the state among the bitstrings that satisfy the constraints of a problem.
+</dd>
 <dt><span id="gloss-qccd">QCCD</span></dt>
 <dd>
 Quantum charge-coupled device: a trapped-ion architecture in which ions are moved between zones of the trap, so that any two ions can be brought together for a gate.
@@ -679,6 +741,10 @@ Quantum charge-coupled device: a trapped-ion architecture in which ions are move
 <dt><span id="gloss-quantum-advantage">quantum advantage</span></dt>
 <dd>
 A task that a quantum computer solves better than any classical method, faster, more cheaply or more accurately. For a task of a given size, it is a claim against the best classical methods known, and it is lost if better ones are found.
+</dd>
+<dt><span id="gloss-quantum-annealing">quantum annealing</span></dt>
+<dd>
+Adiabatic state preparation run on an analog device, usually to find low-energy states of a classical Ising model that encodes an optimisation problem.
 </dd>
 <dt><span id="gloss-quantum-channel">quantum channel</span></dt>
 <dd>
@@ -691,6 +757,10 @@ A tiny region in a semiconductor that can trap single electrons.
 <dt><span id="gloss-qec">quantum error correction</span></dt>
 <dd>
 Encoding quantum information redundantly in many physical qubits, so that errors can be detected and corrected without disturbing the encoded information.
+</dd>
+<dt><span id="gloss-qng">quantum natural gradient</span></dt>
+<dd>
+A gradient-based optimiser for parametrised quantum circuits that rescales the gradient by how much the prepared state changes with each parameter, so that steps are measured in the state rather than in the angles.
 </dd>
 <dt><span id="gloss-qubit-wise-commuting">qubit-wise commuting</span></dt>
 <dd>
@@ -740,6 +810,10 @@ State preparation and measurement errors, characterised together because a measu
 <dd>
 An intrinsic two-level property of an electron (spin-1/2: up or down), which can serve as a qubit.
 </dd>
+<dt><span id="gloss-spsa">SPSA</span></dt>
+<dd>
+Simultaneous perturbation stochastic approximation: an optimiser for noisy costs that changes all parameters at once along a random direction, using two cost evaluations per step whatever the number of parameters.
+</dd>
 <dt><span id="gloss-state-fidelity">state fidelity</span></dt>
 <dd>
 For a pure target state, the probability that a state passes a test for the target, that is, the expectation value of the projector onto the target.
@@ -747,6 +821,10 @@ For a pure target state, the probability that a state passes a test for the targ
 <dt><span id="gloss-swap">SWAP</span></dt>
 <dd>
 A two-qubit gate that exchanges the states of two qubits. It costs three CNOTs.
+</dd>
+<dt><span id="gloss-symmetry">symmetry</span></dt>
+<dd>
+A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed.
 </dd>
 <dt><span id="gloss-t2-star">T2*</span></dt>
 <dd>
@@ -783,6 +861,14 @@ Inserting random Pauli gates around a gate, chosen so that they cancel in the id
 <dt><span id="gloss-unital">unital</span></dt>
 <dd>
 A channel is unital if it maps the maximally mixed state to itself; on one qubit, it keeps the centre of the Bloch ball fixed. Pauli channels are unital; relaxation, described by amplitude damping, is not.
+</dd>
+<dt><span id="gloss-variational-principle">variational principle</span></dt>
+<dd>
+No state has a lower energy than the ground state: the expectation value of a Hamiltonian in any state is at least its lowest eigenvalue, with equality only in the ground state.
+</dd>
+<dt><span id="gloss-vqe">variational quantum eigensolver</span></dt>
+<dd>
+VQE: a loop in which a quantum computer prepares a state with a parametrised circuit and estimates its energy from shots, and a classical optimiser changes the parameters to lower the energy.
 </dd>
 <dt><span id="gloss-virtual-z">virtual Z gate</span></dt>
 <dd>

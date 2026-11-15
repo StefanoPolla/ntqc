@@ -360,6 +360,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L4-ground-states.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -455,7 +461,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">1 November 2026</p>
+      <p class="date-modified">15 November 2026</p>
     </div>
   </div>
     
@@ -810,7 +816,7 @@ Figure&nbsp;1.6: <span class="math inline">\(R_{ZZ}(\theta)\)</span> built from 
 </figcaption>
 </figure>
 </div>
-<p><a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> will come back several times in this course, in circuits for time evolution, which are built from Pauli rotations, and in the parameter-shift rule, which gives exact gradients of variational circuits.</p>
+<p><a href="#eq-pauli-rotation" class="quarto-xref">Equation&nbsp;<span>1.1</span></a> will come back several times in this course, in circuits for time evolution (<a href="L3-hamiltonians.html#sec-trotter" class="quarto-xref"><span>Section 3.5</span></a>), which are built from Pauli rotations, and in the parameter-shift rule (<a href="L4-ground-states.html#sec-parameter-shift" class="quarto-xref"><span>Section 4.5.2</span></a>), which gives exact gradients of variational circuits.</p>
 </section>
 <section id="sec-driving-gates" class="level3" data-number="1.3.2">
 <h3 data-number="1.3.2" class="anchored" data-anchor-id="sec-driving-gates"><span class="header-section-number">1.3.2</span> Physical implementation of gates</h3>
@@ -1248,7 +1254,7 @@ Figure&nbsp;1.11: SWAP as three CNOTs with alternating control.
 </figcaption>
 </figure>
 </div>
-<p>In practice, nobody inserts SWAPs by hand. <a href="glossary.html#gloss-transpilation" class="gloss" data-gloss="Compilation of a circuit into the native gates and coupling graph of a device, including inserting SWAPs and simplifying.">Transpilation</a> maps a circuit onto the native gates and coupling graph of a device. It chooses which physical qubit plays the role of each qubit in the circuit, inserts SWAPs where needed, and simplifies the result. We return to its cost in later chapters.</p>
+<p>In practice, nobody inserts SWAPs by hand. <a href="glossary.html#gloss-transpilation" class="gloss" data-gloss="Compilation of a circuit into the native gates and coupling graph of a device, including inserting SWAPs and simplifying.">Transpilation</a> maps a circuit onto the native gates and coupling graph of a device. It chooses which physical qubit plays the role of each qubit in the circuit, inserts SWAPs where needed, and simplifies the result. We return to its cost in later chapters (<a href="L3-hamiltonians.html#sec-trotter-circuits" class="quarto-xref"><span>Section 3.5.3</span></a> and <a href="L4-ground-states.html#sec-ansatz" class="quarto-xref"><span>Section 4.3.3</span></a>).</p>
 <div id="exr-swap" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercise 1.5 (The cost of distance)</strong></span> &nbsp;</p>
 <ol type="a">
@@ -1509,9 +1515,34 @@ Figure&nbsp;1.12: Two layers of a brick-wall circuit on four qubits.
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-albash2018" class="csl-entry" role="listitem">
+Albash, Tameem, and Daniel A. Lidar. 2018. <span>“Adiabatic Quantum
+Computation.”</span> <em>Reviews of Modern Physics</em> 90 (1): 015002.
+<a href="https://doi.org/10.1103/RevModPhys.90.015002">https://doi.org/10.1103/RevModPhys.90.015002</a>.
+</div>
+<div id="ref-arrasmith2021" class="csl-entry" role="listitem">
+Arrasmith, Andrew, M. Cerezo, Piotr Czarnik, Lukasz Cincio, and Patrick
+J. Coles. 2021. <span>“Effect of Barren Plateaus on Gradient-Free
+Optimization.”</span> <em>Quantum</em> 5: 558. <a href="https://doi.org/10.22331/q-2021-10-05-558">https://doi.org/10.22331/q-2021-10-05-558</a>.
+</div>
+<div id="ref-bharti2022" class="csl-entry" role="listitem">
+Bharti, Kishor, Alba Cervera-Lierta, Thi Ha Kyaw, et al. 2022.
+<span>“Noisy Intermediate-Scale Quantum Algorithms.”</span> <em>Reviews
+of Modern Physics</em> 94 (1): 015004. <a href="https://doi.org/10.1103/RevModPhys.94.015004">https://doi.org/10.1103/RevModPhys.94.015004</a>.
+</div>
+<div id="ref-bittel2021" class="csl-entry" role="listitem">
+Bittel, Lennart, and Martin Kliesch. 2021. <span>“Training Variational
+Quantum Algorithms Is <span>NP</span>-Hard.”</span> <em>Physical Review
+Letters</em> 127 (12): 120502. <a href="https://doi.org/10.1103/PhysRevLett.127.120502">https://doi.org/10.1103/PhysRevLett.127.120502</a>.
+</div>
 <div id="ref-blitzstein2019" class="csl-entry" role="listitem">
 Blitzstein, Joseph K., and Jessica Hwang. 2019. <em>Introduction to
 Probability</em>. 2nd ed. Chapman; Hall/CRC. <a href="https://probabilitybook.net">https://probabilitybook.net</a>.
+</div>
+<div id="ref-born1928" class="csl-entry" role="listitem">
+Born, Max, and Vladimir Fock. 1928. <span>“Beweis Des
+<span>Adiabatensatzes</span>.”</span> <em>Zeitschrift f<span>ü</span>r
+Physik</em> 51 (3–4): 165–80. <a href="https://doi.org/10.1007/BF01343193">https://doi.org/10.1007/BF01343193</a>.
 </div>
 <div id="ref-bruzewicz2019" class="csl-entry" role="listitem">
 Bruzewicz, Colin D., John Chiaverini, Robert McConnell, and Jeremy M.
@@ -1522,6 +1553,16 @@ Challenges.”</span> <em>Applied Physics Reviews</em> 6 (2): 021314. <a href="h
 Burkard, Guido, Thaddeus D. Ladd, Andrew Pan, John M. Nichol, and Jason
 R. Petta. 2023. <span>“Semiconductor Spin Qubits.”</span> <em>Reviews of
 Modern Physics</em> 95 (2): 025003. <a href="https://doi.org/10.1103/RevModPhys.95.025003">https://doi.org/10.1103/RevModPhys.95.025003</a>.
+</div>
+<div id="ref-cerezo2021" class="csl-entry" role="listitem">
+Cerezo, M., Andrew Arrasmith, Ryan Babbush, et al. 2021.
+<span>“Variational Quantum Algorithms.”</span> <em>Nature Reviews
+Physics</em> 3 (9): 625–44. <a href="https://doi.org/10.1038/s42254-021-00348-9">https://doi.org/10.1038/s42254-021-00348-9</a>.
+</div>
+<div id="ref-cerezo2025" class="csl-entry" role="listitem">
+Cerezo, M., Martín Larocca, Diego García-Martín, et al. 2025.
+<span>“Does Provable Absence of Barren Plateaus Imply Classical
+Simulability?”</span> <em>Nature Communications</em> 16: 7907. <a href="https://doi.org/10.1038/s41467-025-63099-6">https://doi.org/10.1038/s41467-025-63099-6</a>.
 </div>
 <div id="ref-childs2021" class="csl-entry" role="listitem">
 Childs, Andrew M., Yuan Su, Minh C. Tran, Nathan Wiebe, and Shuchen Zhu.
@@ -1536,6 +1577,14 @@ Computing: Lecture Notes</em>. arXiv:1907.09415, version 6. <a href="https://arx
 DiVincenzo, David P. 2000. <span>“The Physical Implementation of Quantum
 Computation.”</span> <em>Fortschritte Der Physik</em> 48 (9–11): 771–83.
 <a href="https://doi.org/10.1002/1521-3978(200009)48:9/11<771::AID-PROP771>3.0.CO;2-E">https://doi.org/10.1002/1521-3978(200009)48:9/11&lt;771::AID-PROP771&gt;3.0.CO;2-E</a>.
+</div>
+<div id="ref-farhi2014" class="csl-entry" role="listitem">
+Farhi, Edward, Jeffrey Goldstone, and Sam Gutmann. 2014. <em>A Quantum
+Approximate Optimization Algorithm</em>. <a href="https://doi.org/10.48550/arXiv.1411.4028">https://doi.org/10.48550/arXiv.1411.4028</a>.
+</div>
+<div id="ref-farhi2000" class="csl-entry" role="listitem">
+Farhi, Edward, Jeffrey Goldstone, Sam Gutmann, and Michael Sipser. 2000.
+<em>Quantum Computation by Adiabatic Evolution</em>. <a href="https://doi.org/10.48550/arXiv.quant-ph/0001106">https://doi.org/10.48550/arXiv.quant-ph/0001106</a>.
 </div>
 <div id="ref-feynman1982" class="csl-entry" role="listitem">
 Feynman, Richard P. 1982. <span>“Simulating Physics with
@@ -1562,10 +1611,48 @@ Google Quantum AI and Collaborators. 2025. <span>“Quantum Error
 Correction Below the Surface Code Threshold.”</span> <em>Nature</em>
 638: 920–26. <a href="https://doi.org/10.1038/s41586-024-08449-y">https://doi.org/10.1038/s41586-024-08449-y</a>.
 </div>
+<div id="ref-grimsley2019" class="csl-entry" role="listitem">
+Grimsley, Harper R., Sophia E. Economou, Edwin Barnes, and Nicholas J.
+Mayhall. 2019. <span>“An Adaptive Variational Algorithm for Exact
+Molecular Simulations on a Quantum Computer.”</span> <em>Nature
+Communications</em> 10: 3007. <a href="https://doi.org/10.1038/s41467-019-10988-2">https://doi.org/10.1038/s41467-019-10988-2</a>.
+</div>
+<div id="ref-hadfield2019" class="csl-entry" role="listitem">
+Hadfield, Stuart, Zhihui Wang, Bryan O’Gorman, Eleanor G. Rieffel,
+Davide Venturelli, and Rupak Biswas. 2019. <span>“From the Quantum
+Approximate Optimization Algorithm to a Quantum Alternating Operator
+Ansatz.”</span> <em>Algorithms</em> 12 (2): 34. <a href="https://doi.org/10.3390/a12020034">https://doi.org/10.3390/a12020034</a>.
+</div>
 <div id="ref-henriet2020" class="csl-entry" role="listitem">
 Henriet, Loïc, Lucas Beguin, Adrien Signoles, et al. 2020.
 <span>“Quantum Computing with Neutral Atoms.”</span> <em>Quantum</em> 4:
 327. <a href="https://doi.org/10.22331/q-2020-09-21-327">https://doi.org/10.22331/q-2020-09-21-327</a>.
+</div>
+<div id="ref-ho2019" class="csl-entry" role="listitem">
+Ho, Wen Wei, and Timothy H. Hsieh. 2019. <span>“Efficient Variational
+Simulation of Non-Trivial Quantum States.”</span> <em>SciPost
+Physics</em> 6 (3): 029. <a href="https://doi.org/10.21468/SciPostPhys.6.3.029">https://doi.org/10.21468/SciPostPhys.6.3.029</a>.
+</div>
+<div id="ref-kadowaki1998" class="csl-entry" role="listitem">
+Kadowaki, Tadashi, and Hidetoshi Nishimori. 1998. <span>“Quantum
+Annealing in the Transverse <span>Ising</span> Model.”</span>
+<em>Physical Review E</em> 58 (5): 5355–63. <a href="https://doi.org/10.1103/PhysRevE.58.5355">https://doi.org/10.1103/PhysRevE.58.5355</a>.
+</div>
+<div id="ref-kandala2017" class="csl-entry" role="listitem">
+Kandala, Abhinav, Antonio Mezzacapo, Kristan Temme, et al. 2017.
+<span>“Hardware-Efficient Variational Quantum Eigensolver for Small
+Molecules and Quantum Magnets.”</span> <em>Nature</em> 549 (7671):
+242–46. <a href="https://doi.org/10.1038/nature23879">https://doi.org/10.1038/nature23879</a>.
+</div>
+<div id="ref-kempe2006" class="csl-entry" role="listitem">
+Kempe, Julia, Alexei Kitaev, and Oded Regev. 2006. <span>“The Complexity
+of the Local <span>Hamiltonian</span> Problem.”</span> <em>SIAM Journal
+on Computing</em> 35 (5): 1070–97. <a href="https://doi.org/10.1137/S0097539704445226">https://doi.org/10.1137/S0097539704445226</a>.
+</div>
+<div id="ref-kingma2015" class="csl-entry" role="listitem">
+Kingma, Diederik P., and Jimmy Ba. 2015. <em>Adam: A Method for
+Stochastic Optimization</em>. International Conference on Learning
+Representations (ICLR). <a href="https://arxiv.org/abs/1412.6980">https://arxiv.org/abs/1412.6980</a>.
 </div>
 <div id="ref-krantz2019" class="csl-entry" role="listitem">
 Krantz, Philip, Morten Kjaergaard, Fei Yan, Terry P. Orlando, Simon
@@ -1573,16 +1660,37 @@ Gustavsson, and William D. Oliver. 2019. <span>“A Quantum Engineer’s
 Guide to Superconducting Qubits.”</span> <em>Applied Physics
 Reviews</em> 6 (2): 021318. <a href="https://doi.org/10.1063/1.5089550">https://doi.org/10.1063/1.5089550</a>.
 </div>
+<div id="ref-larocca2025" class="csl-entry" role="listitem">
+Larocca, Martín, Supanut Thanasilp, Samson Wang, et al. 2025.
+<span>“Barren Plateaus in Variational Quantum Computing.”</span>
+<em>Nature Reviews Physics</em> 7 (4): 174–89. <a href="https://doi.org/10.1038/s42254-025-00813-9">https://doi.org/10.1038/s42254-025-00813-9</a>.
+</div>
 <div id="ref-litinski2019" class="csl-entry" role="listitem">
 Litinski, Daniel. 2019. <span>“A Game of Surface Codes: Large-Scale
 Quantum Computing with Lattice Surgery.”</span> <em>Quantum</em> 3: 128.
 <a href="https://doi.org/10.22331/q-2019-03-05-128">https://doi.org/10.22331/q-2019-03-05-128</a>.
+</div>
+<div id="ref-mcclean2018" class="csl-entry" role="listitem">
+McClean, Jarrod R., Sergio Boixo, Vadim N. Smelyanskiy, Ryan Babbush,
+and Hartmut Neven. 2018. <span>“Barren Plateaus in Quantum Neural
+Network Training Landscapes.”</span> <em>Nature Communications</em> 9:
+4812. <a href="https://doi.org/10.1038/s41467-018-07090-4">https://doi.org/10.1038/s41467-018-07090-4</a>.
 </div>
 <div id="ref-mcewen2022" class="csl-entry" role="listitem">
 <span class="nocase">McEwen, Matt, Lara Faoro, Kunal Arya, et al.</span>
 2022. <span>“Resolving Catastrophic Error Bursts from Cosmic Rays in
 Large Arrays of Superconducting Qubits.”</span> <em>Nature Physics</em>
 18 (1): 107–11. <a href="https://doi.org/10.1038/s41567-021-01432-8">https://doi.org/10.1038/s41567-021-01432-8</a>.
+</div>
+<div id="ref-mitarai2018" class="csl-entry" role="listitem">
+Mitarai, Kosuke, Makoto Negoro, Masahiro Kitagawa, and Keisuke Fujii.
+2018. <span>“Quantum Circuit Learning.”</span> <em>Physical Review
+A</em> 98 (3): 032309. <a href="https://doi.org/10.1103/PhysRevA.98.032309">https://doi.org/10.1103/PhysRevA.98.032309</a>.
+</div>
+<div id="ref-nakanishi2020" class="csl-entry" role="listitem">
+Nakanishi, Ken M., Keisuke Fujii, and Synge Todo. 2020.
+<span>“Sequential Minimal Optimization for Quantum-Classical Hybrid
+Algorithms.”</span> <em>Physical Review Research</em> 2 (4): 043158. <a href="https://doi.org/10.1103/PhysRevResearch.2.043158">https://doi.org/10.1103/PhysRevResearch.2.043158</a>.
 </div>
 <div id="ref-nielsen2002" class="csl-entry" role="listitem">
 Nielsen, Michael A. 2002. <span>“A Simple Formula for the Average Gate
@@ -1594,6 +1702,23 @@ Nielsen, Michael A., and Isaac L. Chuang. 2010. <em>Quantum Computation
 and Quantum Information</em>. 10th anniversary. Cambridge University
 Press.
 </div>
+<div id="ref-ostaszewski2021" class="csl-entry" role="listitem">
+Ostaszewski, Mateusz, Edward Grant, and Marcello Benedetti. 2021.
+<span>“Structure Optimization for Parameterized Quantum
+Circuits.”</span> <em>Quantum</em> 5: 391. <a href="https://doi.org/10.22331/q-2021-01-28-391">https://doi.org/10.22331/q-2021-01-28-391</a>.
+</div>
+<div id="ref-peruzzo2014" class="csl-entry" role="listitem">
+Peruzzo, Alberto, Jarrod McClean, Peter Shadbolt, et al. 2014. <span>“A
+Variational Eigenvalue Solver on a Photonic Quantum Processor.”</span>
+<em>Nature Communications</em> 5: 4213. <a href="https://doi.org/10.1038/ncomms5213">https://doi.org/10.1038/ncomms5213</a>.
+</div>
+<div id="ref-powell1994" class="csl-entry" role="listitem">
+Powell, M. J. D. 1994. <span>“A Direct Search Optimization Method That
+Models the Objective and Constraint Functions by Linear
+Interpolation.”</span> In <em>Advances in Optimization and Numerical
+Analysis</em>, edited by Susana Gomez and Jean-Pierre Hennart. Springer.
+<a href="https://doi.org/10.1007/978-94-015-8330-5_4">https://doi.org/10.1007/978-94-015-8330-5_4</a>.
+</div>
 <div id="ref-preskill2018" class="csl-entry" role="listitem">
 Preskill, John. 2018. <span>“Quantum Computing in the <span>NISQ</span>
 Era and Beyond.”</span> <em>Quantum</em> 2: 79. <a href="https://doi.org/10.22331/q-2018-08-06-79">https://doi.org/10.22331/q-2018-08-06-79</a>.
@@ -1603,10 +1728,24 @@ Ross, Neil J., and Peter Selinger. 2016. <span>“Optimal Ancilla-Free
 <span>Clifford+T</span> Approximation of z-Rotations.”</span>
 <em>Quantum Information and Computation</em> 16 (11–12): 901–53. <a href="https://doi.org/10.26421/QIC16.11-12-1">https://doi.org/10.26421/QIC16.11-12-1</a>.
 </div>
+<div id="ref-schuld2019" class="csl-entry" role="listitem">
+Schuld, Maria, Ville Bergholm, Christian Gogolin, Josh Izaac, and Nathan
+Killoran. 2019. <span>“Evaluating Analytic Gradients on Quantum
+Hardware.”</span> <em>Physical Review A</em> 99 (3): 032331. <a href="https://doi.org/10.1103/PhysRevA.99.032331">https://doi.org/10.1103/PhysRevA.99.032331</a>.
+</div>
 <div id="ref-slussarenko2019" class="csl-entry" role="listitem">
 Slussarenko, Sergei, and Geoff J. Pryde. 2019. <span>“Photonic Quantum
 Information Processing: A Concise Review.”</span> <em>Applied Physics
 Reviews</em> 6 (4): 041303. <a href="https://doi.org/10.1063/1.5115814">https://doi.org/10.1063/1.5115814</a>.
+</div>
+<div id="ref-spall1992" class="csl-entry" role="listitem">
+Spall, James C. 1992. <span>“Multivariate Stochastic Approximation Using
+a Simultaneous Perturbation Gradient Approximation.”</span> <em>IEEE
+Transactions on Automatic Control</em> 37 (3): 332–41. <a href="https://doi.org/10.1109/9.119632">https://doi.org/10.1109/9.119632</a>.
+</div>
+<div id="ref-stokes2020" class="csl-entry" role="listitem">
+Stokes, James, Josh Izaac, Nathan Killoran, and Giuseppe Carleo. 2020.
+<span>“Quantum Natural Gradient.”</span> <em>Quantum</em> 4: 269. <a href="https://doi.org/10.22331/q-2020-05-25-269">https://doi.org/10.22331/q-2020-05-25-269</a>.
 </div>
 <div id="ref-sung2021" class="csl-entry" role="listitem">
 <span class="nocase">Sung, Youngkyu et al.</span> 2021.
@@ -1629,6 +1768,11 @@ Walter, Michael, and Maris Ozols. 2025. <em>Lecture Notes on Quantum
 Information Theory</em>. Course notes, University of Amsterdam; not
 publicly available. Students who do not take the Quantum Information
 Theory course can ask for a copy.
+</div>
+<div id="ref-wecker2015" class="csl-entry" role="listitem">
+Wecker, Dave, Matthew B. Hastings, and Matthias Troyer. 2015.
+<span>“Progress Towards Practical Quantum Variational
+Algorithms.”</span> <em>Physical Review A</em> 92 (4): 042303. <a href="https://doi.org/10.1103/PhysRevA.92.042303">https://doi.org/10.1103/PhysRevA.92.042303</a>.
 </div>
 </div>
 

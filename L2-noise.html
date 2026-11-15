@@ -360,6 +360,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L4-ground-states.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -457,7 +463,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">8 November 2026</p>
+      <p class="date-modified">15 November 2026</p>
     </div>
   </div>
     
@@ -1151,8 +1157,7 @@ Figure&nbsp;2.4: One error (star) in the brick-wall circuit of <a href="L1-platf
 <section id="sec-gate-errors" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="sec-gate-errors"><span class="header-section-number">2.4</span> Noisy gates</h2>
 <p>In <a href="#sec-noisy-circuits" class="quarto-xref"><span>Section 2.2.3</span></a>, we modelled the noisy gates of a device as ideal gates, each followed by a channel. But which channel is the right one? Part of it is the relaxation and dephasing during the gate. The rest comes from the control: the pulses that implement a gate are never exactly right.</p>
-<p>A <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent error</a> (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) is a fixed, wrong unitary. A pulse that is slightly too strong, for example, implements <span class="math inline">\(R_X(\theta+\eta) = R_X(\eta)R_X(\theta)\)</span> instead of <span class="math inline">\(R_X(\theta)\)</span>: the channel after the gate is the unitary <span class="math inline">\(R_X(\eta)\)</span>. Biased angles in parametrised gates return with variational algorithms. <!-- VQE-LINK: link "variational algorithms" to the variational
-chapter. --> An <a href="glossary.html#gloss-incoherent-error" class="gloss" data-gloss="A random error that differs from shot to shot and averages to a noisy channel. Random errors accumulate more slowly than coherent ones.">incoherent error</a> is random: the error unitary differs from shot to shot, and averages to a channel, as the random <span class="math inline">\(R_Z\)</span> did in <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>.</p>
+<p>A <a href="glossary.html#gloss-coherent-error" class="gloss" data-gloss="A systematic error in which a gate applies the wrong unitary, for example a rotation by a slightly wrong angle, in the same way every time.">coherent error</a> (<a href="L1-platforms-and-measurement.html#sec-noise-sources" class="quarto-xref"><span>Section 1.5</span></a>) is a fixed, wrong unitary. A pulse that is slightly too strong, for example, implements <span class="math inline">\(R_X(\theta+\eta) = R_X(\eta)R_X(\theta)\)</span> instead of <span class="math inline">\(R_X(\theta)\)</span>: the channel after the gate is the unitary <span class="math inline">\(R_X(\eta)\)</span>. Biased angles in parametrised gates return with variational algorithms (<a href="L4-ground-states.html#sec-vqe-loop" class="quarto-xref"><span>Section 4.3.2</span></a>). An <a href="glossary.html#gloss-incoherent-error" class="gloss" data-gloss="A random error that differs from shot to shot and averages to a noisy channel. Random errors accumulate more slowly than coherent ones.">incoherent error</a> is random: the error unitary differs from shot to shot, and averages to a channel, as the random <span class="math inline">\(R_Z\)</span> did in <a href="#sec-depolarising-dephasing" class="quarto-xref"><span>Section 2.2.2</span></a>.</p>
 <p>The difference matters when a gate is repeated. Apply an <span class="math inline">\(X\)</span> gate <span class="math inline">\(n\)</span> times to a qubit that starts in <span class="math inline">\(\ket{0}\)</span>, each time over-rotated about the <span class="math inline">\(x\)</span> axis by a small angle <span class="math inline">\(\eta_k\)</span>. The result is <span class="math inline">\(X^n\)</span> followed by <span class="math inline">\(R_X(\sum_k\eta_k)\)</span>. A total error angle <span class="math inline">\(\theta\)</span> gives the wrong outcome with probability <span class="math inline">\(\sin^2(\theta/2)\)</span>. We use this <em>error probability</em> as the measure of error until <a href="#sec-fidelity" class="quarto-xref"><span>Section 2.6</span></a>. If the error is the same every time, <span class="math inline">\(\eta_k = \eta\)</span>, the angles add up like the slow noise of <a href="#sec-slow-noise" class="quarto-xref"><span>Section 2.2.6</span></a>, and the error probability is <span class="math inline">\(\sin^2(n\eta/2) \approx n^2\eta^2/4\)</span>. If the errors are random and independent, with mean zero and variance <span class="math inline">\(\sigma^2\)</span>, they add up like the fast noise there: the variance of the total angle is <span class="math inline">\(n\sigma^2\)</span>, and the average error probability is about <span class="math inline">\(n\sigma^2/4\)</span>. For the same error per gate, <span class="math inline">\(\eta = \sigma\)</span>, the coherent error after <span class="math inline">\(n\)</span> gates is <span class="math inline">\(n\)</span> times larger (<a href="#fig-coherent-incoherent" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>).</p>
 <div id="fig-coherent-incoherent" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">

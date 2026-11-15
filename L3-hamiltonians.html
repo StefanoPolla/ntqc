@@ -57,7 +57,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./exercises.html" rel="next">
+<link href="./L4-ground-states.html" rel="next">
 <link href="./L2-noise.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -360,6 +360,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L4-ground-states.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -449,7 +455,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">14 November 2026</p>
+      <p class="date-modified">15 November 2026</p>
     </div>
   </div>
     
@@ -474,8 +480,7 @@ window.Quarto = {
 <h2 data-number="3.1" class="anchored" data-anchor-id="sec-energy-dynamics"><span class="header-section-number">3.1</span> Energy and time evolution</h2>
 <p>The <a href="glossary.html#gloss-hamiltonian" class="gloss" data-gloss="The observable of the energy of a system, a Hermitian matrix. Its eigenvalues are the possible energies, and it also determines how the state of the system changes in time.">Hamiltonian</a> <span class="math inline">\(H\)</span> of a system is the observable representing its energy. On <span class="math inline">\(n\)</span> qubits, it is a Hermitian <span class="math inline">\(2^n\times 2^n\)</span> matrix. The eigenvalues <span class="math inline">\(E_k\)</span> of <span class="math inline">\(H\)</span> are the possible outcomes that a measurement of the energy can give, and its eigenvectors <span class="math inline">\(\ket{E_k}\)</span> are the states with a definite energy. Together, they solve the time-independent <a href="glossary.html#gloss-schrodinger-equation" class="gloss" data-gloss="The equation that relates states to the Hamiltonian. In its time-independent form, it is the eigenvalue equation of the Hamiltonian; in its time-dependent form, it says how a state evolves, and its solution applies the unitary exp(-iHt).">Schrödinger equation</a> <span class="math display">\[
 H\ket{E_k} = E_k\ket{E_k} .
-\]</span> The lowest eigenvalue is the ground-state energy, and its eigenvector the <a href="glossary.html#gloss-ground-state" class="gloss" data-gloss="The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest energy. A system that is cold enough settles in or near its ground state.">ground state</a>. They matter because a system that is cold enough settles in its ground state (or very close to it). The ground state of a Hamiltonian modeling a material determines how that material behaves at low temperature, for example whether it is magnetic, or whether it is superconducting. Differences between energies decide much of chemistry: whether a molecule is stable, how much energy a chemical reaction needs, which frequency of light a molecule absorbs (and hence its color). Finding ground states is the subject of the next chapter. <!-- L4-LINK: link "the next chapter" to the VQE chapter once it is
-released. --></p>
+\]</span> The lowest eigenvalue is the ground-state energy, and its eigenvector the <a href="glossary.html#gloss-ground-state" class="gloss" data-gloss="The eigenvector of a Hamiltonian with the lowest eigenvalue, the state of lowest energy. A system that is cold enough settles in or near its ground state.">ground state</a>. They matter because a system that is cold enough settles in its ground state (or very close to it). The ground state of a Hamiltonian modeling a material determines how that material behaves at low temperature, for example whether it is magnetic, or whether it is superconducting. Differences between energies decide much of chemistry: whether a molecule is stable, how much energy a chemical reaction needs, which frequency of light a molecule absorbs (and hence its color). Finding ground states is the subject of the next chapter (<a href="L4-ground-states.html" class="quarto-xref"><span>Chapter 4</span></a>).</p>
 <p>The Hamiltonian also decides how a state changes in time, through the time-dependent Schrödinger equation and its solution, <span id="eq-schrodinger"><span class="math display">\[
 i\,\frac{d}{dt}\ket{\psi(t)} = H\ket{\psi(t)}, \qquad
 \ket{\psi(t)} = e^{-iHt}\ket{\psi(0)} .
@@ -807,7 +812,7 @@ Figure&nbsp;3.7: The fidelity with the exact state after a time <span class="mat
 </section>
 <section id="sec-L3-reading" class="level2" data-number="3.9">
 <h2 data-number="3.9" class="anchored" data-anchor-id="sec-L3-reading"><span class="header-section-number">3.9</span> Further reading</h2>
-<p><span class="citation" data-cites="dewolf2026"><span class="nocase">de Wolf</span> (<a href="L1-platforms-and-measurement.html#ref-dewolf2026" role="doc-biblioref">2026</a>, ch.&nbsp;9)</span> treats Hamiltonian simulation from the algorithmic side, including methods that scale better than the Trotter formula. <span class="citation" data-cites="childs2021">Childs et al. (<a href="L1-platforms-and-measurement.html#ref-childs2021" role="doc-biblioref">2021</a>)</span> analyse Trotter errors in detail. <span class="citation" data-cites="tilly2022">Tilly et al. (<a href="L1-platforms-and-measurement.html#ref-tilly2022" role="doc-biblioref">2022, sec. 5</a>)</span> review measurement strategies for sums of Pauli strings, in the context of the variational methods of the next chapters: among them, grouping strings that commute in the ordinary sense, measured together after an entangling circuit, and <em>classical shadows</em>, which measure in random bases.</p>
+<p><span class="citation" data-cites="dewolf2026"><span class="nocase">de Wolf</span> (<a href="L1-platforms-and-measurement.html#ref-dewolf2026" role="doc-biblioref">2026</a>, ch.&nbsp;9)</span> treats Hamiltonian simulation from the algorithmic side, including methods that scale better than the Trotter formula. <span class="citation" data-cites="childs2021">Childs et al. (<a href="L1-platforms-and-measurement.html#ref-childs2021" role="doc-biblioref">2021</a>)</span> analyse Trotter errors in detail. <span class="citation" data-cites="tilly2022">Tilly et al. (<a href="L1-platforms-and-measurement.html#ref-tilly2022" role="doc-biblioref">2022, sec. 5</a>)</span> review measurement strategies for sums of Pauli strings, in the context of the variational methods of the next chapters (<a href="L4-ground-states.html#sec-vqe" class="quarto-xref"><span>Section 4.3</span></a>): among them, grouping strings that commute in the ordinary sense, measured together after an entangling circuit, and <em>classical shadows</em>, which measure in random bases.</p>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
@@ -1272,8 +1277,8 @@ Tilly, Jules, Hongxiang Chen, Shuxiang Cao, et al. 2022. <span>“The Variationa
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./L4-ground-states.html" class="pagination-link" aria-label="Preparing ground states">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
