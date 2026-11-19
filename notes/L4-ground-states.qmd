@@ -285,8 +285,7 @@ Far from the minimum, energy differences are large and the optimiser makes progr
 Near the minimum, at $\theta^* = \arg\min_\theta E(\theta)$, the gradient vanishes, $\nabla E(\theta^*) = 0$, so the energy is flat: it changes only quadratically with the distance from $\theta^*$, the energy differences shrink, and eventually the shot noise hides them.
 The final accuracy is thus always limited by the number of shots.
 Optimisers for VQE are chosen, and tuned, for this situation.
-The total number of shots this costs is the subject of Tutorial 4.
-<!-- T4-LINK: link "Tutorial 4" to the T4 notebook in Colab once it is published. -->
+The total number of shots this costs is the subject of [Tutorial 4]({{< var colab >}}/tutorials/tutorial-04/T4-vqe_qiskit.ipynb).
 
 There are two families of optimisers: gradient-based and gradient-free.
 
