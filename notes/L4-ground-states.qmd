@@ -65,9 +65,8 @@ What if the gap is $0.01$?
 
 @exr-variational shows that a small gap makes the ground state hard to recognise by its energy: a state can have an energy close to $E_0$ and still be far from the ground state.
 If $\Delta = 0$, the ground state is *degenerate*: several states share the lowest energy, and the energy alone cannot tell them apart.
-What often helps is a conserved quantity, such as the number of flipped qubits of the Heisenberg model (@sec-spin-models); we call it a [symmetry]{.gloss key="symmetry"} of $H$.
+What often helps is a conserved quantity, such as the number of flipped qubits of the Heisenberg model (@sec-spin-models); we call it a [symmetry]{.gloss key="symmetry"} of $H$ (@def-symmetry).
 A circuit that conserves it, started from a state with a given value, only reaches states with that value, and then only the gap among those states matters.
-<!-- L5-LINK: symmetry verification in L5 builds on this definition. -->
 
 A small gap can make a single Hamiltonian hard.
 Complexity theory adds a general limit.
@@ -104,9 +103,9 @@ Intuitively, the state cannot follow a change that is fast compared with the rat
 @fig-adiabatic (a) shows this for a TFIM chain of $n = 8$ qubits with $J = 1$ and $h = 0.5$, which we use as the example for the rest of the chapter.
 The TFIM looks the same if we flip all qubits: flipping both qubits of a bond leaves $Z_iZ_{i+1}$ unchanged, and $X_i$ does not care.
 The flip of all qubits, $X_1X_2\cdots X_n$, has eigenvalues $\pm 1$, the *parity*, which is conserved by the TFIM and by every gate of our circuits.
+It also helps to detect errors (@sec-tfim-verification).
 The ground state has parity $+1$, like $\ket{+\cdots+}$, while the lowest state of parity $-1$ lies only $0.006$ above it: without the symmetry, this tiny gap would make the preparation very slow, but our circuits never reach that state, and among the states of parity $+1$ the gap never falls below $0.69$.
 The figure shows only the states of parity $+1$.
-<!-- L5-LINK: parity of the TFIM, a candidate for symmetry verification in L5. -->
 This smallest gap, $\Delta_{\min} \approx 0.69$, is reached near $s = 0.6$, where the bond terms start to dominate the field.
 Along the path, $dH/ds = -J\sum_i Z_iZ_{i+1}$ has the norm $J(n-1) = 7$, so the rule of thumb asks for $T \gg 7/0.69^2 \approx 15$.
 An evolution with $T = 4$ is too fast for this gap: around the minimum, part of the state leaks into the first excited state, and the final fidelity with the ground state is only 0.58.
@@ -211,7 +210,7 @@ Three habits follow.
 2. After the optimisation, estimate the energy of the final parameters again with fresh shots.
 The optimiser kept the parameters whose estimates were lowest, and among many estimates the lowest are often those that fluctuated downwards, so the last estimate is biased low.
 3. Read an estimate below $E_0$ as a fluctuation, or as a sign of a systematic error, such as a readout correction (@exr-readout-bias, part d) whose calibration is off and over-corrects, not as a better state.
-<!-- L5-LINK: other mitigation methods can also over-correct; link to the error-mitigation chapter. -->
+Error mitigation can overshoot in the same way (@sec-reading-mitigated).
 
 ::: {#exr-below-E0}
 ## An energy below the ground state

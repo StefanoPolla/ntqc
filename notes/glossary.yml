@@ -190,6 +190,9 @@ glossary:
   pure-dephasing:
     term: pure dephasing
     def: "The part of dephasing that does not come from relaxation, described by a dephasing channel whose strength grows with time, with characteristic time Tφ. It cannot be measured on its own, since relaxation also reduces the coherence."
+  idle-qubit:
+    term: idle qubit
+    def: "A qubit on which no gate acts for a while, for example while gates act on other qubits. While idle, it still relaxes and dephases."
   ramsey:
     term: Ramsey experiment
     def: "A measurement of dephasing: a pulse puts the qubit in a superposition, the qubit waits, and a second pulse turns the remaining coherence into a measurable population. It measures T2*."
@@ -390,3 +393,42 @@ glossary:
   symmetry:
     term: symmetry
     def: "A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed."
+  error-suppression:
+    term: error suppression
+    def: "Methods that change how a device runs a circuit, so that each shot suffers fewer errors, such as better calibration, compiling into fewer gates, choosing the best qubits, or dynamical decoupling. They cost no extra shots."
+    ref: def-three-ways
+  sampling-overhead:
+    term: sampling overhead
+    def: "The factor by which an error-mitigation method multiplies the number of shots needed for a given standard error, compared with the unmitigated estimate. It grows exponentially with the circuit fault rate."
+  circuit-fault-rate:
+    term: circuit fault rate
+    def: "The sum of the error probabilities of all operations of a circuit: the average number of errors per shot. A shot runs without errors with a probability of about e to the power minus this number."
+  layout:
+    term: layout
+    def: "The choice of the qubits of a device that play the roles of the qubits of a circuit, made when the circuit is compiled. A good layout follows the coupling graph, so that no SWAPs are needed, and uses the qubits and couplers with the lowest error rates."
+  zne:
+    term: zero-noise extrapolation
+    def: "An error-mitigation method that estimates an expectation value at several amplified noise levels and extrapolates the estimates to zero noise. It amplifies the shot noise."
+  gate-folding:
+    term: gate folding
+    def: "Replacing a gate by the gate, its inverse and the gate again. The ideal circuit is unchanged, but the gate's errors are tripled; used to scale the noise in zero-noise extrapolation."
+  richardson-extrapolation:
+    term: Richardson extrapolation
+    def: "Extrapolation with the polynomial through all measured points, evaluated at zero noise. The result is a fixed linear combination of the estimates."
+  quantum-number:
+    term: quantum number
+    def: "An eigenvalue of a symmetry of the Hamiltonian. It labels a state and stays fixed while the state evolves, such as the number of flipped qubits in the Heisenberg model."
+    ref: def-symmetry
+  symmetry-sector:
+    term: symmetry sector
+    def: "The eigenspace of a symmetry for one quantum number. The Hamiltonian, and any circuit that conserves the symmetry, never takes a state out of its sector."
+    ref: def-symmetry
+  symmetry-verification:
+    term: symmetry verification
+    def: "An error-mitigation method that reads a conserved quantity from each shot and discards the shots whose value differs from that of the ideal state."
+  post-selection:
+    term: post-selection
+    def: "Keeping only the shots whose outcomes pass a test, and discarding the others."
+  pec:
+    term: probabilistic error cancellation
+    def: "An error-mitigation method that undoes the noise of each gate on average, by inserting random operations with positive and negative weights chosen from a noise model learned from the device."

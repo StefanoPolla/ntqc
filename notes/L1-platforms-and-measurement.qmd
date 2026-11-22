@@ -39,7 +39,7 @@ reduces the effect of the remaining noise on these estimates, without correcting
 errors themselves, by running extra or modified circuits and combining their results.
 Error mitigation is not the same as error correction: it only works if the circuit does
 not accumulate too much error in the first place, and its price is running more shots.
-We come back to it later in the course.
+We come back to it in @sec-mitigation.
 
 Correcting errors is possible in principle. [Quantum error correction]{.gloss key="qec"}
 stores each qubit of information redundantly in many

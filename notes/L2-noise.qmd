@@ -384,7 +384,8 @@ correct such values.
 
 ![The Bloch sphere (grey) and its image (blue) under (a) amplitude damping, which shrinks the ball and pulls it towards $\ket{0}$, and (b) an idle qubit, with relaxation and pure dephasing together, after a wait $t = T_1/2$ with $T_2^* = T_1/2$. The dots mark where $\ket{0}$ and $\ket{1}$ go.](figures/bloch-relaxation-dephasing){#fig-bloch-t1t2 width=70%}
 
-An idle qubit undergoes this combined channel while it waits. For a short wait $t$, its
+A qubit is [idle]{.gloss key="idle-qubit"} when no gate acts on it, for example while gates act
+on other qubits. An idle qubit undergoes this combined channel. For a short wait $t$, its
 factors are $1 - t/T_2^*$ on the $x$ and $y$ axes and $1 - t/T_1$ on the $z$ axis, so
 its error is of order $t/T_2^*$ (@sec-budgets makes this precise). A wait of 100 ns
 with $T_2^* = 100$ µs therefore costs as much as a single-qubit gate, or more. @tbl-channels
@@ -435,8 +436,8 @@ an [echo]{.gloss key="echo"}, or Hahn echo, after Erwin Hahn, who found it with 
 spins in 1950. It leaves the qubit flipped, so a second $X$ is added at
 the end of the wait. Repeated echoes during a long wait, called
 [dynamical decoupling]{.gloss key="dynamical-decoupling"}, protect idle qubits from slow
-noise on the device itself, while the error mitigation of later chapters corrects the
-estimates after the run.
+noise on the device itself (@sec-dynamical-decoupling), while error mitigation (@sec-mitigation)
+improves the estimates after the run.
 
 If the frequency also changes during the wait, the phases picked up in the two halves
 differ, and the echo cancels only the part they have in common. What is left comes from
@@ -684,7 +685,7 @@ matrices. If, in addition, each qubit's two error
 rates are equal, every qubit of a Pauli string shrinks its expectation value by its own
 factor $1 - 2e_j$ (@exr-readout-bias). Otherwise, the offsets of @eq-readout also mix in
 the expectation values of shorter strings. Correcting estimates for known readout errors
-is the simplest form of error mitigation, which we meet later in the course.
+is the simplest form of error mitigation (@sec-readout-mitigation).
 
 ::: {#exr-readout}
 ## Unequal readout errors
@@ -888,7 +889,7 @@ shots worth taking on a better device?
 explain the result of that comparison.
 :::
 
-### Correcting a known shrinking factor {#sec-rescaling}
+### Rescaling by a known shrinking factor {#sec-rescaling}
 
 If the shrinking factor $f$ is known, the bias can be removed: $\bar s/f$ averages to $\langle P\rangle$. The
 price is in the variance. Dividing by $f$ multiplies the standard error by $1/f$, so the
@@ -903,15 +904,14 @@ shrinks by the same factor, and the error rates of the device give it
 (@eq-circuit-fidelity). Readout errors, which act only at the end of the circuit, are
 another simple case. For generic circuits and noise models, however, each expectation
 value is changed in its own way, and predicting it means simulating the noisy circuit.
-A cost in shots of the same kind returns with the other mitigation methods later in the
-course.
+A cost in shots of the same kind returns with the other mitigation methods
+(@sec-mitigation-price).
 
 Two questions follow from here. The observables of real applications, such as the energy
 of a physical system, are sums of many Pauli strings, each estimated with its own shots
 and its own noise; the next chapter shows how to measure them (@sec-measuring-observables).
 And the bias need not be accepted: error-mitigation methods estimate and remove it, at a
-price in shots.
-<!-- L5-LINK: link the second question to the chapter on error mitigation once it exists. -->
+price in shots (@sec-mitigation).
 
 ## More exercises {#sec-L2-exercises}
 

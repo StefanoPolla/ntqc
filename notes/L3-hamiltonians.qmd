@@ -261,8 +261,7 @@ For the state that the chain reaches from $\ket{0\cdots0}$ after a time $t = 1$,
 
 With data, the sample variance of the values $s_g$ of each setting gives the standard error; [Tutorial 3]({{< var colab >}}/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb) does this in code.
 
-<!-- L5-LINK: symmetry verification in L5 can use the Heisenberg model's conserved
-number of flipped qubits (@sec-spin-models), read from the Z setting. -->
+In the Heisenberg model, the $Z$ setting also gives, in each shot, the number of flipped qubits, which @sec-post-selection uses to detect errors.
 
 ::: {#exr-settings}
 ## Measurement settings
