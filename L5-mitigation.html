@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stefano Polla">
+<meta name="dcterms.date" content="2026-11-22">
+
+<title>5&nbsp; Reducing the effect of noise – Near-term Quantum Computing — lecture notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exercises.html" rel="next">
+<link href="./L4-ground-states.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b626d73c4c936ccc3cb08be7d45d1df6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-37a0ccb6f5b9899fcb884e11bb6f7458.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="robots" content="noindex, nofollow">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./L5-mitigation.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Near-term Quantum Computing — lecture notes</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/StefanoPolla/ntqc/tree/main/notes/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./ntqc-lecture-notes.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About these notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L1-platforms-and-measurement.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Platforms, gates and measurement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L2-noise.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Noise channels and error budgets</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L3-hamiltonians.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Measuring and simulating Hamiltonians</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L4-ground-states.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L5-mitigation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-three-ways" id="toc-sec-three-ways" class="nav-link active" data-scroll-target="#sec-three-ways"><span class="header-section-number">5.1</span> Suppression, mitigation and correction</a></li>
+  <li><a href="#sec-suppression" id="toc-sec-suppression" class="nav-link" data-scroll-target="#sec-suppression"><span class="header-section-number">5.2</span> Error suppression</a>
+  <ul class="collapse">
+  <li><a href="#sec-qubit-selection" id="toc-sec-qubit-selection" class="nav-link" data-scroll-target="#sec-qubit-selection"><span class="header-section-number">5.2.1</span> Choosing the qubits</a></li>
+  <li><a href="#sec-dynamical-decoupling" id="toc-sec-dynamical-decoupling" class="nav-link" data-scroll-target="#sec-dynamical-decoupling"><span class="header-section-number">5.2.2</span> Dynamical decoupling</a></li>
+  </ul></li>
+  <li><a href="#sec-mitigation-price" id="toc-sec-mitigation-price" class="nav-link" data-scroll-target="#sec-mitigation-price"><span class="header-section-number">5.3</span> The price of mitigation</a>
+  <ul class="collapse">
+  <li><a href="#sec-readout-mitigation" id="toc-sec-readout-mitigation" class="nav-link" data-scroll-target="#sec-readout-mitigation"><span class="header-section-number">5.3.1</span> Mitigating readout errors</a></li>
+  <li><a href="#sec-rescaling-overhead" id="toc-sec-rescaling-overhead" class="nav-link" data-scroll-target="#sec-rescaling-overhead"><span class="header-section-number">5.3.2</span> Rescaling and the sampling overhead</a></li>
+  </ul></li>
+  <li><a href="#sec-zne" id="toc-sec-zne" class="nav-link" data-scroll-target="#sec-zne"><span class="header-section-number">5.4</span> Zero-noise extrapolation</a>
+  <ul class="collapse">
+  <li><a href="#sec-folding" id="toc-sec-folding" class="nav-link" data-scroll-target="#sec-folding"><span class="header-section-number">5.4.1</span> Scaling the noise by folding</a></li>
+  <li><a href="#sec-extrapolation" id="toc-sec-extrapolation" class="nav-link" data-scroll-target="#sec-extrapolation"><span class="header-section-number">5.4.2</span> Extrapolating to zero noise</a></li>
+  <li><a href="#sec-zne-variance" id="toc-sec-zne-variance" class="nav-link" data-scroll-target="#sec-zne-variance"><span class="header-section-number">5.4.3</span> The price: amplified shot noise</a></li>
+  <li><a href="#sec-zne-steps" id="toc-sec-zne-steps" class="nav-link" data-scroll-target="#sec-zne-steps"><span class="header-section-number">5.4.4</span> Implementing ZNE</a></li>
+  </ul></li>
+  <li><a href="#sec-symmetry-verification" id="toc-sec-symmetry-verification" class="nav-link" data-scroll-target="#sec-symmetry-verification"><span class="header-section-number">5.5</span> Symmetry verification</a>
+  <ul class="collapse">
+  <li><a href="#sec-quantum-numbers" id="toc-sec-quantum-numbers" class="nav-link" data-scroll-target="#sec-quantum-numbers"><span class="header-section-number">5.5.1</span> Symmetries and quantum numbers</a></li>
+  <li><a href="#sec-post-selection" id="toc-sec-post-selection" class="nav-link" data-scroll-target="#sec-post-selection"><span class="header-section-number">5.5.2</span> Post-selection on the quantum number</a></li>
+  <li><a href="#sec-sv-steps" id="toc-sec-sv-steps" class="nav-link" data-scroll-target="#sec-sv-steps"><span class="header-section-number">5.5.3</span> Implementing symmetry verification</a></li>
+  <li><a href="#sec-tfim-verification" id="toc-sec-tfim-verification" class="nav-link" data-scroll-target="#sec-tfim-verification"><span class="header-section-number">5.5.4</span> Verifying the energy of the TFIM</a></li>
+  </ul></li>
+  <li><a href="#sec-reading-mitigated" id="toc-sec-reading-mitigated" class="nav-link" data-scroll-target="#sec-reading-mitigated"><span class="header-section-number">5.6</span> Reading a mitigated result</a></li>
+  <li><a href="#sec-other-methods" id="toc-sec-other-methods" class="nav-link" data-scroll-target="#sec-other-methods"><span class="header-section-number">5.7</span> Other methods</a></li>
+  <li><a href="#sec-L5-reading" id="toc-sec-L5-reading" class="nav-link" data-scroll-target="#sec-L5-reading"><span class="header-section-number">5.8</span> Further reading</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-mitigation" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Stefano Polla </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">22 November 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">22 November 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\ket}[1]{\left|#1\right\rangle}
+\newcommand{\bra}[1]{\left\langle#1\right|}
+\newcommand{\gate}[1]{\mathrm{#1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\]</span></p>
+</div>
+<p>In the previous chapters, noise was what made our estimates wrong: it shrinks expectation values (<a href="L2-noise.html#sec-bias-variance" class="quarto-xref"><span>Section 2.7</span></a>), it limits the number of Trotter steps (<a href="L3-hamiltonians.html#sec-trotter-noise" class="quarto-xref"><span>Section 3.7</span></a>), and in <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-04/T4-vqe_qiskit.ipynb">Tutorial 4</a> it left the energy of the variational state far above what the ansatz could reach. In this chapter, we discuss how to reduce the effect of noise in <a href="glossary.html#gloss-nisq" class="gloss" data-gloss="Noisy intermediate-scale quantum: devices with tens to thousands of qubits whose errors are not corrected, so noise limits the size of the circuits they can run.">NISQ</a> computation without error correction: briefly with error suppression, and mainly with error mitigation.</p>
+<p>By the end of the chapter, you should be able to tell error suppression, mitigation and correction apart; explain how zero-noise extrapolation and symmetry verification work, and how they trade bias for standard error; and judge whether a mitigated result is plausible.</p>
+<section id="sec-three-ways" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-three-ways"><span class="header-section-number">5.1</span> Suppression, mitigation and correction</h2>
+<p>Dealing with noise is central to quantum computing. One natural way to reduce noise is to build better hardware, with fewer errors per gate; but much can also be done on the <em>software</em> side, i.e.&nbsp;in the way we design algorithms and run them on a given device. We group the software methods to reduce errors into three categories:</p>
+<div id="def-three-ways" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.1 (Error suppression, mitigation and correction)</strong></span> &nbsp;</p>
+<ul>
+<li><a href="glossary.html#gloss-error-suppression" class="gloss" data-gloss="Methods that change how a device runs a circuit, so that each shot suffers fewer errors, such as better calibration, compiling into fewer gates, choosing the best qubits, or dynamical decoupling. They cost no extra shots.">Quantum error suppression</a> changes how the device runs a circuit (e.g.&nbsp;in gate implementation or compilation), so that each shot suffers fewer errors.</li>
+<li><a href="glossary.html#gloss-error-mitigation" class="gloss" data-gloss="Methods that reduce the effect of noise on estimated quantities without correcting the errors, typically by running extra or modified circuits and combining their results. They cost extra shots.">Quantum error mitigation</a> leaves the errors of each shot as they are. It runs many shots, often of several modified circuits, and combines their outcomes in classical post-processing into an estimate of the noiseless expectation value.</li>
+<li><a href="glossary.html#gloss-qec" class="gloss" data-gloss="Encoding quantum information redundantly in many physical qubits, so that errors can be detected and corrected without disturbing the encoded information.">Quantum error correction</a> encodes each logical qubit in many physical qubits, and detects and corrects errors during the computation (<a href="L1-platforms-and-measurement.html#sec-nisq" class="quarto-xref"><span>Section 1.1</span></a>).</li>
+</ul>
+</div>
+<p><strong>Suppression</strong> includes better calibrated pulses, compiling into fewer two-qubit gates, choosing the best qubits of a device, and dynamical decoupling (<a href="#sec-suppression" class="quarto-xref"><span>Section 5.2</span></a>); it costs no extra shots, but it cannot remove all errors.</p>
+<p><strong>Mitigation</strong> includes readout-error mitigation and the rescaling of <a href="L2-noise.html#sec-rescaling" class="quarto-xref"><span>Section 2.7.2</span></a>, and zero-noise extrapolation and symmetry verification, the two main methods of this chapter, as well as many more. An extensive review can be found in <span class="citation" data-cites="cai2023">Cai et al. (<a href="L1-platforms-and-measurement.html#ref-cai2023" role="doc-biblioref">2023</a>)</span>. Mitigation needs no extra qubits, but it improves only estimates of expectation values, not the state on the device, and its cost in shots grows exponentially with the amount of noise (<a href="#sec-mitigation-price" class="quarto-xref"><span>Section 5.3</span></a>).</p>
+<p><strong>Correction</strong> can make a computation as reliable as needed, but it needs many more qubits, with error rates below the threshold (<a href="L1-platforms-and-measurement.html#sec-nisq" class="quarto-xref"><span>Section 1.1</span></a>); in order to avoid all errors, error correction must be combined with fault-tolerant gate implementation, which is typically very expensive.</p>
+<p>Error suppression techniques can be applied to any quantum circuit, so they combine naturally with both mitigation and correction. Combining error correction with mitigation is an active area of research, which may find applications on the first fault-tolerant devices <span class="citation" data-cites="dutkiewicz2025 jeon2026">(<a href="L1-platforms-and-measurement.html#ref-dutkiewicz2025" role="doc-biblioref">Dutkiewicz et al. 2025</a>; <a href="L1-platforms-and-measurement.html#ref-jeon2026" role="doc-biblioref">Jeon and Cai 2026</a>)</span>.</p>
+</section>
+<section id="sec-suppression" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-suppression"><span class="header-section-number">5.2</span> Error suppression</h2>
+<p>Error suppression changes how a device runs a circuit, but not what the circuit computes. When running a circuit on cloud hardware, some error suppression happens automatically in every run: providers calibrate the pulses of the gates regularly (<a href="L1-platforms-and-measurement.html#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>). Compilers, in turn, can turn a circuit into as few native gates as possible, above all as few two-qubit gates, which cause most errors (<a href="L1-platforms-and-measurement.html#sec-compiling" class="quarto-xref"><span>Section 1.3.4</span></a>). How hard they try is usually up to us: in Qiskit, the <code>optimization_level</code> of <code>transpile</code> sets it, as in <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-03/T3-hamiltonians_qiskit.ipynb">Tutorial 3</a>, where level 1 merges neighbouring single-qubit gates and level 0 does not. In this section, we look at two techniques that we control ourselves: choosing the qubits on which a circuit runs, and dynamical decoupling.</p>
+<section id="sec-qubit-selection" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="sec-qubit-selection"><span class="header-section-number">5.2.1</span> Choosing the qubits</h3>
+<p>On a superconducting chip, no two qubits are identical. Their <span class="math inline">\(T_1\)</span> and <span class="math inline">\(T_2\)</span>, their readout errors, and the error rates of their gates differ. Furthermore, these values drift between calibrations, so they will likely be different on different days, and sometimes change over a period of a few hours (<a href="L1-platforms-and-measurement.html#sec-superconducting" class="quarto-xref"><span>Section 1.2.3</span></a>).</p>
+<p><a href="#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a> (a) shows the two-qubit gate error rates on IQM’s 20-qubit device Garnet, whose coupling graph is a square lattice (<a href="L1-platforms-and-measurement.html#fig-coupling-graphs" class="quarto-xref">Figure&nbsp;<span>1.10</span></a>). In these data, the error probability of a CZ ranges from 0.7% to 1.8%; on the device itself, the values change from one calibration to the next.</p>
+<p>We summarise the noise that a circuit suffers on a device with the sum of the error probabilities of all the operations it uses (gates, waits and readouts): <span id="eq-fault-rate"><span class="math display">\[
+\lambda = \sum_i \varepsilon_i ,
+\tag{5.1}\]</span></span> where <span class="math inline">\(\varepsilon_i\)</span> is the error probability of operation <span class="math inline">\(i\)</span>, as in <a href="L2-noise.html#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>. This quantity is called the <a href="glossary.html#gloss-circuit-fault-rate" class="gloss" data-gloss="The sum of the error probabilities of all operations of a circuit: the average number of errors per shot. A shot runs without errors with a probability of about e to the power minus this number.">circuit fault rate</a> <span class="citation" data-cites="cai2023">(<a href="L1-platforms-and-measurement.html#ref-cai2023" role="doc-biblioref">Cai et al. 2023</a>)</span>, and by <a href="L2-noise.html#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a> a shot runs without errors with probability <span class="math inline">\(e^{-\lambda}\)</span>. It is the total of the error budgets of <a href="L2-noise.html#sec-budgets" class="quarto-xref"><span>Section 2.6.3</span></a>: <span class="math inline">\(\lambda \approx 0.25\)</span> for the brick-wall circuit of <a href="L2-noise.html#tbl-budget" class="quarto-xref">Table&nbsp;<span>2.2</span></a> on a superconducting device. Since the error rates differ, <span class="math inline">\(\lambda\)</span> depends on which qubits of the device play the roles of the qubits of the circuit, a choice called the <a href="glossary.html#gloss-layout" class="gloss" data-gloss="The choice of the qubits of a device that play the roles of the qubits of a circuit, made when the circuit is compiled. A good layout follows the coupling graph, so that no SWAPs are needed, and uses the qubits and couplers with the lowest error rates.">layout</a>. The layout must follow the coupling graph: where possible, qubits that share two-qubit gates in the circuit should be neighbours on the device, otherwise the compiler must add expensive SWAP gates (<a href="L1-platforms-and-measurement.html#sec-connectivity" class="quarto-xref"><span>Section 1.3.6</span></a>).</p>
+<div id="fig-qubit-selection" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qubit-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/qubit-selection.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qubit-selection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.1: Choosing the qubits on IQM’s Garnet, with the example calibration data that IQM ships with its software (the fake backend <code>IQMFakeGarnet</code> of <code>iqm-client</code> 36.0.0; fixed values, not the device’s current calibration). (a) The coupling graph, drawn as on IQM’s Resonance platform, with the error probability of each CZ on the diamond between its two qubits (its depolarising error and the relaxation of both qubits during the gate), and three layouts of the chain of qubits <span class="math inline">\(q_1\)</span> to <span class="math inline">\(q_4\)</span>: the best (blue) and the worst (orange) of the 312 layouts that follow the coupling graph, counting both directions of each chain, and the default layout, which Qiskit chooses without error rates (dashed, drawn beside its qubits). (b) The circuit of Tutorial 4 and, below it, its circuit fault rate <span class="math inline">\(\lambda\)</span> on the three layouts of (a). The compiled circuit has 18 CZs, 27 single-qubit gates and 4 readouts; the waits are not counted.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a> (b) gives <span class="math inline">\(\lambda\)</span> for the circuit of Tutorial 4: 0.30 on the best layout of its 4-qubit chain and 0.44 on the worst. Placing the chain on QB1, QB2, QB3 and QB4, in the order of their numbers, does not follow the coupling graph, since QB2 and QB3 are not coupled: the compiler adds two SWAPs, and <span class="math inline">\(\lambda = 0.47\)</span>, more than on any layout that follows the graph.</p>
+<p>The layout also sets the price of mitigation. Rescaling, which divides an estimate by the factor <span class="math inline">\(f \approx e^{-\lambda}\)</span> by which noise shrinks it, costs <span class="math inline">\(e^{2\lambda}\)</span> times as many shots (<a href="L2-noise.html#sec-rescaling" class="quarto-xref"><span>Section 2.7.2</span></a>), 1.8 on the best layout and 2.4 on the worst, and the costs of the other methods of this chapter also grow exponentially with <span class="math inline">\(\lambda\)</span> (<a href="#sec-mitigation-price" class="quarto-xref"><span>Section 5.3</span></a>). For deeper circuits, the gap between good and bad qubits grows exponentially too (<a href="#exr-qubit-choice" class="quarto-xref">Exercise&nbsp;<span>5.1</span></a>). Suppression therefore comes first, and mitigation is applied on top of it.</p>
+<p>By default, the IQM backend gives Qiskit no error rates, so the compiler picks a layout that follows the coupling graph but ignores the quality of the qubits. For the circuit of Tutorial 4, this default layout has <span class="math inline">\(\lambda = 0.32\)</span> (<a href="#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a> (b)), close to the best one by chance: nothing keeps it from landing near the worst. To use the best qubits, choose them from the device’s current calibration data and fix the layout when compiling, for example with <code>transpile(circuit, backend, initial_layout=[12, 13, 17, 18])</code> for QB13, QB14, QB18 and QB19, the best chain in <a href="#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a> (Qiskit numbers the qubits from 0).</p>
+<div id="exr-qubit-choice" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.1 (Good qubits for a deeper circuit)</strong></span> In the circuit of Tutorial 4, each of the three bonds of the chain carries 6 CZs. On the best layout of <a href="#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a>, the CZs of the three bonds have error probabilities of 0.7%, 0.9% and 1.0%; on the worst layout, 1.3%, 1.8% and 1.0%.</p>
+<ol type="a">
+<li><p>Compute the contribution of the CZs to <span class="math inline">\(\lambda\)</span> on each layout, and the factor <span class="math inline">\(f \approx e^{-\lambda}\)</span> by which the CZs alone shrink an expectation value.</p></li>
+<li><p>A deeper circuit has ten times as many layers on the same chain, so 60 CZs on each bond. Compute <span class="math inline">\(f\)</span> again on both layouts. How has the ratio of the two values of <span class="math inline">\(f\)</span> changed, and how much of the signal is left on the worst layout?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-dynamical-decoupling" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="sec-dynamical-decoupling"><span class="header-section-number">5.2.2</span> Dynamical decoupling</h3>
+<p>In most circuits, some qubits are <a href="glossary.html#gloss-idle-qubit" class="gloss" data-gloss="A qubit on which no gate acts for a while, for example while gates act on other qubits. While idle, it still relaxes and dephases.">idle</a> while gates act on others, and meanwhile they relax and dephase (<a href="L2-noise.html#sec-t1-t2" class="quarto-xref"><span>Section 2.2.5</span></a>): this also increases the fault rate of the circuit. Much of the dephasing comes from <em>slow</em> noise: the qubit frequency is off by a small amount <span class="math inline">\(\delta\)</span> that we do not know and that changes from shot to shot, but hardly changes during one shot. Over an idle time <span class="math inline">\(t\)</span>, the qubit then picks up the unknown phase <span class="math inline">\(\delta t\)</span> at a steady rate, and a steady drift can be reversed. <a href="glossary.html#gloss-dynamical-decoupling" class="gloss" data-gloss="Repeated echo pulses during a long wait, which remove noise that is slow compared with the spacing of the pulses. It suppresses noise on the device itself.">Dynamical decoupling</a> fills the idle time with the <a href="glossary.html#gloss-echo" class="gloss" data-gloss="An X pulse halfway through a wait, which reverses the phase accumulated before it, so that phase errors that stay constant during the wait cancel. An echo experiment measures T2.">echo</a> of <a href="L2-noise.html#sec-slow-noise" class="quarto-xref"><span>Section 2.2.6</span></a> (<a href="#fig-dynamical-decoupling" class="quarto-xref">Figure&nbsp;<span>5.2</span></a>). An <span class="math inline">\(X\)</span> pulse halfway through the idle time reverses the sign of the phase picked up so far, so the second half undoes the first, whatever <span class="math inline">\(\delta\)</span> is, and a second <span class="math inline">\(X\)</span> at the end undoes the flip. Long idle times are filled with several such pairs, or with other sequences of pulses whose product is the identity <span class="citation" data-cites="viola1999">(<a href="L1-platforms-and-measurement.html#ref-viola1999" role="doc-biblioref">Viola et al. 1999</a>)</span>.</p>
+<div id="fig-dynamical-decoupling" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dynamical-decoupling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/dynamical-decoupling.svg" class="img-fluid figure-img" style="width:75.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dynamical-decoupling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.2: Dynamical decoupling on an idle qubit. Qubit 3 is idle for a time <span class="math inline">\(t\)</span> while qubits 1 and 2 run gates, and the two <span class="math inline">\(X\)</span> pulses inserted in the idle time (blue) form the echo of <a href="L2-noise.html#fig-ramsey-echo" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>; their product is the identity. The boxes marked PRX are single-qubit gates, and the vertical lines with two dots are CZs.
+</figcaption>
+</figure>
+</div>
+<p>Dynamical decoupling only removes certain kinds of noise, like the part of dephasing due to a slow change in the qubit energy. In exchange, every additional pulse adds a small error of its own, so more pulses are not always better. Compilers can insert the pulses once the durations of all gates are known, and many sequences have been compared on superconducting devices <span class="citation" data-cites="ezzell2023">(<a href="L1-platforms-and-measurement.html#ref-ezzell2023" role="doc-biblioref">Ezzell et al. 2023</a>)</span>. On IQM devices, dynamical decoupling is an option of the run (<code>dd_mode</code>), off by default.</p>
+</section>
+</section>
+<section id="sec-mitigation-price" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-mitigation-price"><span class="header-section-number">5.3</span> The price of mitigation</h2>
+<p>In contrast to suppression or correction, error mitigation does not attempt to reduce or remove errors from any single shot. Instead, to mitigate errors we run multiple shots of the noisy circuit, often together with modified versions of it, and we combine their outcomes to compute a better estimate of the noiseless expectation value. This process always costs extra shots; in this section we explain why, and we discuss how to determine how many more shots are required.</p>
+<p>Consider an experiment that estimates the expectation value <span class="math inline">\(\langle P\rangle\)</span> of a Pauli string <span class="math inline">\(P\)</span> from <span class="math inline">\(N\)</span> shots, by the sample mean <span class="math inline">\(\bar s\)</span> of their outcomes <span class="math inline">\(\pm 1\)</span> (<a href="L1-platforms-and-measurement.html#eq-sample-mean" class="quarto-xref">Equation&nbsp;<span>1.8</span></a>). This estimate can be wrong in two ways (<a href="L2-noise.html#sec-bias-variance" class="quarto-xref"><span>Section 2.7</span></a>). Its <a href="glossary.html#gloss-bias" class="gloss" data-gloss="The difference between the average of an estimator and the true value. Noise biases estimates of expectation values; more shots do not reduce the bias.">bias</a> is the difference between its average, if we repeated the whole experiment many times, and the value we want. Noise causes a bias, as it effectively changes the quantum state and thus the outcome probabilities of each measurement. Increasing the number of shots does not reduce the bias. The standard error measures how much the estimate fluctuates from one repetition of the experiment to the next. The standard error, denoted <span class="math inline">\(\sigma_{\bar s}\)</span> in <a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>, is the square root of the estimate’s variance, and it shrinks as <span class="math inline">\(1/\sqrt{N}\)</span>.</p>
+<p>Error mitigation reduces the bias of an estimate, but the mitigation procedure also amplifies fluctuations: the mitigated estimate has a larger standard error, and needs more shots to reach the same precision. We first explore this bias-variance trade-off in the two simplest methods, which we met in the previous chapters.</p>
+<section id="sec-readout-mitigation" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="sec-readout-mitigation"><span class="header-section-number">5.3.1</span> Mitigating readout errors</h3>
+<p>Readout errors are the easiest to mitigate, because they act only at the end of the circuit and their rates, collected in the confusion matrix, can be characterised easily, as we discussed in <a href="L2-noise.html#sec-readout-errors" class="quarto-xref"><span>Section 2.5</span></a> (in <a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-02/T2-noisy-simulation_qiskit.ipynb">Tutorial 2</a>, Exercise 2, you measure them on a simulated device). With the probabilities <span class="math inline">\(e_0 = p(1\mid 0)\)</span> and <span class="math inline">\(e_1 = p(0\mid 1)\)</span> of reading the wrong bit, the value <span class="math inline">\(\langle Z\rangle_{\text{read}}\)</span> recorded on a single qubit follows <a href="L2-noise.html#eq-readout" class="quarto-xref">Equation&nbsp;<span>2.10</span></a>, and inverting it gives the mitigated value, <span class="math display">\[
+\langle Z\rangle = \frac{\langle Z\rangle_{\text{read}} - (e_1 - e_0)}{1 - e_0 - e_1} ,
+\]</span> a rescaling with an offset. For independent readouts on many qubits, the inverse of each qubit’s <a href="glossary.html#gloss-confusion-matrix" class="gloss" data-gloss="The table of probabilities of reading each outcome given each true state of the qubits. It describes readout errors.">confusion matrix</a> is applied to the measured probabilities of the bit strings, one qubit at a time. The mitigated estimate has no bias from readout errors, but the mitigation of each qubit multiplies the standard error by about <span class="math inline">\(1/(1 - e_0 - e_1)\)</span>. This method assumes that the readout errors of different qubits are independent, and that their rates have not changed since they were measured: correlated readout errors, or rates that have drifted (<a href="#sec-qubit-selection" class="quarto-xref"><span>Section 5.2.1</span></a>), leave a bias, and can even make it overshoot (<a href="L1-platforms-and-measurement.html#exr-readout-bias" class="quarto-xref">Exercise&nbsp;<span>1.9</span></a>, part d). Readout-error mitigation is the first step of rescaling and of ZNE; symmetry verification instead discards most readout errors with the other errors (<a href="#exr-post-selection" class="quarto-xref">Exercise&nbsp;<span>5.4</span></a>).</p>
+</section>
+<section id="sec-rescaling-overhead" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="sec-rescaling-overhead"><span class="header-section-number">5.3.2</span> Rescaling and the sampling overhead</h3>
+<p>Assume we want to measure an expectation value <span class="math inline">\(\langle P \rangle\)</span> on a circuit where we know the noise only acts as global depolarising, shrinking all expectation values by a known factor <span class="math inline">\(f\)</span> (<a href="L2-noise.html#eq-global-factor" class="quarto-xref">Equation&nbsp;<span>2.9</span></a>). Then, we know the sample mean <span class="math inline">\(\bar s\)</span> of the outcomes will be an unbiased estimate of <span class="math inline">\(f\langle P \rangle\)</span>. We can thus reconstruct an estimate of <span class="math inline">\(\langle P \rangle\)</span> by rescaling the average: <span class="math inline">\(\bar s / f\)</span>. (This was already discussed in <a href="L2-noise.html#sec-rescaling" class="quarto-xref"><span>Section 2.7.2</span></a>.)</p>
+<p>Rescaling rests on two assumptions, and each of them can fail. The first assumption is that the noise is global depolarising, so that every expectation value shrinks by the same factor <span class="math inline">\(f\)</span>. Real noise is not always well approximated by global depolarising noise: not every error changes every Pauli string, so expectation values shrink by different factors (<a href="L2-noise.html#sec-signal-left" class="quarto-xref"><span>Section 2.6.2</span></a>), and dividing all by a single <span class="math inline">\(f\)</span> leaves a bias. The second assumption is that we know the value of <span class="math inline">\(f\)</span>. Estimating it from the error rates, as <span class="math inline">\(e^{-\lambda}\)</span>, gives the probability that no error occurs. This tends to underestimate <span class="math inline">\(f\)</span>, because some errors leave a given Pauli string unchanged. When <span class="math inline">\(f\)</span> is too small, dividing by it overcompensates, and the estimate overshoots past the true value. Both assumptions can be checked, and <span class="math inline">\(f\)</span> can be measured instead of predicted, by running a similar circuit whose result is known. Due to these demanding assumptions, rescaling is often unreliable in practice, but (like the global depolarising model for noise) it is a useful archetype of error mitigation: its theoretical analysis is simple, and what we learn from studying it often extends to other error mitigation methods.</p>
+<p>Dividing an estimate by <span class="math inline">\(f\)</span> also multiplies the standard error by <span class="math inline">\(1/f\)</span>, so reaching the same standard error as the unmitigated estimate takes <span class="math inline">\(1/f^2\)</span> times as many shots. This factor is the <a href="glossary.html#gloss-sampling-overhead" class="gloss" data-gloss="The factor by which an error-mitigation method multiplies the number of shots needed for a given standard error, compared with the unmitigated estimate. It grows exponentially with the circuit fault rate.">sampling overhead</a> of an error mitigation method: the number of shots it needs to achieve a given standard error, divided by the number of shots that the unmitigated estimate needs for the same error. By <a href="L2-noise.html#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>, <span class="math inline">\(f \approx e^{-\lambda}\)</span>, with the circuit fault rate <span class="math inline">\(\lambda\)</span> of <a href="#eq-fault-rate" class="quarto-xref">Equation&nbsp;<span>5.1</span></a>, so the overhead of rescaling is <span class="math inline">\(e^{2\lambda}\)</span>: about 7 for <span class="math inline">\(\lambda = 1\)</span>, 400 for <span class="math inline">\(\lambda = 3\)</span> and 22,000 for <span class="math inline">\(\lambda = 5\)</span>.</p>
+<p>Rescaling is worth its overhead only when the bias matters. With few shots, the standard error of <span class="math inline">\(\bar s\)</span> is larger than its bias, and dividing by <span class="math inline">\(f\)</span> only makes the estimate fluctuate more. With many shots, the bias is the larger error, and the rescaled estimate is the better one (<a href="#exr-rescaling-pays" class="quarto-xref">Exercise&nbsp;<span>5.2</span></a>).</p>
+<p>The sampling overhead changes for different error mitigation methods, but in the worst case all of them grow exponentially with <span class="math inline">\(\lambda\)</span> <span class="citation" data-cites="quek2024">(<a href="L1-platforms-and-measurement.html#ref-quek2024" role="doc-biblioref">Quek et al. 2024</a>)</span>. Mitigation therefore works only for circuits whose fault rate is not too large: it pushes the limits set by noise a little further, and can cover the “last mile” to a result the device alone cannot reach.</p>
+<div id="exr-rescaling-pays" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.2 (When rescaling pays off)</strong></span> Under global depolarising noise, a circuit has <span class="math inline">\(\langle P\rangle = 0.2\)</span> and the shrinking factor <span class="math inline">\(f = 0.9\)</span>. The standard error of <span class="math inline">\(\bar s\)</span> is <span class="math inline">\(\sigma/\sqrt{N}\)</span>, where <span class="math inline">\(\sigma^2 = 1 - f^2\langle P\rangle^2\)</span> is the variance of a single shot (<a href="L2-noise.html#sec-mse" class="quarto-xref"><span>Section 2.7.1</span></a>).</p>
+<ol type="a">
+<li><p>For <span class="math inline">\(N = 100\)</span> and for <span class="math inline">\(N = 10^4\)</span> shots, compute the bias and the standard error of the unmitigated estimate <span class="math inline">\(\bar s\)</span> and of the rescaled estimate <span class="math inline">\(\bar s/f\)</span>. Which estimate would you trust more in each case?</p></li>
+<li><p>Roughly how many shots are needed for the rescaled estimate to be the better one?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Compare the bias of <span class="math inline">\(\bar s\)</span> with its standard error.</p>
+</details></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-zne" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-zne"><span class="header-section-number">5.4</span> Zero-noise extrapolation</h2>
+<p><a href="glossary.html#gloss-zne" class="gloss" data-gloss="An error-mitigation method that estimates an expectation value at several amplified noise levels and extrapolates the estimates to zero noise. It amplifies the shot noise.">Zero-noise extrapolation</a> (ZNE) is performed by running the same computation at several noise levels, fitting a curve to the results and extrapolating to zero noise <span class="citation" data-cites="temme2017 li2017">(<a href="L1-platforms-and-measurement.html#ref-temme2017" role="doc-biblioref">Temme et al. 2017</a>; <a href="L1-platforms-and-measurement.html#ref-li2017" role="doc-biblioref">Li and Benjamin 2017</a>)</span>. Noise levels cannot be reduced below what the physical device allows, but they can be increased on purpose, which is the opposite of error suppression (<a href="#sec-folding" class="quarto-xref"><span>Section 5.4.1</span></a>). Zero-noise extrapolation needs no model of the noise, only a way to increase it.</p>
+<p>To describe this, we need a number for the noise level. Imagine that we could make every error of the circuit <span class="math inline">\(c\)</span> times more likely; we call <span class="math inline">\(c\)</span> the <em>noise scale factor</em>. We can then write <span class="math inline">\(E(c)\)</span> for the unmitigated, noisy value of the expectation value we want (for example the energy) at that noise level. Running the bare circuit on the device as it is, we have <span class="math inline">\(c = 1\)</span>, and <span class="math inline">\(E(1)\)</span> is the noisy value that we measure. The noiseless value that we want is <span class="math inline">\(E(0)\)</span>, which no device can reach. ZNE measures <span class="math inline">\(E(c)\)</span> at a few scale factors <span class="math inline">\(c \ge 1\)</span>, fits a chosen curve to <span class="math inline">\(E(c)\)</span>, and extrapolates back to <span class="math inline">\(c = 0\)</span>, as in <a href="#fig-zne" class="quarto-xref">Figure&nbsp;<span>5.3</span></a> (a). The next two sections explain the two steps: how to scale the noise, and how to extrapolate.</p>
+<section id="sec-folding" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="sec-folding"><span class="header-section-number">5.4.1</span> Scaling the noise by folding</h3>
+<p>We cannot easily change the error rates of the device, but we can make the circuit longer without changing what it computes. On a digital device, the simplest way to do this is <a href="glossary.html#gloss-gate-folding" class="gloss" data-gloss="Replacing a gate by the gate, its inverse and the gate again. The ideal circuit is unchanged, but the gate’s errors are tripled; used to scale the noise in zero-noise extrapolation.">gate folding</a>: replace a gate <span class="math inline">\(G\)</span> by <span class="math inline">\(G G^\dagger G\)</span> <span class="citation" data-cites="giurgica-tiron2020">(<a href="L1-platforms-and-measurement.html#ref-giurgica-tiron2020" role="doc-biblioref">Giurgica-Tiron et al. 2020</a>)</span>. Without noise, <span class="math inline">\(G^\dagger G = I\)</span>, so the folded circuit computes the same thing as the original. On the device, the gate now runs three times, so it suffers three times the errors, if <span class="math inline">\(G^\dagger\)</span> is as noisy as <span class="math inline">\(G\)</span>.</p>
+<p>Folding the whole circuit <span class="math inline">\(U\)</span> into <span class="math inline">\(U(U^\dagger U)^k\)</span> therefore scales the noise by <span class="math inline">\(c = 2k+1\)</span>, that is, by 1, 3, 5, …. Folding only some of the gates, chosen at random, gives the factors in between: if the two-qubit gates cause most errors, folding <span class="math inline">\(g\)</span> of the <span class="math inline">\(n_G\)</span> two-qubit gates gives <span class="math inline">\(c \approx 1 + 2g/n_G\)</span>.</p>
+<p>Folding scales the noise as intended only under two assumptions; where they fail, the extrapolated value keeps a bias.</p>
+<ol type="1">
+<li>Folding scales only the errors of the gates. Readout errors are the same at every <span class="math inline">\(c\)</span>, so they must be mitigated separately (<a href="#sec-readout-mitigation" class="quarto-xref"><span>Section 5.3.1</span></a>).</li>
+<li>Errors must add up, like the incoherent errors of <a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>. Coherent errors can instead cancel: if <span class="math inline">\(G = R_X(\theta)\)</span> over-rotates, <span class="math inline">\(G^\dagger = R_X(-\theta)\)</span> over-rotates in the opposite direction, and <span class="math inline">\(GG^\dagger G\)</span> has the error of a single <span class="math inline">\(G\)</span>. <a href="glossary.html#gloss-twirling" class="gloss" data-gloss="Inserting random Pauli gates around a gate, chosen so that they cancel in the ideal circuit. Averaged over the random choices, any error becomes a Pauli channel.">Twirling</a> (<a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>) turns coherent errors into Pauli channels, which do add up <span class="citation" data-cites="cai2023">(<a href="L1-platforms-and-measurement.html#ref-cai2023" role="doc-biblioref">Cai et al. 2023</a>)</span>.</li>
+</ol>
+</section>
+<section id="sec-extrapolation" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="sec-extrapolation"><span class="header-section-number">5.4.2</span> Extrapolating to zero noise</h3>
+<p>With estimates <span class="math inline">\(\hat E_j\)</span> at the scale factors <span class="math inline">\(c_1 &lt; c_2 &lt; \dots &lt; c_m\)</span>, we choose a model for <span class="math inline">\(E(c)\)</span>, fit it to the estimates, and evaluate it at <span class="math inline">\(c = 0\)</span>. Three models are common.</p>
+<ol type="1">
+<li><em>Linear</em>, <span class="math inline">\(E(c) = a + bc\)</span>. Through two points, its value at <span class="math inline">\(c = 0\)</span> is <span class="math display">\[
+\hat E_{\text{lin}} = \frac{c_2\hat E_1 - c_1\hat E_2}{c_2 - c_1} ,
+\]</span> which for <span class="math inline">\(c = 1, 3\)</span> is <span class="math inline">\((3\hat E_1 - \hat E_3)/2\)</span>.</li>
+<li><em>Polynomial</em>, of degree <span class="math inline">\(m-1\)</span> through all <span class="math inline">\(m\)</span> points. This is called <a href="glossary.html#gloss-richardson-extrapolation" class="gloss" data-gloss="Extrapolation with the polynomial through all measured points, evaluated at zero noise. The result is a fixed linear combination of the estimates.">Richardson extrapolation</a>, and the linear model is its case <span class="math inline">\(m = 2\)</span>. Its value at <span class="math inline">\(c = 0\)</span> is a linear combination of the estimates, <span id="eq-richardson"><span class="math display">\[
+\hat E_{\text{R}} = \sum_{j=1}^m \gamma_j\hat E_j , \qquad
+\gamma_j = \prod_{k\ne j}\frac{c_k}{c_k - c_j} ,
+\tag{5.2}\]</span></span> for example <span class="math inline">\(\gamma = (\tfrac{15}{8}, -\tfrac{5}{4}, \tfrac{3}{8})\)</span> for <span class="math inline">\(c = 1, 3, 5\)</span>.</li>
+<li><em>Exponential</em>, <span class="math inline">\(E(c) = Ae^{-bc}\)</span>, whose value at <span class="math inline">\(c = 0\)</span> is <span class="math inline">\(A\)</span>. Global depolarising noise gives this form: it shrinks expectation values by <span class="math inline">\(f \approx e^{-\lambda}\)</span> (<a href="L2-noise.html#eq-global-factor" class="quarto-xref">Equation&nbsp;<span>2.9</span></a>), and folding multiplies <span class="math inline">\(\lambda\)</span> by <span class="math inline">\(c\)</span>, so <span class="math inline">\(E(c) = e^{-c\lambda}E(0)\)</span>. From two estimates, <span class="math display">\[
+\hat E_{\text{exp}} = \hat E_1\Big(\frac{\hat E_1}{\hat E_2}\Big)^{c_1/(c_2 - c_1)} ,
+\]</span> which for <span class="math inline">\(c = 1, 3\)</span> is <span class="math inline">\(\hat E_1(\hat E_1/\hat E_3)^{1/2}\)</span> <span class="citation" data-cites="endo2018">(<a href="L1-platforms-and-measurement.html#ref-endo2018" role="doc-biblioref">Endo et al. 2018</a>)</span>.</li>
+</ol>
+<p>The exponential model assumes that the noise pulls the value towards zero. Depolarising noise pulls an observable <span class="math inline">\(O\)</span> towards <span class="math inline">\(\Tr[O]/2^n\)</span>, its value in the maximally mixed state of <span class="math inline">\(n\)</span> qubits, which must therefore be subtracted first; for the TFIM, <span class="math inline">\(\Tr[H] = 0\)</span>. The model fails when the two estimates have different signs, or when one is within its standard error of zero, so we extrapolate the total energy rather than each of its terms, some of which are close to zero.</p>
+<p>With more points than parameters, a least-squares fit replaces these formulas. Which model fits best depends on the noise. Under global depolarising noise, the exponential model is exact, the linear one leaves a bias of order <span class="math inline">\(\lambda^2\)</span> (<a href="#exr-zne-two-points" class="quarto-xref">Exercise&nbsp;<span>5.3</span></a>), and Richardson extrapolation with <span class="math inline">\(m\)</span> points one of order <span class="math inline">\(\lambda^m\)</span>.</p>
+</section>
+<section id="sec-zne-variance" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="sec-zne-variance"><span class="header-section-number">5.4.3</span> The price: amplified shot noise</h3>
+<p>The estimates at different scale factors come from different shots, so they are independent, and the variance of the linear combination <a href="#eq-richardson" class="quarto-xref">Equation&nbsp;<span>5.2</span></a> is (<a href="L3-hamiltonians.html#eq-variance-sum" class="quarto-xref">Equation&nbsp;<span>3.5</span></a>) <span id="eq-zne-variance"><span class="math display">\[
+\mathrm{Var}(\hat E_{\text{R}}) = \sum_j \gamma_j^2\,\mathrm{Var}(\hat E_j) .
+\tag{5.3}\]</span></span> The coefficients sum to 1, since a constant <span class="math inline">\(E(c)\)</span> must extrapolate to itself, but <span class="math inline">\(\gamma_1 &gt; 1\)</span>, since each of its factors is. So <span class="math inline">\(\sum_j\gamma_j^2 &gt; 1\)</span>: the extrapolation amplifies the shot noise. For <span class="math inline">\(c = 1, 3, 5\)</span>, <span class="math inline">\(\sum_j\gamma_j^2 \approx 5.2\)</span>, so with the same number of shots at every point, the standard error grows by a factor of 2.3 (for <span class="math inline">\(c = 1, 3\)</span>, the factor is smaller: <a href="#exr-zne-two-points" class="quarto-xref">Exercise&nbsp;<span>5.3</span></a>). More points remove more of the bias, but amplify the shot noise more; scale factors further apart amplify it less, but the model must then hold over a longer range.</p>
+<p>The exponential model divides by <span class="math inline">\(\hat E_2\)</span>, which shrinks exponentially with <span class="math inline">\(\lambda\)</span>, so its amplification of the shot noise grows exponentially with <span class="math inline">\(\lambda\)</span>, as for rescaling. Its standard error, or that of any other fit, can be found by resampling: repeat the extrapolation many times on values drawn at random from Gaussians with the measured estimates as means and their standard errors as standard deviations, and take the standard deviation of the results.</p>
+<div class="example">
+<p><em>Example.</em> <a href="#fig-zne" class="quarto-xref">Figure&nbsp;<span>5.3</span></a> shows ZNE for the energy of the Tutorial 4 circuit, folded as a whole to <span class="math inline">\(c = 1, 3, 5\)</span> (18, 54 and 90 CZs). Without shot noise (panel a), the energies are 0.277, 0.759 and 1.164 above <span class="math inline">\(E_0\)</span>, and the linear, Richardson and exponential extrapolations give 0.036, 0.008 and 0.004 above <span class="math inline">\(E_0\)</span>, against 0.003 for the noiseless circuit. The exponential model does best because the simulated noise is depolarising, so each term of the energy decays nearly exponentially with <span class="math inline">\(c\)</span>. With shots (panel b), mitigation removes almost all of the bias, but the standard deviation of the estimates grows from 0.05 to 0.08 (linear), 0.09 (exponential) and 0.12 (Richardson), and a third to a half of the mitigated estimates fall below <span class="math inline">\(E_0\)</span>. On balance, the mitigated estimates are still two to three times closer to <span class="math inline">\(E_0\)</span> than the unmitigated one, in root-mean-square error.</p>
+</div>
+<div id="fig-zne" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-zne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/zne.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zne-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.3: Zero-noise extrapolation of the energy of the optimised Tutorial 4 circuit (TFIM chain of 4 qubits, <span class="math inline">\(J = 1\)</span>, <span class="math inline">\(h = 0.5\)</span>, 3 layers), with depolarising noise of 0.1% per single-qubit gate and 0.5% per CZ. (a) The exact noisy energies of the circuit folded to <span class="math inline">\(c = 1, 3, 5\)</span> (dots), and the linear (through <span class="math inline">\(c = 1, 3\)</span>), Richardson (through all three) and exponential (through <span class="math inline">\(c = 1, 3\)</span>) extrapolations to <span class="math inline">\(c = 0\)</span>; the inset enlarges <span class="math inline">\(c\)</span> near 0, where the star is the energy of the noiseless circuit. (b) Estimates of 1000 repetitions of the experiment, with 1000 shots per setting at each scale factor (2,000 shots at <span class="math inline">\(c = 1\)</span> only, 4,000 for linear and exponential, 6,000 for Richardson); the bars are their averages. The exponential curve nearly coincides with Richardson’s.
+</figcaption>
+</figure>
+</div>
+<div id="exr-zne-two-points" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.3 (Two-point extrapolation)</strong></span> We estimate an expectation value at the noise scale factors 1 and 3, with <span class="math inline">\(N\)</span> shots each and the single-shot variance <span class="math inline">\(\sigma^2\)</span> at both.</p>
+<ol type="a">
+<li><p>Show that the linear extrapolation to <span class="math inline">\(c = 0\)</span> is <span class="math inline">\((3\hat E_1 - \hat E_3)/2\)</span>, and that its standard error is <span class="math inline">\(\sqrt{5/2}\,\sigma/\sqrt N\)</span>. How many shots in total does it need to reach the standard error <span class="math inline">\(\sigma/\sqrt N\)</span> of an unmitigated estimate with <span class="math inline">\(N\)</span> shots?</p></li>
+<li><p>Suppose that the noise is global depolarising, so that <span class="math inline">\(E(c) = e^{-c\lambda}E(0)\)</span>. Show that, to second order in <span class="math inline">\(\lambda\)</span>, the linear extrapolation has the bias <span class="math inline">\(-\tfrac32\lambda^2E(0)\)</span>, against <span class="math inline">\(-\lambda E(0)\)</span> without mitigation.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <span class="math inline">\(e^{-x} \approx 1 - x + x^2/2\)</span>.</p>
+</details></li>
+<li><p>In <a href="#fig-zne" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>, the energy at <span class="math inline">\(c = 1\)</span> is 0.92 times the noiseless one. Which <span class="math inline">\(\lambda\)</span> does this correspond to, and which bias does (b) predict for the linear extrapolation? Compare it with the figure.</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-zne-steps" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="sec-zne-steps"><span class="header-section-number">5.4.4</span> Implementing ZNE</h3>
+<ol type="1">
+<li>Compile the circuit that prepares the state into native gates, and fold the compiled circuit, so that the folded gates are the ones that run.</li>
+<li>Put a barrier between the parts of each folded circuit: a compiler that sees <span class="math inline">\(U^\dagger U\)</span> removes it, but it does not simplify across barriers.</li>
+<li>Add the basis changes of the measurement settings and the measurements, as in Tutorial 4. To run on a device, compile again with the layout fixed on a chain of coupled qubits (<a href="#sec-qubit-selection" class="quarto-xref"><span>Section 5.2.1</span></a>), so that the compiler adds no SWAP gates, which would not be folded. Estimate the expectation value and its standard error at each <span class="math inline">\(c\)</span>, with readout errors mitigated (<a href="#sec-readout-mitigation" class="quarto-xref"><span>Section 5.3.1</span></a>).</li>
+<li>Extrapolate with one or more models, and find the standard error of the result, from <a href="#eq-zne-variance" class="quarto-xref">Equation&nbsp;<span>5.3</span></a> or by resampling.</li>
+<li>Check the result: if the models disagree by more than their standard errors, the extrapolation is not reliable. Where possible, test the procedure on a small instance with a known answer and the same noise.</li>
+</ol>
+<p>Tutorial 5 implements these steps in Qiskit. <!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows folding with barriers. --></p>
+<p>In a VQE, ZNE is usually applied only to the final angles: inside the optimisation loop, it would multiply the cost of every step, while the optimiser only needs to compare energies.</p>
+</section>
+</section>
+<section id="sec-symmetry-verification" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="sec-symmetry-verification"><span class="header-section-number">5.5</span> Symmetry verification</h2>
+<p>The methods discussed so far (readout-error mitigation, rescaling and ZNE) can be applied to any circuit that estimates expectation values: they rely only on assumptions about the noise. Symmetry verification is the archetype of a different kind of method, which instead uses properties of the problem or of the algorithm. On each shot, it checks quantities that the circuit should conserve because of a symmetry of the problem: if one of them has changed, an error must have happened, and the shot is discarded.</p>
+<section id="sec-quantum-numbers" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="sec-quantum-numbers"><span class="header-section-number">5.5.1</span> Symmetries and quantum numbers</h3>
+<p>We met two conserved quantities in earlier chapters: the number of flipped qubits <span class="math inline">\(K = \sum_i (I - Z_i)/2\)</span> of the <a href="L3-hamiltonians.html#def-heisenberg" class="gloss" data-gloss="A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved.">Heisenberg model</a> (<a href="L3-hamiltonians.html#sec-spin-models" class="quarto-xref"><span>Section 3.3</span></a>), and the parity <span class="math inline">\(\Pi = X_1 X_2 \cdots X_n\)</span> in the <a href="L3-hamiltonians.html#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a> (<a href="L4-ground-states.html#sec-adiabatic" class="quarto-xref"><span>Section 4.2</span></a>). Both are observables that commute with the Hamiltonian.</p>
+<div id="def-symmetry" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.2 (Symmetry, quantum number and sector)</strong></span> A <a href="glossary.html#gloss-symmetry" class="gloss" data-gloss="A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed.">symmetry</a> of a Hamiltonian <span class="math inline">\(H\)</span> is an observable <span class="math inline">\(S\)</span> that commutes with it, <span class="math inline">\(SH = HS\)</span>. The eigenvalues <span class="math inline">\(s\)</span> of <span class="math inline">\(S\)</span> are called <a href="glossary.html#gloss-quantum-number" class="gloss" data-gloss="An eigenvalue of a symmetry of the Hamiltonian. It labels a state and stays fixed while the state evolves, such as the number of flipped qubits in the Heisenberg model.">quantum numbers</a>, and the eigenspace of each eigenvalue, made of all the states with <span class="math inline">\(S\ket{\psi} = s\ket{\psi}\)</span>, is a <a href="glossary.html#gloss-symmetry-sector" class="gloss" data-gloss="The eigenspace of a symmetry for one quantum number. The Hamiltonian, and any circuit that conserves the symmetry, never takes a state out of its sector.">symmetry sector</a>.</p>
+</div>
+<p>The name “quantum number” comes from physics, which labels eigenstates of a system by their conserved values, for example the number of electrons in a molecule, or the total angular momentum of an atom.</p>
+<p>Two properties follow from <span class="math inline">\(SH = HS\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(H\)</span> maps each sector into itself: if <span class="math inline">\(S\ket{\psi} = s\ket{\psi}\)</span>, then <span class="math inline">\(S(H\ket{\psi}) = H(S\ket{\psi}) = s\,H\ket{\psi}\)</span>. In a basis of eigenvectors of <span class="math inline">\(S\)</span>, sorted by sector, the matrix of <span class="math inline">\(H\)</span> is block diagonal (<a href="#fig-sectors" class="quarto-xref">Figure&nbsp;<span>5.4</span></a>).</li>
+<li>The quantum number is conserved: a gate <span class="math inline">\(G\)</span> that commutes with <span class="math inline">\(S\)</span> keeps each state in its sector, since <span class="math inline">\(SG\ket{\psi} = GS\ket{\psi} = s\,G\ket{\psi}\)</span>. This holds for the evolution <span class="math inline">\(e^{-iHt}\)</span>, and for any circuit whose gates all commute with <span class="math inline">\(S\)</span>. If a Trotter circuit approximating the evolution is made of gates <span class="math inline">\(G_i\)</span> which, individually, commute with the symmetry, the whole circuit conserves quantum numbers. Remember: a Pauli rotation <span class="math inline">\(e^{-i\theta P/2}\)</span> commutes with a Pauli string <span class="math inline">\(S\)</span> if <span class="math inline">\([P, S] = 0\)</span>.</li>
+</ol>
+<p>For the Heisenberg chain, the number of flipped qubits is the observable <span class="math display">\[
+K = \sum_{i=1}^n \frac{I - Z_i}{2} ,
+\]</span> which counts the 1s of a basis state: <span class="math inline">\(K\ket{x} = k\ket{x}\)</span> for a bit string <span class="math inline">\(x\)</span> with <span class="math inline">\(k\)</span> ones. Its sector <span class="math inline">\(k\)</span> is spanned by the <span class="math inline">\(\binom{n}{k}\)</span> bit strings with <span class="math inline">\(k\)</span> ones. Each bond term equals <span class="math inline">\(J(2\,\gate{SWAP} - I)\)</span> (<a href="L3-hamiltonians.html#exr-pauli-decomposition" class="quarto-xref">Exercise&nbsp;<span>3.1</span></a>), so it moves 1s around but never creates or removes one. You can check that the bond gates of the Trotter circuit, the exponentials of the bond terms, also commute with <span class="math inline">\(K\)</span> (<a href="L3-hamiltonians.html#sec-dynamics-observables" class="quarto-xref"><span>Section 3.6</span></a>); the single Pauli terms <span class="math inline">\(X_iX_{i+1}\)</span> and <span class="math inline">\(Y_iY_{i+1}\)</span> do not, only their sum does. In the circuit of Tutorial 3, each bond gate is the product of three rotations, <span class="math inline">\(R_{XX}R_{YY}R_{ZZ}\)</span>: <span class="math inline">\(R_{ZZ}\)</span> conserves <span class="math inline">\(K\)</span> on its own, but <span class="math inline">\(R_{XX}\)</span> and <span class="math inline">\(R_{YY}\)</span> conserve it only together.</p>
+<p>For the TFIM, the parity <span class="math inline">\(\Pi = X_1X_2\cdots X_n\)</span> squares to <span class="math inline">\(I\)</span>, so its eigenvalues are <span class="math inline">\(\pm 1\)</span>, and its two sectors have <span class="math inline">\(2^{n-1}\)</span> states each. Each <span class="math inline">\(X_i\)</span> commutes with <span class="math inline">\(\Pi\)</span>, and so does each <span class="math inline">\(Z_iZ_{i+1}\)</span>. Thus, the <span class="math inline">\(R_X\)</span> and <span class="math inline">\(R_{ZZ}\)</span> gates of the Trotterised adiabatic state preparation circuit (or of the HVA) conserve the parity (<a href="L4-ground-states.html#sec-adiabatic" class="quarto-xref"><span>Section 4.2</span></a>).</p>
+<div id="fig-sectors" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sectors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/sectors.svg" class="img-fluid figure-img" style="width:75.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sectors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.4: The nonzero entries (grey) of the Hamiltonian of (a) a Heisenberg chain and (b) a TFIM chain, both of 4 qubits, in a basis of eigenvectors of the symmetry, sorted by sector (blue boxes). (a) Bit strings sorted by the number of flipped qubits <span class="math inline">\(k\)</span>: sectors of 1, 4, 6, 4 and 1 states. (b) The TFIM in the <span class="math inline">\(X\)</span> basis, <span class="math inline">\(\ket{\pm}\)</span> on each qubit, where the parity <span class="math inline">\(X_1X_2X_3X_4\)</span> is diagonal: two sectors of 8 states. No entry connects two sectors.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-post-selection" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="sec-post-selection"><span class="header-section-number">5.5.2</span> Post-selection on the quantum number</h3>
+<p>Suppose that the circuit starts in a state with the quantum number <span class="math inline">\(s_0\)</span>, and that all its gates, or groups of gates, commute with <span class="math inline">\(S\)</span>. Without noise, the final state lies in the sector <span class="math inline">\(s_0\)</span>. An error that does not commute with <span class="math inline">\(S\)</span> can move the state to another sector, where the following gates keep it. If the quantum number can be read from the bits of each shot, a shot that gives a value other than <span class="math inline">\(s_0\)</span> reveals that an error happened: for <span class="math inline">\(K\)</span>, measured in the <span class="math inline">\(Z\)</span> basis, the quantum number of a shot is its number of 1s. <a href="glossary.html#gloss-symmetry-verification" class="gloss" data-gloss="An error-mitigation method that reads a conserved quantity from each shot and discards the shots whose value differs from that of the ideal state.">Symmetry verification</a> discards these shots, and estimates the expectation value from the others <span class="citation" data-cites="bonet-monroig2018 mcardle2019">(<a href="L1-platforms-and-measurement.html#ref-bonet-monroig2018" role="doc-biblioref">Bonet-Monroig et al. 2018</a>; <a href="L1-platforms-and-measurement.html#ref-mcardle2019" role="doc-biblioref">McArdle et al. 2019</a>)</span>. Keeping only the shots that pass a test is called <a href="glossary.html#gloss-post-selection" class="gloss" data-gloss="Keeping only the shots whose outcomes pass a test, and discarding the others.">post-selection</a>.</p>
+<p>Post-selection removes part of the bias, at the price of keeping fewer shots. To see how much, recall that a shot runs without errors with probability <span class="math inline">\(f \approx e^{-\lambda}\)</span> (<a href="L2-noise.html#eq-circuit-fidelity" class="quarto-xref">Equation&nbsp;<span>2.12</span></a>), and suppose that a fraction <span class="math inline">\(d\)</span> of the shots with errors is detected. The fraction of shots kept is then <span class="math display">\[
+p_{\text{keep}} = f + (1-f)(1-d) ,
+\]</span> and among them, a fraction <span class="math inline">\(f/p_{\text{keep}}\)</span> ran without errors. We estimate an observable <span class="math inline">\(O\)</span> whose noiseless expectation value is <span class="math inline">\(\langle O\rangle\)</span>. If <span class="math inline">\(\langle O\rangle_u\)</span> is its average over the shots with undetected errors, the post-selected estimate averages to <span id="eq-post-selected"><span class="math display">\[
+\langle O\rangle_{\text{ps}} = \frac{f\langle O\rangle + (1-f)(1-d)\langle O\rangle_u}{p_{\text{keep}}} ,
+\tag{5.4}\]</span></span> so its bias, <span class="math inline">\((1-f)(1-d)\big(\langle O\rangle_u - \langle O\rangle\big)/p_{\text{keep}}\)</span>, comes only from the undetected errors. The price is that only <span class="math inline">\(p_{\text{keep}}N\)</span> of the <span class="math inline">\(N\)</span> shots are kept and used for computing averages, so the variance of the estimate grows by a factor <span class="math inline">\(1/p_{\text{keep}}\)</span>.</p>
+<p>In the best-case scenario, every error is detected, <span class="math inline">\(d = 1\)</span>. Then, the estimate has no bias, and the sampling overhead is <span class="math inline">\(1/f \approx e^{\lambda}\)</span>. Compared to the overhead <span class="math inline">\(e^{2\lambda}\)</span> of rescaling, this overhead of symmetry verification is its square root. The fraction of discarded shots, <span class="math inline">\((1-f)d\)</span>, is also a measured lower bound on the probability of an error, a useful check on the error budget.</p>
+<div class="example">
+<p><em>Example.</em> <a href="#fig-light-cone-noise" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> repeats the <a href="glossary.html#gloss-light-cone" class="gloss" data-gloss="The qubits that an operation, an error or a change can influence after a given number of circuit layers or a given time. In a circuit of nearest-neighbour gates, it grows by a fixed number of qubits per layer; a local Hamiltonian also spreads changes at a finite speed.">light cone</a> of <a href="L3-hamiltonians.html#fig-light-cone" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> for a Heisenberg chain of 11 qubits, now with the depolarising noise of Tutorial 4 and readout errors <span class="math inline">\(e_0 = 1\%\)</span> and <span class="math inline">\(e_1 = 2\%\)</span>. After 10 Trotter steps, the circuit has 300 CZs (compiled with <code>optimization_level=2</code>), and <span class="math inline">\(\lambda \approx 2.3\)</span>. We measure only in the <span class="math inline">\(Z\)</span> basis, with 4000 shots at each time. Without mitigation (panel b), errors create flips everywhere: at <span class="math inline">\(t = 2\)</span>, a shot shows 2.5 flipped qubits on average instead of one, and the probabilities of finding the flip on each qubit are off by 0.14 on average. The same shots give <span class="math inline">\(K\)</span> for free, and keeping those with exactly one 1 brings the cone back (panel c): the error at <span class="math inline">\(t = 2\)</span> falls to 0.02. What remains comes from undetected errors, such as <span class="math inline">\(Z\)</span> errors, which change the phases of the state but not the number of flips.</p>
+<p>Panel (d) shows the price. The fraction of shots kept falls from 0.90 at <span class="math inline">\(t = 0\)</span>, where only readout errors act, to 0.23 at <span class="math inline">\(t = 2\)</span>, so at <span class="math inline">\(t = 2\)</span> the variance is 4.4 times larger than with all shots; rescaling, even with a known <span class="math inline">\(f\)</span>, would cost <span class="math inline">\(e^{2\lambda} \approx 100\)</span>. The gap between the two curves of panel (d) is the fraction of shots with undetected errors, <span class="math inline">\((1-f)(1-d)\)</span>.</p>
+</div>
+<div id="fig-light-cone-noise" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-light-cone-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/light-cone-noise.svg" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-light-cone-noise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.5: The light cone of <a href="L3-hamiltonians.html#fig-light-cone" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> with noise, for a Heisenberg chain of 11 qubits (<span class="math inline">\(J = 1\)</span>, Trotter steps of 0.2) that starts with qubit 6 flipped. (a) Without noise, exact; (b) with depolarising noise of 0.1% per single-qubit gate and 0.5% per CZ, and readout errors of 1% for 0 and 2% for 1, from 4000 shots at each time; (c) the same shots, post-selected on exactly one flipped qubit. (d) The fraction of shots kept, and the probability <span class="math inline">\(e^{-\lambda}\)</span> of a shot without errors from the error budget.
+</figcaption>
+</figure>
+</div>
+<div id="exr-post-selection" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.4 (Post-selection against readout errors)</strong></span> The circuit of <a href="#fig-light-cone-noise" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> ends with one flipped qubit among <span class="math inline">\(n\)</span>. Suppose that its gates are perfect, and that the readout of each qubit reports the wrong bit with probability <span class="math inline">\(e\)</span>, independently.</p>
+<ol type="a">
+<li><p>Show that every shot with exactly one readout error is discarded by post-selection on one flipped qubit. Which shots with two readout errors are kept, and what do they report?</p></li>
+<li><p>Show that the fraction of shots kept is <span class="math inline">\((1-e)^n + (n-1)e^2(1-e)^{n-2}\)</span>.</p></li>
+<li><p>For <span class="math inline">\(n = 11\)</span> and <span class="math inline">\(e = 1\%\)</span>, compute the fraction of shots kept, and compare it with panel (d) of <a href="#fig-light-cone-noise" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> at <span class="math inline">\(t = 0\)</span>. Which fraction of the kept shots report the flip on a wrong qubit, and which fraction of all shots have at least one readout error?</p></li>
+</ol>
+</div>
+</section>
+<section id="sec-sv-steps" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="sec-sv-steps"><span class="header-section-number">5.5.3</span> Implementing symmetry verification</h3>
+<ol type="1">
+<li>Find a symmetry <span class="math inline">\(S\)</span> of the problem that every gate of the circuit conserves, or every group of gates, such as the <span class="math inline">\(R_{XX}R_{YY}\)</span> of a Heisenberg bond, and the quantum number <span class="math inline">\(s_0\)</span> of the initial state. Check the gates of the circuit before compiling: the native gates of the compiled circuit need not conserve <span class="math inline">\(S\)</span> one by one.</li>
+<li>For each measurement setting, check whether <span class="math inline">\(S\)</span> can be read from its outcomes, that is, whether <span class="math inline">\(S\)</span> is diagonal in the measured basis. A Pauli string, such as the parity, can be read in a <a href="L3-hamiltonians.html#def-qwc" class="gloss" data-gloss="A choice of basis (X, Y or Z) for every qubit, made with single-qubit rotations before the measurement. Each shot of a setting gives a value of every Pauli string whose factors agree with it.">measurement setting</a> that agrees with it wherever it is not <span class="math inline">\(I\)</span> (<a href="L3-hamiltonians.html#def-qwc" class="quarto-xref">Definition&nbsp;<span>3.5</span></a>), as the product of the outcomes <span class="math inline">\(\pm 1\)</span> on those qubits. The settings in which <span class="math inline">\(S\)</span> cannot be read are used with all their shots.</li>
+<li>For each shot of the other settings, compute the quantum number from its bits, and keep the shot if it equals <span class="math inline">\(s_0\)</span>.</li>
+<li>Estimate the observable from the kept shots, with the standard error for their number, <span class="math inline">\(N_{\text{kept}}\)</span> instead of <span class="math inline">\(N\)</span> (<a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>).</li>
+<li>Report the fraction of shots kept: it sets the price in shots (<a href="#sec-post-selection" class="quarto-xref"><span>Section 5.5.2</span></a>).</li>
+</ol>
+<p>Tutorial 5 implements these steps in Qiskit. <!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows how to read the bits of a shot (in Qiskit, qubit 0 is the rightmost bit). --></p>
+<p>Post-selection needs no extra circuits, so in a VQE it can also be used inside the optimisation loop. Other methods can be applied on top: ZNE, for example, extrapolates post-selected estimates as well as plain ones.</p>
+</section>
+<section id="sec-tfim-verification" class="level3" data-number="5.5.4">
+<h3 data-number="5.5.4" class="anchored" data-anchor-id="sec-tfim-verification"><span class="header-section-number">5.5.4</span> Verifying the energy of the TFIM</h3>
+<p>For the VQE of Tutorial 4, the symmetry is the parity: the circuit starts in <span class="math inline">\(\ket{+\cdots+}\)</span>, with parity <span class="math inline">\(+1\)</span>, and every gate of the HVA conserves it. But the parity can only be read in the <span class="math inline">\(X\)</span> setting of the <a href="L3-hamiltonians.html#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a>, where each shot gives the signs of all <span class="math inline">\(X_i\)</span>, and <span class="math inline">\(\Pi\)</span> is their product (<a href="L3-hamiltonians.html#fig-tfim-settings" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>): a shot passes if it has an even number of 1s. In the <span class="math inline">\(Z\)</span> setting, which gives the bond terms, <span class="math inline">\(\Pi\)</span> is not diagonal, and the shots carry no information about it, so only the field terms can be verified. The check catches the errors that anticommute with <span class="math inline">\(\Pi\)</span>, such as <span class="math inline">\(Z\)</span> or <span class="math inline">\(Y\)</span> on one qubit. An <span class="math inline">\(X_i\)</span> error commutes with <span class="math inline">\(\Pi\)</span>, so it goes undetected, and it flips the signs of <span class="math inline">\(Z_{i-1}Z_i\)</span> and <span class="math inline">\(Z_iZ_{i+1}\)</span>: it changes exactly the bond terms that we cannot verify.</p>
+<div class="example">
+<p><em>Example.</em> For the circuit of Tutorial 4, the check discards 6% of the shots of the <span class="math inline">\(X\)</span> setting, and the bias of the field terms falls from 0.073 to 0.040. The bond terms keep their bias of 0.20, so the bias of the energy only falls from 0.277 to 0.244.</p>
+</div>
+<p>An entangling circuit before the measurement can verify the bond terms too. On two neighbouring qubits, <span class="math inline">\(Z_iZ_{i+1}\)</span> and <span class="math inline">\(X_iX_{i+1}\)</span> commute, and a CNOT from qubit <span class="math inline">\(i\)</span> to <span class="math inline">\(i+1\)</span> followed by a Hadamard on qubit <span class="math inline">\(i\)</span> turns them into <span class="math inline">\(Z_{i+1}\)</span> and <span class="math inline">\(Z_i\)</span>, so one shot gives both signs. Two such settings, one on the pairs <span class="math inline">\((1,2)\)</span>, <span class="math inline">\((3,4)\)</span>, … and one on the pairs <span class="math inline">\((2,3)\)</span>, <span class="math inline">\((4,5)\)</span>, …, with unpaired qubits measured in the <span class="math inline">\(X\)</span> basis, give every bond term, and in each shot the parity, as the product of the signs of the <span class="math inline">\(X_iX_{i+1}\)</span> of the pairs and the <span class="math inline">\(X_j\)</span> of the unpaired qubits. These two settings replace the <span class="math inline">\(Z\)</span> setting, at the cost of one more setting and one noisy CNOT per pair, and the <span class="math inline">\(X\)</span> setting still gives the field terms. For the circuit of Tutorial 4, the bias then falls to 0.17, and not further, because <span class="math inline">\(X\)</span> errors still escape the check.</p>
+<p>Symmetry verification is therefore not always available: many circuits conserve no symmetry (a hardware-efficient ansatz (<a href="L4-ground-states.html#sec-ansatz" class="quarto-xref"><span>Section 4.3.3</span></a>), for example, breaks the parity of the TFIM), and the measurement may reveal the symmetry in some settings only. Symmetries also differ in how many errors they catch: the number of flipped qubits keeps the state in one sector of <span class="math inline">\(n\)</span> states out of <span class="math inline">\(2^n\)</span>, 11 out of 2048 for our chain, while the parity only splits the states into two halves (<a href="#exr-strong-weak" class="quarto-xref">Exercise&nbsp;<span>5.5</span></a>).</p>
+<div id="exr-strong-weak" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.5 (Strong and weak symmetries)</strong></span> We compare two checks: the number of flipped qubits <span class="math inline">\(K\)</span> of a <a href="L3-hamiltonians.html#def-heisenberg" class="gloss" data-gloss="A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved.">Heisenberg</a> chain with one flip, read in the <span class="math inline">\(Z\)</span> basis, and the parity <span class="math inline">\(\Pi\)</span> of the <a href="L3-hamiltonians.html#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a>, read in the <span class="math inline">\(X\)</span> basis.</p>
+<ol type="a">
+<li><p>Just before the measurement, one qubit suffers an error <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> or <span class="math inline">\(Z\)</span>, each with probability <span class="math inline">\(1/3\)</span>. With which probability does each check detect it?</p></li>
+<li><p>Now two different qubits each suffer such an error, independently. Show that the parity check detects the pair with probability <span class="math inline">\(4/9\)</span>. With which probability does the check of <span class="math inline">\(K\)</span> detect it, if neither error hits the flipped qubit?</p></li>
+<li><p>After many errors, the state is close to a random state of the <span class="math inline">\(n\)</span> qubits. With which probability does it pass each check, for <span class="math inline">\(n = 11\)</span>?</p></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="sec-reading-mitigated" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="sec-reading-mitigated"><span class="header-section-number">5.6</span> Reading a mitigated result</h2>
+<p>A mitigated value is the output of a model and of post-processing, and it should be read with both in mind. Five questions help.</p>
+<ol type="1">
+<li>Does it come with a standard error that includes the amplified shot noise (<a href="#eq-zne-variance" class="quarto-xref">Equation&nbsp;<span>5.3</span></a>, or the shots kept)? Without one, it cannot be judged.</li>
+<li>Which assumptions are made on the noise model? Are these assumptions meant as approximations, or are they exact? For ZNE, what fit is used, and how is it justified? For rescaling, where does <span class="math inline">\(f\)</span> come from?</li>
+<li>For post-selection, which fraction of the shots was kept? Can we estimate which fraction of the errors might have gone undetected?</li>
+<li>Does the error-mitigated estimate break a bound that the true value satisfies? The noisy state is still a state, a mixed one, so its energy needs to satisfy the variational bound (<a href="L4-ground-states.html#eq-variational" class="quarto-xref">Equation&nbsp;<span>4.1</span></a>). A mitigated energy is a rescaled estimate or an extrapolation, and need not satisfy it: an energy below <span class="math inline">\(E_0\)</span> after mitigation (<a href="L4-ground-states.html#exr-below-E0" class="quarto-xref">Exercise&nbsp;<span>4.2</span></a>) is amplified shot noise, as in <a href="#fig-zne" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>, or an overshoot, as when rescaling divides by too small an <span class="math inline">\(f\)</span> (<a href="#sec-rescaling-overhead" class="quarto-xref"><span>Section 5.3.2</span></a>).</li>
+<li>Was the method tested and validated on an instance with a known answer and the same noise?</li>
+</ol>
+</section>
+<section id="sec-other-methods" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="sec-other-methods"><span class="header-section-number">5.7</span> Other methods</h2>
+<p>Many other methods exist; <span class="citation" data-cites="cai2023">Cai et al. (<a href="L1-platforms-and-measurement.html#ref-cai2023" role="doc-biblioref">2023</a>)</span> reviews most of the established methods. Some of the most popular include:</p>
+<ul>
+<li><a href="glossary.html#gloss-pec" class="gloss" data-gloss="An error-mitigation method that undoes the noise of each gate on average, by inserting random operations with positive and negative weights chosen from a noise model learned from the device.">Probabilistic error cancellation</a> (PEC) undoes the noise of each gate on average, by inserting random operations with positive and negative weights <span class="citation" data-cites="temme2017">(<a href="L1-platforms-and-measurement.html#ref-temme2017" role="doc-biblioref">Temme et al. 2017</a>)</span>; it needs an accurate noise model, learned from the device.</li>
+<li><em>Twirling</em> (<a href="L2-noise.html#sec-gate-errors" class="quarto-xref"><span>Section 2.4</span></a>) does not remove errors, but makes them simpler to model, which PEC needs and which helps ZNE (<a href="#sec-folding" class="quarto-xref"><span>Section 5.4.1</span></a>).</li>
+<li><em>Purification methods</em> suppress the contribution of errors by comparing the noisy state with itself: virtual distillation <span class="citation" data-cites="huggins2021 koczor2021">(<a href="L1-platforms-and-measurement.html#ref-huggins2021" role="doc-biblioref">Huggins et al. 2021</a>; <a href="L1-platforms-and-measurement.html#ref-koczor2021" role="doc-biblioref">Koczor 2021</a>)</span> uses several copies of the state, and echo verification <span class="citation" data-cites="obrien2021 obrien2023">(<a href="L1-platforms-and-measurement.html#ref-obrien2021" role="doc-biblioref">O’Brien et al. 2021</a>, <a href="L1-platforms-and-measurement.html#ref-obrien2023" role="doc-biblioref">2023</a>)</span> runs the circuit forwards and then backwards on a single copy.</li>
+<li><em>Learning-based methods</em> learn the relation between noisy and noiseless values on circuits that can be simulated classically <span class="citation" data-cites="czarnik2021">(<a href="L1-platforms-and-measurement.html#ref-czarnik2021" role="doc-biblioref">Czarnik et al. 2021</a>)</span>.</li>
+</ul>
+</section>
+<section id="sec-L5-reading" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="sec-L5-reading"><span class="header-section-number">5.8</span> Further reading</h2>
+<p><span class="citation" data-cites="cai2023">Cai et al. (<a href="L1-platforms-and-measurement.html#ref-cai2023" role="doc-biblioref">2023</a>)</span> is the main review of error mitigation, with the circuit fault rate and the sampling overhead used in this chapter. <span class="citation" data-cites="kandala2019">Kandala et al. (<a href="L1-platforms-and-measurement.html#ref-kandala2019" role="doc-biblioref">2019</a>)</span> applied zero-noise extrapolation to VQE on a superconducting device, scaling the noise by stretching the pulses, and <span class="citation" data-cites="kim2023">Kim et al. (<a href="L1-platforms-and-measurement.html#ref-kim2023" role="doc-biblioref">2023</a>)</span> used it on circuits of 127 qubits. Software packages such as Mitiq <span class="citation" data-cites="larose2022">(<a href="L1-platforms-and-measurement.html#ref-larose2022" role="doc-biblioref">LaRose et al. 2022</a>)</span> implement several of these methods for circuits written in different SDKs.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bonet-monroig2018" class="csl-entry" role="listitem">
+Bonet-Monroig, Xavier, Ramiro Sagastizabal, M. Singh, and Thomas E. O’Brien. 2018. <span>“Low-Cost Error Mitigation by Symmetry Verification.”</span> <em>Physical Review A</em> 98 (6): 062339. <a href="https://doi.org/10.1103/PhysRevA.98.062339">https://doi.org/10.1103/PhysRevA.98.062339</a>.
+</div>
+<div id="ref-cai2023" class="csl-entry" role="listitem">
+Cai, Zhenyu, Ryan Babbush, Simon C. Benjamin, et al. 2023. <span>“Quantum Error Mitigation.”</span> <em>Reviews of Modern Physics</em> 95 (4): 045005. <a href="https://doi.org/10.1103/RevModPhys.95.045005">https://doi.org/10.1103/RevModPhys.95.045005</a>.
+</div>
+<div id="ref-czarnik2021" class="csl-entry" role="listitem">
+Czarnik, Piotr, Andrew Arrasmith, Patrick J. Coles, and Lukasz Cincio. 2021. <span>“Error Mitigation with <span>Clifford</span> Quantum-Circuit Data.”</span> <em>Quantum</em> 5: 592. <a href="https://doi.org/10.22331/q-2021-11-26-592">https://doi.org/10.22331/q-2021-11-26-592</a>.
+</div>
+<div id="ref-dutkiewicz2025" class="csl-entry" role="listitem">
+Dutkiewicz, Alicja, Stefano Polla, Maximilian Scheurer, Christian Gogolin, William J. Huggins, and Thomas E. O’Brien. 2025. <span>“Error Mitigation and Circuit Division for Early Fault-Tolerant Quantum Phase Estimation.”</span> <em>PRX Quantum</em> 6: 040318. <a href="https://arxiv.org/abs/2410.05369">https://arxiv.org/abs/2410.05369</a>.
+</div>
+<div id="ref-endo2018" class="csl-entry" role="listitem">
+Endo, Suguru, Simon C. Benjamin, and Ying Li. 2018. <span>“Practical Quantum Error Mitigation for Near-Future Applications.”</span> <em>Physical Review X</em> 8 (3): 031027. <a href="https://doi.org/10.1103/PhysRevX.8.031027">https://doi.org/10.1103/PhysRevX.8.031027</a>.
+</div>
+<div id="ref-ezzell2023" class="csl-entry" role="listitem">
+Ezzell, Nic, Bibek Pokharel, Lina Tewala, Gregory Quiroz, and Daniel A. Lidar. 2023. <span>“Dynamical Decoupling for Superconducting Qubits: A Performance Survey.”</span> <em>Physical Review Applied</em> 20 (6): 064027. <a href="https://doi.org/10.1103/PhysRevApplied.20.064027">https://doi.org/10.1103/PhysRevApplied.20.064027</a>.
+</div>
+<div id="ref-giurgica-tiron2020" class="csl-entry" role="listitem">
+Giurgica-Tiron, Tudor, Yousef Hindy, Ryan LaRose, Andrea Mari, and William J. Zeng. 2020. <span>“Digital Zero Noise Extrapolation for Quantum Error Mitigation.”</span> <em>2020 IEEE International Conference on Quantum Computing and Engineering (QCE)</em>, 306–16. <a href="https://doi.org/10.1109/QCE49297.2020.00045">https://doi.org/10.1109/QCE49297.2020.00045</a>.
+</div>
+<div id="ref-huggins2021" class="csl-entry" role="listitem">
+Huggins, William J., Sam McArdle, Thomas E. O’Brien, et al. 2021. <span>“Virtual Distillation for Quantum Error Mitigation.”</span> <em>Physical Review X</em> 11 (4): 041036. <a href="https://doi.org/10.1103/PhysRevX.11.041036">https://doi.org/10.1103/PhysRevX.11.041036</a>.
+</div>
+<div id="ref-jeon2026" class="csl-entry" role="listitem">
+Jeon, Minjun, and Zhenyu Cai. 2026. <em>Quantum Error Correction on Error-Mitigated Physical Qubits</em>. <a href="https://arxiv.org/abs/2601.18384">https://arxiv.org/abs/2601.18384</a>.
+</div>
+<div id="ref-kandala2019" class="csl-entry" role="listitem">
+Kandala, Abhinav, Kristan Temme, Antonio D. Córcoles, Antonio Mezzacapo, Jerry M. Chow, and Jay M. Gambetta. 2019. <span>“Error Mitigation Extends the Computational Reach of a Noisy Quantum Processor.”</span> <em>Nature</em> 567 (7749): 491–95. <a href="https://doi.org/10.1038/s41586-019-1040-7">https://doi.org/10.1038/s41586-019-1040-7</a>.
+</div>
+<div id="ref-kim2023" class="csl-entry" role="listitem">
+Kim, Youngseok, Andrew Eddins, Sajant Anand, et al. 2023. <span>“Evidence for the Utility of Quantum Computing Before Fault Tolerance.”</span> <em>Nature</em> 618 (7965): 500–505. <a href="https://doi.org/10.1038/s41586-023-06096-3">https://doi.org/10.1038/s41586-023-06096-3</a>.
+</div>
+<div id="ref-koczor2021" class="csl-entry" role="listitem">
+Koczor, Bálint. 2021. <span>“Exponential Error Suppression for Near-Term Quantum Devices.”</span> <em>Physical Review X</em> 11 (3): 031057. <a href="https://doi.org/10.1103/PhysRevX.11.031057">https://doi.org/10.1103/PhysRevX.11.031057</a>.
+</div>
+<div id="ref-larose2022" class="csl-entry" role="listitem">
+LaRose, Ryan, Andrea Mari, Sarah Kaiser, et al. 2022. <span>“Mitiq: A Software Package for Error Mitigation on Noisy Quantum Computers.”</span> <em>Quantum</em> 6: 774. <a href="https://doi.org/10.22331/q-2022-08-11-774">https://doi.org/10.22331/q-2022-08-11-774</a>.
+</div>
+<div id="ref-li2017" class="csl-entry" role="listitem">
+Li, Ying, and Simon C. Benjamin. 2017. <span>“Efficient Variational Quantum Simulator Incorporating Active Error Minimization.”</span> <em>Physical Review X</em> 7 (2): 021050. <a href="https://doi.org/10.1103/PhysRevX.7.021050">https://doi.org/10.1103/PhysRevX.7.021050</a>.
+</div>
+<div id="ref-mcardle2019" class="csl-entry" role="listitem">
+McArdle, Sam, Xiao Yuan, and Simon Benjamin. 2019. <span>“Error-Mitigated Digital Quantum Simulation.”</span> <em>Physical Review Letters</em> 122 (18): 180501. <a href="https://doi.org/10.1103/PhysRevLett.122.180501">https://doi.org/10.1103/PhysRevLett.122.180501</a>.
+</div>
+<div id="ref-obrien2023" class="csl-entry" role="listitem">
+<span class="nocase">O’Brien, Thomas E., Gian-Luca Anselmetti, Fotios Gkritsis, et al.</span> 2023. <span>“Purification-Based Quantum Error Mitigation of Pair-Correlated Electron Simulations.”</span> <em>Nature Physics</em> 19 (12): 1787–92. <a href="https://doi.org/10.1038/s41567-023-02240-y">https://doi.org/10.1038/s41567-023-02240-y</a>.
+</div>
+<div id="ref-obrien2021" class="csl-entry" role="listitem">
+O’Brien, Thomas E., Stefano Polla, Nicholas C. Rubin, et al. 2021. <span>“Error Mitigation via Verified Phase Estimation.”</span> <em>PRX Quantum</em> 2 (2): 020317. <a href="https://doi.org/10.1103/PRXQuantum.2.020317">https://doi.org/10.1103/PRXQuantum.2.020317</a>.
+</div>
+<div id="ref-quek2024" class="csl-entry" role="listitem">
+Quek, Yihui, Daniel Stilck França, Sumeet Khatri, Johannes Jakob Meyer, and Jens Eisert. 2024. <span>“Exponentially Tighter Bounds on Limitations of Quantum Error Mitigation.”</span> <em>Nature Physics</em> 20 (10): 1648–58. <a href="https://doi.org/10.1038/s41567-024-02536-7">https://doi.org/10.1038/s41567-024-02536-7</a>.
+</div>
+<div id="ref-temme2017" class="csl-entry" role="listitem">
+Temme, Kristan, Sergey Bravyi, and Jay M. Gambetta. 2017. <span>“Error Mitigation for Short-Depth Quantum Circuits.”</span> <em>Physical Review Letters</em> 119 (18): 180509. <a href="https://doi.org/10.1103/PhysRevLett.119.180509">https://doi.org/10.1103/PhysRevLett.119.180509</a>.
+</div>
+<div id="ref-viola1999" class="csl-entry" role="listitem">
+Viola, Lorenza, Emanuel Knill, and Seth Lloyd. 1999. <span>“Dynamical Decoupling of Open Quantum Systems.”</span> <em>Physical Review Letters</em> 82 (12): 2417–21. <a href="https://doi.org/10.1103/PhysRevLett.82.2417">https://doi.org/10.1103/PhysRevLett.82.2417</a>.
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<style>
+  a.gloss { text-decoration: underline dotted; color: inherit; }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof tippy === "undefined") return;
+    tippy("a.gloss", {
+      content: (el) => el.getAttribute("data-gloss"),
+      theme: "quarto",
+      maxWidth: 360,
+    });
+  });
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/stefanopolla\.github\.io\/ntqc\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./L4-ground-states.html" class="pagination-link" aria-label="Preparing ground states">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

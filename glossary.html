@@ -317,6 +317,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L5-mitigation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -378,7 +384,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">15 November 2026</p>
+      <p class="date-modified">22 November 2026</p>
     </div>
   </div>
     
@@ -441,6 +447,10 @@ A circuit whose two-qubit gates act on alternating pairs of neighbouring qubits,
 <dt><span id="gloss-calibration">calibration</span></dt>
 <dd>
 Measuring and adjusting the control pulses of a device so that its gates do what they should. Providers publish calibration data: the error rates of each qubit and gate at the last calibration.
+</dd>
+<dt><span id="gloss-circuit-fault-rate">circuit fault rate</span></dt>
+<dd>
+The sum of the error probabilities of all operations of a circuit: the average number of errors per shot. A shot runs without errors with a probability of about e to the power minus this number.
 </dd>
 <dt><span id="gloss-cobyla">COBYLA</span></dt>
 <dd>
@@ -538,6 +548,10 @@ An X pulse halfway through a wait, which reverses the phase accumulated before i
 <dd>
 Methods that reduce the effect of noise on estimated quantities without correcting the errors, typically by running extra or modified circuits and combining their results. They cost extra shots.
 </dd>
+<dt><span id="gloss-error-suppression">error suppression</span></dt>
+<dd>
+Methods that change how a device runs a circuit, so that each shot suffers fewer errors, such as better calibration, compiling into fewer gates, choosing the best qubits, or dynamical decoupling. They cost no extra shots.
+</dd>
 <dt><span id="gloss-estimator">estimator</span></dt>
 <dd>
 A rule that turns measured data into an estimate of a quantity, for example the sample mean of the outcomes as an estimate of an expectation value.
@@ -553,6 +567,10 @@ A circuit that repeats the same layer of gates many times, like a system driven 
 <dt><span id="gloss-gap">gap</span></dt>
 <dd>
 The difference between the two lowest energies of a Hamiltonian, the first excited energy minus the ground-state energy. A small gap makes a ground state hard to prepare adiabatically.
+</dd>
+<dt><span id="gloss-gate-folding">gate folding</span></dt>
+<dd>
+Replacing a gate by the gate, its inverse and the gate again. The ideal circuit is unchanged, but the gate’s errors are tripled; used to scale the noise in zero-noise extrapolation.
 </dd>
 <dt><span id="gloss-geometrically-local">geometrically local Hamiltonian</span></dt>
 <dd>
@@ -582,6 +600,10 @@ An ansatz built from the terms of the Hamiltonian: layers that look like Trotter
 <dd>
 A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved.
 </dd>
+<dt><span id="gloss-idle-qubit">idle qubit</span></dt>
+<dd>
+A qubit on which no gate acts for a while, for example while gates act on other qubits. While idle, it still relaxes and dephases.
+</dd>
 <dt><span id="gloss-incoherent-error">incoherent error</span></dt>
 <dd>
 A random error that differs from shot to shot and averages to a noisy channel. Random errors accumulate more slowly than coherent ones.
@@ -609,6 +631,10 @@ A set of matrices that defines a quantum channel: the channel maps a density mat
 <dt><span id="gloss-laser-cooling">laser cooling</span></dt>
 <dd>
 Slowing the motion of atoms or ions with laser light until they are almost at rest.
+</dd>
+<dt><span id="gloss-layout">layout</span></dt>
+<dd>
+The choice of the qubits of a device that play the roles of the qubits of a circuit, made when the circuit is compiled. A good layout follows the coupling graph, so that no SWAPs are needed, and uses the qubits and couplers with the lowest error rates.
 </dd>
 <dt><span id="gloss-leakage">leakage</span></dt>
 <dd>
@@ -718,6 +744,14 @@ The shared vibrations of a chain of trapped ions, used as a common channel throu
 <dd>
 A qubit as implemented in hardware, for example one transmon or one ion, with all its imperfections.
 </dd>
+<dt><span id="gloss-post-selection">post-selection</span></dt>
+<dd>
+Keeping only the shots whose outcomes pass a test, and discarding the others.
+</dd>
+<dt><span id="gloss-pec">probabilistic error cancellation</span></dt>
+<dd>
+An error-mitigation method that undoes the noise of each gate on average, by inserting random operations with positive and negative weights chosen from a noise model learned from the device.
+</dd>
 <dt><span id="gloss-pulse">pulse</span></dt>
 <dd>
 A short burst of microwave or laser radiation at a chosen frequency, switched on and off smoothly, used to drive a qubit. Its frequency selects which qubit responds; its area and phase set the rotation.
@@ -762,6 +796,10 @@ Encoding quantum information redundantly in many physical qubits, so that errors
 <dd>
 A gradient-based optimiser for parametrised quantum circuits that rescales the gradient by how much the prepared state changes with each parameter, so that steps are measured in the state rather than in the angles.
 </dd>
+<dt><span id="gloss-quantum-number">quantum number</span></dt>
+<dd>
+An eigenvalue of a symmetry of the Hamiltonian. It labels a state and stays fixed while the state evolves, such as the number of flipped qubits in the Heisenberg model.
+</dd>
 <dt><span id="gloss-qubit-wise-commuting">qubit-wise commuting</span></dt>
 <dd>
 Two Pauli strings are qubit-wise commuting if, on every qubit, their factors are equal or one of them is the identity. Such strings can be measured from the same shots, in one measurement setting.
@@ -786,9 +824,17 @@ Loss of energy by a qubit: the excited state decays to the ground state. Its cha
 <dd>
 Radiation drives a transition between two energy levels only when its frequency matches their energy difference divided by Planck’s constant. This is how individual qubits are addressed.
 </dd>
+<dt><span id="gloss-richardson-extrapolation">Richardson extrapolation</span></dt>
+<dd>
+Extrapolation with the polynomial through all measured points, evaluated at zero noise. The result is a fixed linear combination of the estimates.
+</dd>
 <dt><span id="gloss-rydberg">Rydberg state</span></dt>
 <dd>
 A state of an atom in which one electron is excited very far from the nucleus. Atoms in Rydberg states interact strongly over micrometre distances.
+</dd>
+<dt><span id="gloss-sampling-overhead">sampling overhead</span></dt>
+<dd>
+The factor by which an error-mitigation method multiplies the number of shots needed for a given standard error, compared with the unmitigated estimate. It grows exponentially with the circuit fault rate.
 </dd>
 <dt><span id="gloss-schrodinger-equation">Schrödinger equation</span></dt>
 <dd>
@@ -825,6 +871,14 @@ A two-qubit gate that exchanges the states of two qubits. It costs three CNOTs.
 <dt><span id="gloss-symmetry">symmetry</span></dt>
 <dd>
 A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed.
+</dd>
+<dt><span id="gloss-symmetry-sector">symmetry sector</span></dt>
+<dd>
+The eigenspace of a symmetry for one quantum number. The Hamiltonian, and any circuit that conserves the symmetry, never takes a state out of its sector.
+</dd>
+<dt><span id="gloss-symmetry-verification">symmetry verification</span></dt>
+<dd>
+An error-mitigation method that reads a conserved quantity from each shot and discards the shots whose value differs from that of the ideal state.
 </dd>
 <dt><span id="gloss-t2-star">T2*</span></dt>
 <dd>
@@ -877,6 +931,10 @@ A Z rotation implemented by shifting the phase of all later drive pulses instead
 <dt><span id="gloss-weight">weight</span></dt>
 <dd>
 The number of qubits on which a Pauli string acts with a Pauli matrix other than the identity. Under local noise, strings of higher weight lose their expectation value faster.
+</dd>
+<dt><span id="gloss-zne">zero-noise extrapolation</span></dt>
+<dd>
+An error-mitigation method that estimates an expectation value at several amplified noise levels and extrapolates the estimates to zero noise. It amplifies the shot noise.
 </dd>
 </dl>
 

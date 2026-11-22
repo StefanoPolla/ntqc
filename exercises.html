@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./L4-ground-states.html" rel="prev">
+<link href="./L5-mitigation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -347,6 +347,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./L5-mitigation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -384,6 +390,7 @@ window.Quarto = {
   <li><a href="#exercises-chapter-2" id="toc-exercises-chapter-2" class="nav-link" data-scroll-target="#exercises-chapter-2">Chapter 2: Noise channels and error budgets</a></li>
   <li><a href="#exercises-chapter-3" id="toc-exercises-chapter-3" class="nav-link" data-scroll-target="#exercises-chapter-3">Chapter 3: Measuring and simulating Hamiltonians</a></li>
   <li><a href="#exercises-chapter-4" id="toc-exercises-chapter-4" class="nav-link" data-scroll-target="#exercises-chapter-4">Chapter 4: Preparing ground states</a></li>
+  <li><a href="#exercises-chapter-5" id="toc-exercises-chapter-5" class="nav-link" data-scroll-target="#exercises-chapter-5">Chapter 5: Reducing the effect of noise</a></li>
   </ul>
 </nav>
     </div>
@@ -417,7 +424,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">19 November 2026</p>
+      <p class="date-modified">22 November 2026</p>
     </div>
   </div>
     
@@ -850,6 +857,58 @@ window.Quarto = {
 <li><p>Write the cost <span class="math inline">\(H_C\)</span> of <a href="L4-ground-states.html#sec-qaoa" class="quarto-xref"><span>Section 4.3.4</span></a> for this graph. What are its smallest eigenvalue and its ground states, and which cuts do they correspond to?</p></li>
 <li><p>A QAOA circuit is run with 1,000 shots. How many measurement settings are needed to estimate <span class="math inline">\(\langle H_C\rangle\)</span>? How would you use the shots to find a solution, and why can you do better than with the average energy alone?</p></li>
 <li><p>Add the edge <span class="math inline">\((1,3)\)</span>. What is now the largest cut, and how many bitstrings reach it?</p></li>
+</ol>
+</div>
+</section>
+<section id="exercises-chapter-5" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="exercises-chapter-5">Chapter 5: Reducing the effect of noise</h2>
+<div class="exercise-copy">
+<p><strong><a href="L5-mitigation.html#exr-qubit-choice" class="quarto-xref">Exercise&nbsp;<span>5.1</span></a></strong> (Good qubits for a deeper circuit)</p>
+<p>In the circuit of Tutorial 4, each of the three bonds of the chain carries 6 CZs. On the best layout of <a href="L5-mitigation.html#fig-qubit-selection" class="quarto-xref">Figure&nbsp;<span>5.1</span></a>, the CZs of the three bonds have error probabilities of 0.7%, 0.9% and 1.0%; on the worst layout, 1.3%, 1.8% and 1.0%.</p>
+<ol type="a">
+<li><p>Compute the contribution of the CZs to <span class="math inline">\(\lambda\)</span> on each layout, and the factor <span class="math inline">\(f \approx e^{-\lambda}\)</span> by which the CZs alone shrink an expectation value.</p></li>
+<li><p>A deeper circuit has ten times as many layers on the same chain, so 60 CZs on each bond. Compute <span class="math inline">\(f\)</span> again on both layouts. How has the ratio of the two values of <span class="math inline">\(f\)</span> changed, and how much of the signal is left on the worst layout?</p></li>
+</ol>
+</div>
+<div class="exercise-copy">
+<p><strong><a href="L5-mitigation.html#exr-rescaling-pays" class="quarto-xref">Exercise&nbsp;<span>5.2</span></a></strong> (When rescaling pays off)</p>
+<p>Under global depolarising noise, a circuit has <span class="math inline">\(\langle P\rangle = 0.2\)</span> and the shrinking factor <span class="math inline">\(f = 0.9\)</span>. The standard error of <span class="math inline">\(\bar s\)</span> is <span class="math inline">\(\sigma/\sqrt{N}\)</span>, where <span class="math inline">\(\sigma^2 = 1 - f^2\langle P\rangle^2\)</span> is the variance of a single shot (<a href="L2-noise.html#sec-mse" class="quarto-xref"><span>Section 2.7.1</span></a>).</p>
+<ol type="a">
+<li><p>For <span class="math inline">\(N = 100\)</span> and for <span class="math inline">\(N = 10^4\)</span> shots, compute the bias and the standard error of the unmitigated estimate <span class="math inline">\(\bar s\)</span> and of the rescaled estimate <span class="math inline">\(\bar s/f\)</span>. Which estimate would you trust more in each case?</p></li>
+<li><p>Roughly how many shots are needed for the rescaled estimate to be the better one?</p>
+<details class="hint"><summary>Hint</summary>
+<p>Compare the bias of <span class="math inline">\(\bar s\)</span> with its standard error.</p>
+</details></li>
+</ol>
+</div>
+<div class="exercise-copy">
+<p><strong><a href="L5-mitigation.html#exr-zne-two-points" class="quarto-xref">Exercise&nbsp;<span>5.3</span></a></strong> (Two-point extrapolation)</p>
+<p>We estimate an expectation value at the noise scale factors 1 and 3, with <span class="math inline">\(N\)</span> shots each and the single-shot variance <span class="math inline">\(\sigma^2\)</span> at both.</p>
+<ol type="a">
+<li><p>Show that the linear extrapolation to <span class="math inline">\(c = 0\)</span> is <span class="math inline">\((3\hat E_1 - \hat E_3)/2\)</span>, and that its standard error is <span class="math inline">\(\sqrt{5/2}\,\sigma/\sqrt N\)</span>. How many shots in total does it need to reach the standard error <span class="math inline">\(\sigma/\sqrt N\)</span> of an unmitigated estimate with <span class="math inline">\(N\)</span> shots?</p></li>
+<li><p>Suppose that the noise is global depolarising, so that <span class="math inline">\(E(c) = e^{-c\lambda}E(0)\)</span>. Show that, to second order in <span class="math inline">\(\lambda\)</span>, the linear extrapolation has the bias <span class="math inline">\(-\tfrac32\lambda^2E(0)\)</span>, against <span class="math inline">\(-\lambda E(0)\)</span> without mitigation.</p>
+<details class="hint"><summary>Hint</summary>
+<p>Use <span class="math inline">\(e^{-x} \approx 1 - x + x^2/2\)</span>.</p>
+</details></li>
+<li><p>In <a href="L5-mitigation.html#fig-zne" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>, the energy at <span class="math inline">\(c = 1\)</span> is 0.92 times the noiseless one. Which <span class="math inline">\(\lambda\)</span> does this correspond to, and which bias does (b) predict for the linear extrapolation? Compare it with the figure.</p></li>
+</ol>
+</div>
+<div class="exercise-copy">
+<p><strong><a href="L5-mitigation.html#exr-post-selection" class="quarto-xref">Exercise&nbsp;<span>5.4</span></a></strong> (Post-selection against readout errors)</p>
+<p>The circuit of <a href="L5-mitigation.html#fig-light-cone-noise" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> ends with one flipped qubit among <span class="math inline">\(n\)</span>. Suppose that its gates are perfect, and that the readout of each qubit reports the wrong bit with probability <span class="math inline">\(e\)</span>, independently.</p>
+<ol type="a">
+<li><p>Show that every shot with exactly one readout error is discarded by post-selection on one flipped qubit. Which shots with two readout errors are kept, and what do they report?</p></li>
+<li><p>Show that the fraction of shots kept is <span class="math inline">\((1-e)^n + (n-1)e^2(1-e)^{n-2}\)</span>.</p></li>
+<li><p>For <span class="math inline">\(n = 11\)</span> and <span class="math inline">\(e = 1\%\)</span>, compute the fraction of shots kept, and compare it with panel (d) of <a href="L5-mitigation.html#fig-light-cone-noise" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> at <span class="math inline">\(t = 0\)</span>. Which fraction of the kept shots report the flip on a wrong qubit, and which fraction of all shots have at least one readout error?</p></li>
+</ol>
+</div>
+<div class="exercise-copy">
+<p><strong><a href="L5-mitigation.html#exr-strong-weak" class="quarto-xref">Exercise&nbsp;<span>5.5</span></a></strong> (Strong and weak symmetries)</p>
+<p>We compare two checks: the number of flipped qubits <span class="math inline">\(K\)</span> of a <a href="L3-hamiltonians.html#def-heisenberg" class="gloss" data-gloss="A spin model with the coupling XX + YY + ZZ on every pair of neighbouring qubits. Each bond treats the three axes alike, and the number of qubits in the state 1 is conserved.">Heisenberg</a> chain with one flip, read in the <span class="math inline">\(Z\)</span> basis, and the parity <span class="math inline">\(\Pi\)</span> of the <a href="L3-hamiltonians.html#def-tfim" class="gloss" data-gloss="A spin model with a ZZ coupling on every pair of neighbouring qubits, which favours aligned neighbours, and a field along x on every qubit, which favours the state plus. Abbreviated TFIM.">TFIM</a>, read in the <span class="math inline">\(X\)</span> basis.</p>
+<ol type="a">
+<li><p>Just before the measurement, one qubit suffers an error <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> or <span class="math inline">\(Z\)</span>, each with probability <span class="math inline">\(1/3\)</span>. With which probability does each check detect it?</p></li>
+<li><p>Now two different qubits each suffer such an error, independently. Show that the parity check detects the pair with probability <span class="math inline">\(4/9\)</span>. With which probability does the check of <span class="math inline">\(K\)</span> detect it, if neither error hits the flipped qubit?</p></li>
+<li><p>After many errors, the state is close to a random state of the <span class="math inline">\(n\)</span> qubits. With which probability does it pass each check, for <span class="math inline">\(n = 11\)</span>?</p></li>
 </ol>
 </div>
 
@@ -1285,8 +1344,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./L4-ground-states.html" class="pagination-link" aria-label="Preparing ground states">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Preparing ground states</span></span>
+      <a href="./L5-mitigation.html" class="pagination-link" aria-label="Reducing the effect of noise">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Reducing the effect of noise</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
