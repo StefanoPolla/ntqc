@@ -65,7 +65,7 @@ What if the gap is $0.01$?
 
 @exr-variational shows that a small gap makes the ground state hard to recognise by its energy: a state can have an energy close to $E_0$ and still be far from the ground state.
 If $\Delta = 0$, the ground state is *degenerate*: several states share the lowest energy, and the energy alone cannot tell them apart.
-What often helps is a conserved quantity, such as the number of flipped qubits of the Heisenberg model (@sec-spin-models); we call it a [symmetry]{.gloss key="symmetry"} of $H$ (@def-symmetry).
+What often helps is a conserved quantity, such as the number of flipped qubits of the Heisenberg model (@sec-spin-models); we call it a [symmetry]{.gloss key="symmetry"} of $H$.
 A circuit that conserves it, started from a state with a given value, only reaches states with that value, and then only the gap among those states matters.
 
 A small gap can make a single Hamiltonian hard.

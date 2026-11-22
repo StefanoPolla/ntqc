@@ -13,6 +13,7 @@ glossary:
   error-mitigation:
     term: error mitigation
     def: "Methods that reduce the effect of noise on estimated quantities without correcting the errors, typically by running extra or modified circuits and combining their results. They cost extra shots."
+    ref: def-three-ways
   physical-qubit:
     term: physical qubit
     def: "A qubit as implemented in hardware, for example one transmon or one ion, with all its imperfections."
@@ -393,6 +394,7 @@ glossary:
   symmetry:
     term: symmetry
     def: "A quantity conserved by a Hamiltonian, or an operation that leaves it unchanged, such as flipping all qubits in the TFIM. Evolution under the Hamiltonian, or a circuit that respects the symmetry, keeps its value fixed."
+    ref: def-symmetry
   error-suppression:
     term: error suppression
     def: "Methods that change how a device runs a circuit, so that each shot suffers fewer errors, such as better calibration, compiling into fewer gates, choosing the best qubits, or dynamical decoupling. They cost no extra shots."
