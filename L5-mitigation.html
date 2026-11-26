@@ -467,7 +467,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">22 November 2026</p>
+      <p class="date-modified">26 November 2026</p>
     </div>
   </div>
     
@@ -653,7 +653,7 @@ Figure&nbsp;5.3: Zero-noise extrapolation of the energy of the optimised Tutoria
 <li>Extrapolate with one or more models, and find the standard error of the result, from <a href="#eq-zne-variance" class="quarto-xref">Equation&nbsp;<span>5.3</span></a> or by resampling.</li>
 <li>Check the result: if the models disagree by more than their standard errors, the extrapolation is not reliable. Where possible, test the procedure on a small instance with a known answer and the same noise.</li>
 </ol>
-<p>Tutorial 5 implements these steps in Qiskit. <!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows folding with barriers. --></p>
+<p><a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-05/T5-mitigation_qiskit.ipynb">Tutorial 5</a> implements these steps in Qiskit.</p>
 <p>In a VQE, ZNE is usually applied only to the final angles: inside the optimisation loop, it would multiply the cost of every step, while the optimiser only needs to compare energies.</p>
 </section>
 </section>
@@ -728,7 +728,7 @@ Figure&nbsp;5.5: The light cone of <a href="L3-hamiltonians.html#fig-light-cone"
 <li>Estimate the observable from the kept shots, with the standard error for their number, <span class="math inline">\(N_{\text{kept}}\)</span> instead of <span class="math inline">\(N\)</span> (<a href="L1-platforms-and-measurement.html#eq-standard-error" class="quarto-xref">Equation&nbsp;<span>1.9</span></a>).</li>
 <li>Report the fraction of shots kept: it sets the price in shots (<a href="#sec-post-selection" class="quarto-xref"><span>Section 5.5.2</span></a>).</li>
 </ol>
-<p>Tutorial 5 implements these steps in Qiskit. <!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows how to read the bits of a shot (in Qiskit, qubit 0 is the rightmost bit). --></p>
+<p><a href="https://colab.research.google.com/github/StefanoPolla/ntqc/blob/main/tutorials/tutorial-05/T5-mitigation_qiskit.ipynb">Tutorial 5</a> implements these steps in Qiskit.</p>
 <p>Post-selection needs no extra circuits, so in a VQE it can also be used inside the optimisation loop. Other methods can be applied on top: ZNE, for example, extrapolates post-selected estimates as well as plain ones.</p>
 </section>
 <section id="sec-tfim-verification" class="level3" data-number="5.5.4">
