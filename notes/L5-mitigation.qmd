@@ -283,8 +283,7 @@ Compare it with the figure.
 4. Extrapolate with one or more models, and find the standard error of the result, from @eq-zne-variance or by resampling.
 5. Check the result: if the models disagree by more than their standard errors, the extrapolation is not reliable. Where possible, test the procedure on a small instance with a known answer and the same noise.
 
-Tutorial 5 implements these steps in Qiskit.
-<!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows folding with barriers. -->
+[Tutorial 5]({{< var colab >}}/tutorials/tutorial-05/T5-mitigation_qiskit.ipynb) implements these steps in Qiskit.
 
 In a VQE, ZNE is usually applied only to the final angles: inside the optimisation loop, it would multiply the cost of every step, while the optimiser only needs to compare energies.
 
@@ -397,8 +396,7 @@ Which fraction of the kept shots report the flip on a wrong qubit, and which fra
 4. Estimate the observable from the kept shots, with the standard error for their number, $N_{\text{kept}}$ instead of $N$ (@eq-standard-error).
 5. Report the fraction of shots kept: it sets the price in shots (@sec-post-selection).
 
-Tutorial 5 implements these steps in Qiskit.
-<!-- T5-LINK: link to the Tutorial 5 notebook once it exists, and check that it shows how to read the bits of a shot (in Qiskit, qubit 0 is the rightmost bit). -->
+[Tutorial 5]({{< var colab >}}/tutorials/tutorial-05/T5-mitigation_qiskit.ipynb) implements these steps in Qiskit.
 
 Post-selection needs no extra circuits, so in a VQE it can also be used inside the optimisation loop.
 Other methods can be applied on top: ZNE, for example, extrapolates post-selected estimates as well as plain ones.
